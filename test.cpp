@@ -4,8 +4,15 @@
 using namespace std;
 
 #define BUFSIZE 1024
-
+typdef unsigned char uint8_t;
 typdef unsigned int uint32_t;
+
+uint8_t to_lowcase(char ch)
+{
+	if (ch >= 'a' && ch <= 'z') return ch;
+	else if (ch >= 'A' && ch <= 'Z') return ch - 'A' + 'a';
+        else return -1;
+}
 
 uint32_t count_line(char *filename)
 {
@@ -13,6 +20,7 @@ uint32_t count_line(char *filename)
 
 	return lines;
 }
+
 int main(int argc, char** argv)
 {
   int newlines = 0;
