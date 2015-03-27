@@ -4,6 +4,11 @@
 using namespace std;
 
 #define BUFSIZE 1024
+
+#define LOG_D(...)  do { } while(0)
+#define LOG_E(...)  do { } while(0)
+#define LOG_I(...)  do { } while(0)
+
 typedef unsigned char uint8_t;
 typedef unsigned int uint32_t;
 
