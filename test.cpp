@@ -21,6 +21,8 @@ void swap(int &a, int &b)
 	b = a ^ b;
 	a = a ^ b;
 }
+
+
 uint32_t count_line(char *filename)
 {
 	int lines = 0;
