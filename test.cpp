@@ -24,7 +24,22 @@ void swap(int &a, int &b)
 uint32_t count_line(char *filename)
 {
 	int lines = 0;
-
+	char buf[BUFSIZE] = { 0 };
+  	FILE *fp = NULL;
+	fp = fopen(filename, "r");
+	if (NULL == fp)
+	{
+		printf("Open file error! [ %s ]\n", filename);
+		return -1;
+	}
+	while (fgets(buf, BUFSIZE, fp))
+	{
+		if ( strlen(buf) == BUFSIZE - 1 && 
+		     buf[BUFSIZE-2] != '\n')
+		{ /* do nothing */}
+		else
+		{ lines++; }
+	}
 	return lines;
 }
 
@@ -48,11 +63,14 @@ int main(int argc, char** argv)
   }
   while (fgets(buf, BUFSIZE, file))
   {
-   if (!(strlen(buf) == BUFSIZE-1 && buf[BUFSIZE-2] != '\n'))
-      newlines++;	
+	if ( strlen(buf) == BUFSIZE - 1 && 
+	     buf[BUFSIZE-2] != '\n')
+		{ /* do nothing */}
+		else
+		{ newlines++; }	
   }
 
-  printf("Number of lines in file [ %s ]: %d\n", argv[1], newlines);
+  printf(" [ %s ]: %d lines\n", argv[1], newlines);
 
   return 0;
 }
