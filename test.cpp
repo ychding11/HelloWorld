@@ -4,8 +4,8 @@
 using namespace std;
 
 #define BUFSIZE 1024
-typdef unsigned char uint8_t;
-typdef unsigned int uint32_t;
+typedef unsigned char uint8_t;
+typedef unsigned int uint32_t;
 
 uint8_t to_lowcase(char ch)
 {
