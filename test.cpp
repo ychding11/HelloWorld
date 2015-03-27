@@ -14,6 +14,13 @@ uint8_t to_lowcase(char ch)
         else return -1;
 }
 
+/* use a function template will be better! */
+void swap(int &a, int &b)
+{
+	a = a ^ b;
+	b = a ^ b;
+	a = a ^ b;
+}
 uint32_t count_line(char *filename)
 {
 	int lines = 0;
