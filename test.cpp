@@ -4,10 +4,19 @@
 using namespace std;
 
 #define BUFSIZE 1024
+typedef enum tagLogLevel
+{
+LOG_LEVEL_ERR,
+LOG_LEVEL_INFO,
+LOG_LEVEL_DBG,
+LOG_LEVLE_ALL,
+} LogLevel;
 
-#define LOG_D(...)  do { } while(0)
-#define LOG_E(...)  do { } while(0)
-#define LOG_I(...)  do { } while(0)
+LogLevel gCurLoglevel = LOG_LEVEL_INFO;
+
+#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG) fprintf(stdout,"[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR) fprintf(stdout,"[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout,"[ INFO ] "fmt,##__VA_ARGS__ ); } while(0)
 
 typedef unsigned char uint8_t;
 typedef unsigned int uint32_t;
@@ -55,7 +64,7 @@ int main(int argc, char** argv)
   int newlines = 0;
   char buf[BUFSIZE] = { 0 };
   FILE* file;
-
+  LOG_I("+[ %s ]\n", __FUNCTION__);
   if (argc != 2)
   {
     printf("usage error!\n");
@@ -78,7 +87,7 @@ int main(int argc, char** argv)
   }
 
   printf(" [ %s ]: %d lines\n", argv[1], newlines);
-
+  LOG_I("-[ %s ]\n", __FUNCTION__);
   return 0;
 }
 
