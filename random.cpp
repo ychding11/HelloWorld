@@ -7,6 +7,9 @@ using namespace std;
 #define BUFSIZE 1024
 #define LINE_TO_STRING(x) #x
 #define FILE_AND_LINE (__FILE__":"LINE_TO_STRING(__LINE__))
+
+#define PERFORMANCE_METER
+
 typedef enum tagLogLevel
 {
 LOG_LEVEL_ERR,
@@ -30,11 +33,17 @@ typedef unsigned int uint32_t;
  * This algorithm uses a seed to generate the series, which should be initialized to some distinctive value using function srand.
  * http://www.cplusplus.com/reference/cstdlib/rand/?kw=rand  for details.
  * 
+ * double difftime (time_t end, time_t beginning); Calculates the difference in seconds between beginning and end.
+ * this is an inexact method to meter the performance!
  */
 void gen_distinct_rand(int m, int n)
 {
 	int i, j;
 	LOG_I("+[ %s ]\n", __FUNCTION__);
+	#ifdef PERFORMANCE_METER
+	time_t tm1, tm2;
+	time(&tm1); /* get current time */
+	#endif
 	for (i = 0; i < n; i++)
 	{	
 		srand(time(NULL)); /* initialize random seed */
@@ -44,6 +53,11 @@ void gen_distinct_rand(int m, int n)
 			m--;
 		}
 	}
+	#ifdef PERFORMANCE_METER
+	time(&tm2);
+	double seconds = difftime(tm2, tm1); /* return double */
+	printf("[Run time] %.lf s!\n", seconds);
+	#endif
 	LOG_I("-[ %s ]\n", __FUNCTION__);
 }
 
