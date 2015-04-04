@@ -30,7 +30,7 @@ typedef unsigned int uint32_t;
 
 typedef int DataType;
 
-#define DATA_SET_SIZE (50 * 10000)
+#define DATA_SET_SIZE (1 * 10)
 int gRawDataSet[DATA_SET_SIZE];
 int gDataSetCount = 0;
 
@@ -204,33 +204,44 @@ void gen_distinct_rand(int m, int n)
 	LOG_I("-[ %s ]\n", __FUNCTION__);
 }
 
+enum {
+SORT_TYPE_SIMPLE_INSERT,
+SORT_TYPE_BUBBLE,
+SORT_TYPE_QUICK_SORT,
+SORT_TYPE_COUNT,
+};
+const char* sort_type_name [SORT_TYPE_COUNT] = {
+"Simple insert Sort",
+"Bubble Sort",
+"Quick Sort",
+};
+
+typedef void (*SortFunction)(DataType a[], int n);
+
+SortFunction sort_func_tbl[SORT_TYPE_COUNT] = {
+simple_insert_sort,
+bubble_sort,
+quick_sort,
+};
 
 int main(int argc, char** argv)
 {
-  int m, n;
-  LOG_I("+[ %s ]\n", __FUNCTION__);
-  printf("%s\n",FILE_AND_LINE);
-  if (argc != 3)
-  {
-    	printf("usage error!\n"
-		"%s m n \n", argv[0]); 
-   	 return -1;
-  }
+  	int m;
+  	LOG_I("+[ %s ]\n", __FUNCTION__);
+  	printf("%s\n",FILE_AND_LINE);
+  	if (argc != 2)
+  	{
+    		printf("usage error!\n"
+			"%s [sort type] \n", argv[0]); 
+   	 	return -1;
+ 	 }
 	m = atoi(argv[1]);
-	n = atoi(argv[2]);
-	LOG_D("%d\t%d\n", m, n);
-  	//gen_distinct_rand(m, n);
-	prepare_random_data();
-	simple_insert_sort(gRawDataSet, DATA_SET_SIZE);
- 	printf("Is Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));
+
+	LOG_D("%s\n", sort_type_name[m]);
 
 	prepare_random_data();
-	bubble_sort(gRawDataSet, DATA_SET_SIZE);
- 	printf("Is Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));
-
-	prepare_random_data();
-	quick_sort(gRawDataSet, DATA_SET_SIZE);
- 	printf("Is Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));
+	sort_func_tbl[m](gRawDataSet, DATA_SET_SIZE);
+ 	printf("Is Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));	
 
   LOG_I("-[ %s ]\n", __FUNCTION__);
   return 0;
