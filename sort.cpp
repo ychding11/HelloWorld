@@ -221,11 +221,11 @@ int main(int argc, char** argv)
 	LOG_D("%d\t%d\n", m, n);
   	//gen_distinct_rand(m, n);
 	prepare_random_data();
-	//simple_insert_sort(gRawDataSet, DATA_SET_SIZE);
+	simple_insert_sort(gRawDataSet, DATA_SET_SIZE);
  	printf("Is Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));
 
 	prepare_random_data();
-	//bubble_sort(gRawDataSet, DATA_SET_SIZE);
+	bubble_sort(gRawDataSet, DATA_SET_SIZE);
  	printf("Is Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));
 
 	prepare_random_data();
