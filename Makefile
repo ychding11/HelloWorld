@@ -17,6 +17,7 @@ TARGETS_OBJ := $(subst cpp,o, $(SRCS))
 
 $(info SRCS = $(SRCS))
 $(info TARGETS = $(TARGETS))
+$(info TARGETS_OBJ = $(TARGETS_OBJ))
 
 CC = g++
 $(info CC = $(CC))
@@ -25,10 +26,11 @@ $(info CC = $(CC))
 all : $(TARGETS)
 	@echo "building default target [ $@ ]...."
 
+# 
 .PHONY : $(TARGETS)	
-$(TARGETS): $(TARGETS_OBJ)
-	@echo "buildig the target [ $@ ]..."
-	$(CC) -lc   $< -o $@
+$(TARGETS): $(TARGETS_OBJ)  
+	@echo "buildig the target [$@.o ===> $@ ]..."
+	$(CC) -lc   $@.o -o $@
 
 	
 %.o : %.cpp
