@@ -30,7 +30,7 @@ typedef unsigned int uint32_t;
 
 typedef int DataType;
 
-#define DATA_SET_SIZE (1 * 10)
+#define DATA_SET_SIZE (100 * 10000)
 int gRawDataSet[DATA_SET_SIZE];
 int gDataSetCount = 0;
 
@@ -40,10 +40,10 @@ void prepare_random_data()
 	time_t tm1, tm2;
 	time(&tm1); /* get current time */
 	#endif
+	srand(time(NULL)); 
 	for (int i = 0; i < DATA_SET_SIZE; i++ )
-	{
-		srand(time(NULL));
-		gRawDataSet[i] = rand();
+	{		
+		gRawDataSet[i] = rand();// % DATA_SET_SIZE;
 	}
 	#ifdef PERFORMANCE_METER
 	time(&tm2);
@@ -64,9 +64,10 @@ static bool is_sorted(DataType a[], int n)
 
 static void swap(DataType &a, DataType &b)
 {
-	a = a ^ b;
-	b = a ^ b;
-	a = a ^ b;
+	//printf("%d <===> %d \n", a, b);
+	a = a ^ b; //printf("a = %d\n", a);
+	b = a ^ b; //printf("b = %d\n", b);
+	a = a ^ b; //printf("a = %d\n", a);
 }
 
 void simple_insert_sort(DataType a[], int n)
@@ -138,34 +139,46 @@ void bubble_sort(DataType a[], int n)
 static void partition(DataType a[], int p, int q)
 {
 	int i, j;
-	if (q - p < 2) return;
+	if (p >= q) return;
 	DataType target = a[p]; /* target may be selected by random */
-	i = p, j = q + 1;  /* [p, i] <= target, [j, inf] > target*/
-	do{
-		do {i++;} while(i <= q && a[i] <= target);
+	i = p, j = q + 1;  /* [p, i] < target, [j, inf] > target*/
+	while(1)
+	{
+		do {i++;} while(i <= q && a[i] < target);
 		do {j--;} while(a[j] > target);
-		if (i != j) swap(a[i], a[j]);
-	}while(i < j);
-	a[i] = target;
-	partition(a, p, i - 1);
-	partition(a, i + 1, q);
+		if (i > j) break;
+		if (i != j)swap(a[i], a[j]);
+		//for (int k = p; k <= q; k++) printf("%d ", a[k]);
+		//printf("\n");
+	}
+	if (j != p)	swap(a[j], a[p]);
+	//printf("[>>> ");
+	//for (int k = p; k <= q; k++) printf("%d ", a[k]);
+	//printf(" ]\n");
+	partition(a, p, j - 1);
+	partition(a, j + 1, q);
 }
 
+/*
+ * clock() : The number of clock ticks elapsed since an epoch related to the particular program execution. so when the 
+ * program is sleeping the time is not caculated! CLOCKS_PER_SEC is involved when caculating runtime in second unit.
+ */
 void quick_sort(DataType a[], int n)
 {
 	LOG_I("+[ %s ]\n", __FUNCTION__);
 	int i, j;
 	assert(a != NULL && n > 1);
 	#ifdef PERFORMANCE_METER
-	time_t tm1, tm2;
-	time(&tm1); /* get current time */
+	clock_t clk1, clk2;
+	clk1 = clock(); /* get current clcok ticks elapsed since epoch */
 	#endif
-	/* do sorting here */
 	
+	/* do sorting here */
+	partition(a, 0, n - 1);
 	#ifdef PERFORMANCE_METER
-	time(&tm2);
-	double seconds = difftime(tm2, tm1); /* return double */
-	printf("[quick sort time] = %.lf seconds!\tsorted %d elements!\n", seconds, n);
+	clk2 = clock();
+	float seconds = ((float)(clk2 - clk1)) / CLOCKS_PER_SEC; /* calculate in seconds units */
+	printf("[quick sort time] = %d ticks, %.4f seconds!\tsorted %d elements!\n", clk2 - clk1, seconds, n);
 	#endif
 	LOG_I("-[ %s ]\n", __FUNCTION__);
 }
@@ -186,9 +199,9 @@ void gen_distinct_rand(int m, int n)
 	time_t tm1, tm2;
 	time(&tm1); /* get current time */
 	#endif
+  	srand(time(NULL)); /* initialize random seed */
 	for (i = 0; i < n; i++)
-	{	
-		srand(time(NULL)); /* initialize random seed */
+	{			
 		if (rand() % (n - i) < m)
 		{	
 			gRawDataSet[gDataSetCount++] = i; 
@@ -224,6 +237,53 @@ bubble_sort,
 quick_sort,
 };
 
+static void display(DataType a[], int n)
+{
+	printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+	for (int i = 0; i < n; i++)
+	{
+		if ((i) % 10 == 0) printf("+");
+		printf("%4d ", a[i]);
+		if ((i + 1) % 10 == 0) printf("\n");
+	}
+	printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+}
+
+/* This a priority queue 
+ * class template definition 
+ * */
+template <class T>
+class PriQueue{
+private:
+	T *_p;
+	int _n, _maxsize;
+	void swap(int i, int j)
+	{ T temp = _p[i]; _p[i] = _p[j]; _p[j] = temp;	}
+
+public:
+	PriQueue(int m):_maxsize(m), _n(0){_p = new T[_maxsize + 1];}
+	void insert(T t) /* implementation in class definition will be inline */
+	{
+		int i, p;
+		_p[++_n] = t; /* insert elements from tail, shift up to maintain the heap structure */
+		for (i = _n; i > 1 && _p[p = i / 2] > _p[i]; i = p) 
+		{ swap(p, i); }
+	}
+	T extract_min()
+	{
+		int i, c;
+		T t = _p[1];
+		_p[1] = _p[_n--]; /* remove the min containing in _p[1], and replace it with elements in tail, shit down to maintain */
+		for (i = 1; (c = 2 * i) <= _n; i = c)
+		{
+			if ( (c + 1) <= _n && _p[c + 1] < _p[c]) c++;
+			if ( _p[i] < _p[c]) break;
+			swap(i, c);
+		}
+		return t;
+	}
+};
+
 int main(int argc, char** argv)
 {
   	int m, n;
@@ -238,13 +298,22 @@ int main(int argc, char** argv)
 	m = atoi(argv[1]);
 	n = atoi(argv[2]);
 	LOG_D("%s %d times\n", sort_type_name[m], n);
+	//m = n = 2;
+	//swap(m, n); printf("m = %d, n = %d\n", m, n);
+	//m = n = 4;
+	//swap(m, n); printf("m = %d, n = %d\n", m, n);
+	#if 1
 	for (int i = 0; i < n; i++)
 	{
 		prepare_random_data();
-		printf("Is Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));
+		printf("Before\t Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));
+		//display(gRawDataSet,DATA_SET_SIZE);
 		sort_func_tbl[m](gRawDataSet, DATA_SET_SIZE);
- 		printf("Is Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));	
+ 		printf("After\t Sorted ?  %d\n", is_sorted(gRawDataSet,DATA_SET_SIZE));
+		//display(gRawDataSet,DATA_SET_SIZE);
+		printf("=============================================================\n");	
 	}
+	#endif
   LOG_I("-[ %s ]\n", __FUNCTION__);
   return 0;
 }
