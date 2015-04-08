@@ -119,12 +119,48 @@ static void count_word_freq()
 	printf("+++++++++++++++++ Count Word Frequency Complete +++++++++++++++++++++++\n");
 }
 
+/* This is an internal function, no parameter validy check!
+ * return common part length from string beginning.
+ */
+static int common_len(const char *p, const char *q)
+{
+	assert(p != NULL && q != NULL);
+	int i = 0;
+	for (; *p && *p++ == *q++; ) i++;
+	return i;
+}
+
+#define MAX_CHAR (100 * 10000)
+
+/* define string suffix array 
+ * */
+char c[MAX_CHAR], *suffix[MAX_CHAR];
+
+static void demo_suffix_array()
+{
+	int i = 0;
+	char ch;
+	while ((ch = getchar()) != EOF)
+	{
+		suffix[i] = &c[i];
+		c[i++] = ch;
+	}
+	c[i] = '\0'; /* ending of the string */
+
+	printf("%s\n", c);
+	for (int j = 0; j < i; j++)
+	{
+		printf("%p\t%s", suffix[j], suffix[j]);
+	}
+}
+
 
 int main(int argc, char** argv)
 {
  
   LOG_I("+[ %s ]\n", __FUNCTION__);
-  count_word_freq();
+  //count_word_freq();
+  demo_suffix_array();
   LOG_I("-[ %s ]\n", __FUNCTION__);
   return 0;
 }
