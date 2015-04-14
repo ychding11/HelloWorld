@@ -17,7 +17,7 @@ LOG_LEVEL_DBG,
 LOG_LEVLE_ALL,
 } LogLevel;
 
-LogLevel gCurLoglevel = LOG_LEVEL_INFO;
+LogLevel gCurLoglevel = LOG_LEVEL_INFO; //set the current log level
 
 #define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG) fprintf(stdout,"[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
 #define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR) fprintf(stdout,"[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
@@ -33,7 +33,10 @@ uint8_t to_lowcase(char ch)
         else return -1;
 }
 
-/* use a function template will be better! */
+/* use a function template will be better! 
+ * CAUTION: a and b should not refer to the same location
+ *
+ */
 void swap(int &a, int &b)
 {
 	a = a ^ b;
@@ -41,7 +44,8 @@ void swap(int &a, int &b)
 	a = a ^ b;
 }
 
-/* fgets takes newline as a valid character */
+/* fgets takes newline ('\n') as a valid character 
+ * */
 static uint32_t count_line(char *filename)
 {
 	int lines = 0;
@@ -64,14 +68,15 @@ static uint32_t count_line(char *filename)
 	return lines;
 }
 
-/* next is a string hash used to count world frequency */
+/* string hash node used to count world frequency 
+ * */
 typedef struct node{
 char *word;
 int count;
 struct node *next;
 } node;
 
-#define NHASH 29989  // a prime 
+#define NHASH 29989  // a prime number
 node *bucket[NHASH];
 #define MULT 31 /* ?? */
 
@@ -83,7 +88,9 @@ static unsigned int hash(char *str)
 	return n % NHASH;
 }
 
-/* insert a word into hash bucket, the hash function is above hash() */
+/* insert a word into hash bucket, the hash function is above hash() 
+ * the interface exposed to outside
+ * */
 void insert_word(char *word)
 {
 	assert(word != NULL);
@@ -108,7 +115,7 @@ void insert_word(char *word)
 static void count_word_freq()
 {	
 	char buf[64];  /* assume the longest world is 63 character */
-	memset(bucket, 0, sizeof(bucket)); /* clear the bucket before handle */
+	memset(bucket, 0, sizeof(bucket)); /* clear the bucket */
 	while (scanf("%s", buf) != EOF) /* use io redirection to test functionality */
 		insert_word(buf);
 	for (int i = 0; i < NHASH; i++)
@@ -126,15 +133,31 @@ static int common_len(const char *p, const char *q)
 {
 	assert(p != NULL && q != NULL);
 	int i = 0;
-	for (; *p && *p++ == *q++; ) i++;
+	
+	/* compare characters in strings p and q */
+	while (*p && *p++ == *q++) i++;
 	return i;
 }
 
 #define MAX_CHAR (100 * 10000)
 
 /* define string suffix array 
+ * char *suffix[]
  * */
 char c[MAX_CHAR], *suffix[MAX_CHAR];
+
+static int cmpstr(const void *a, const void *b)
+{
+	#if 1
+	 char *c = *(char**)a;
+	 char *d = *(char**)b;
+	 int ret = 0;
+	 for (; !(ret = *c - *d) && *c; c++, d++ );
+	 return  ret;
+	#else
+	 return strcmp(c, d);  /* call string lib function */
+	#endif
+}
 
 static void demo_suffix_array()
 {
@@ -144,16 +167,45 @@ static void demo_suffix_array()
 	{
 		suffix[i] = &c[i];
 		c[i++] = ch;
+		//printf("%c \n",ch);
 	}
 	c[i] = '\0'; /* ending of the string */
-
+	#ifdef DEBUG
 	printf("%s\n", c);
 	for (int j = 0; j < i; j++)
 	{
 		printf("%p\t%s", suffix[j], suffix[j]);
 	}
-}
+	#endif
+	
+	/* sorting the suffix string, 
+	 * void qsort (void* base, size_t num, size_t size, int (*compar)(const void*,const void*));
+	 * elements of the array is refered by pointer const void *, so programmer should provides the
+	 * compare function. only programmer knows the real data types.
+	 * */
+	qsort(suffix, i, sizeof(char*), cmpstr);
 
+	#ifdef DEBUG
+	printf("++++++++++++++ After sorting +++++++++++++++++""\n");
+	for (int j = 0; j < i; j++)
+	{
+		printf("%p\t%s", suffix[j], suffix[j]);
+	}
+	#endif
+
+	int maxlen = -1;
+	int maxlenIdx = -1;
+	for (int j = 0; j < i - 1; j++)
+	{
+		int len = common_len(suffix[j], suffix[j + 1]);
+		if (len > maxlen)
+		{  maxlen = len; maxlenIdx = j; }
+		
+	}
+	printf("maxLen = %d\t :", maxlen);
+	for (int j = 0; j < maxlen; printf("%c", suffix[maxlenIdx][j++]));
+	printf("\n");
+}
 
 int main(int argc, char** argv)
 {
