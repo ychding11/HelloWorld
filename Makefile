@@ -29,8 +29,8 @@ all : $(TARGETS)
 # 
 .PHONY : $(TARGETS)	
 $(TARGETS): $(TARGETS_OBJ)  
-	@echo "buildig the target [$@.o ===> $@ ]..."
-	$(CC) -lc   $@.o -o $@
+	@echo "buildig the target [$@.o ===> $@.out ]..."
+	$(CC) -lc   $@.o -o $@.out
 
 	
 %.o : %.cpp
