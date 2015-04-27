@@ -36,20 +36,24 @@ int gDataSetCount = 0;
 
 void prepare_random_data()
 {	LOG_I("+[ %s ]\n", __FUNCTION__);
+	
 	#ifdef PERFORMANCE_METER
 	time_t tm1, tm2;
 	time(&tm1); /* get current time */
 	#endif
+
 	srand(time(NULL)); 
 	for (int i = 0; i < DATA_SET_SIZE; i++ )
 	{		
 		gRawDataSet[i] = rand();// % DATA_SET_SIZE;
 	}
+
 	#ifdef PERFORMANCE_METER
 	time(&tm2);
 	double seconds = difftime(tm2, tm1); /* return double */
 	printf("[Prepare data time] = %.lf seconds!\n", seconds);
 	#endif
+
 	LOG_I("-[ %s ]\n", __FUNCTION__);
 }
 
@@ -134,14 +138,17 @@ void bubble_sort(DataType a[], int n)
 }
 
 /* this is an internal function which cannot called from outside
- * so no need to check parameters
+ * so no need to check parameters.
+ * 
+ * do actual sorting here.
+ * a[p] a[q]
  */
 static void partition(DataType a[], int p, int q)
 {
 	int i, j;
 	if (p >= q) return;
-	DataType target = a[p]; /* target may be selected by random */
-	i = p, j = q + 1;  /* [p, i] < target, [j, inf] > target*/
+	DataType target = a[p]; /* target can be selected by random */
+	i = p, j = q + 1;  /* initial : a[p, i] < target, [j, inf] > target*/
 	while(1)
 	{
 		do {i++;} while(i <= q && a[i] < target);
@@ -151,7 +158,7 @@ static void partition(DataType a[], int p, int q)
 		//for (int k = p; k <= q; k++) printf("%d ", a[k]);
 		//printf("\n");
 	}
-	if (j != p)	swap(a[j], a[p]);
+	if (j != p)	swap(a[j], a[p]); /* find the right place for a[p] or target !*/
 	//printf("[>>> ");
 	//for (int k = p; k <= q; k++) printf("%d ", a[k]);
 	//printf(" ]\n");
@@ -168,18 +175,20 @@ void quick_sort(DataType a[], int n)
 	LOG_I("+[ %s ]\n", __FUNCTION__);
 	int i, j;
 	assert(a != NULL && n > 1);
+
 	#ifdef PERFORMANCE_METER
 	clock_t clk1, clk2;
 	clk1 = clock(); /* get current clcok ticks elapsed since epoch */
 	#endif
-	
-	/* do sorting here */
-	partition(a, 0, n - 1);
+		
+	partition(a, 0, n - 1); /* do sorting */
+
 	#ifdef PERFORMANCE_METER
 	clk2 = clock();
 	float seconds = ((float)(clk2 - clk1)) / CLOCKS_PER_SEC; /* calculate in seconds units */
 	printf("[quick sort time] = %d ticks, %.4f seconds!\tsorted %d elements!\n", clk2 - clk1, seconds, n);
 	#endif
+
 	LOG_I("-[ %s ]\n", __FUNCTION__);
 }
 /* generate m distinct random number in [0, n) scope 

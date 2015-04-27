@@ -86,7 +86,7 @@ private:
 	{ T temp = _p[i]; _p[i] = _p[j]; _p[j] = temp;	}
 
 public:
-	PriQueue(int m):_maxsize(m), _n(0){_p = new T[_maxsize + 1];}
+	PriQueue(int m):_maxsize(m), _n(0){_p = new T[_maxsize + 1];} /* heap sort : one extra space needed! */
 	~PriQueue() { if (NULL != _p) delete [] _p; }
 	void insert(T t) /* implementation in class definition will be inline */
 	{
@@ -116,10 +116,12 @@ static void prioque_sort(T a[], int m)
 {
 	LOG_I("+[ %s ]\n", __FUNCTION__);
 	PriQueue<T> prique(m);		
+	
 	#ifdef PERFORMANCE_METER
 	clock_t clk1, clk2;
 	clk1 = clock(); /* get current clcok ticks elapsed since epoch */
 	#endif
+
 	for (int j = 0; j < m; j++)
 	{	
 		prique.insert(a[j]); 
@@ -128,11 +130,13 @@ static void prioque_sort(T a[], int m)
 	{	
 		a[j] = prique.extract_min(); 
 	}
+
 	#ifdef PERFORMANCE_METER
 	clk2 = clock();
 	float seconds = ((float)(clk2 - clk1)) / CLOCKS_PER_SEC; /* calculate in seconds units */
 	printf("[prique sort time] = %ld ticks, %.4f seconds!\tsorted %d elements!\n", clk2 - clk1, seconds, m);
 	#endif
+
 	LOG_I("-[ %s ]\n", __FUNCTION__);	
 }
 
@@ -140,19 +144,17 @@ int main(int argc, char** argv)
 {
   	int m, n;
   	LOG_I("+[ %s ]\n", __FUNCTION__);
-  	printf("%s\n",FILE_AND_LINE);
+  	printf(" %s:%d\n",__FILE__, __LINE__);
   	if (argc != 3)
   	{
-    		printf("usage error!\n"
-			"%s [sort type]  [test number]\n", argv[0]); 
+    		printf("Usage Error!\n"
+			"%s [sort type]  [test count]\n", argv[0]); 
    	 	return -1;
  	 }
 	m = atoi(argv[1]);  /* data count*/
 	n = atoi(argv[2]);  /* test count */
 	LOG_D("%d data  %d times\n", m, n);
-	
-	
-	#if 1
+
 	for (int i = 0; i < n; i++)
 	{
 		PriQueue<int> prique(m);
@@ -162,9 +164,8 @@ int main(int argc, char** argv)
 		prioque_sort(gRawDataSet, m);
  		printf("After\t Sorted ?  %d\n", is_sorted(gRawDataSet,m));
 		//display(gRawDataSet,DATA_SET_SIZE);
-		printf("===================== Test %d Complete ======================\n", i);	
+		printf("===================== Test Case: %d Complete ======================\n", i);	
 	}
-	#endif
   LOG_I("-[ %s ]\n", __FUNCTION__);
   return 0;
 }
