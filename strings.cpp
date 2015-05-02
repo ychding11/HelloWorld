@@ -37,7 +37,7 @@ uint8_t to_lowcase(char ch)
  * CAUTION: a and b should not refer to the same location
  *
  */
-void swap(int &a, int &b)
+static void swap(int &a, int &b)
 {
 	a = a ^ b;
 	b = a ^ b;
@@ -127,16 +127,15 @@ static void count_word_freq()
 }
 
 /* This is an internal function, no parameter validy check!
- * return common part length from string beginning.
+ * return string common part length from the string beginning.
+ * 
  */
 static int common_len(const char *p, const char *q)
 {
 	assert(p != NULL && q != NULL);
-	int i = 0;
-	
-	/* compare characters in strings p and q */
-	while (*p && *p++ == *q++) i++;
-	return i;
+	int Len = 0;	
+	while (*p && *p++ == *q++) Len++;
+	return Len;
 }
 
 #define MAX_CHAR (100 * 10000)
@@ -148,6 +147,7 @@ char c[MAX_CHAR], *suffix[MAX_CHAR];
 
 static int cmpstr(const void *a, const void *b)
 {
+	assert(a != NULL && b != NULL);
 	#if 1
 	 char *c = *(char**)a;
 	 char *d = *(char**)b;
@@ -163,13 +163,14 @@ static void demo_suffix_array()
 {
 	int i = 0;
 	char ch;
-	while ((ch = getchar()) != EOF)
+	while ((ch = getchar()) != EOF) /* read a string */
 	{
 		suffix[i] = &c[i];
 		c[i++] = ch;
 		//printf("%c \n",ch);
 	}
 	c[i] = '\0'; /* ending of the string */
+
 	#ifdef DEBUG
 	printf("%s\n", c);
 	for (int j = 0; j < i; j++)
@@ -180,7 +181,7 @@ static void demo_suffix_array()
 	
 	/* sorting the suffix string, 
 	 * void qsort (void* base, size_t num, size_t size, int (*compar)(const void*,const void*));
-	 * elements of the array is refered by pointer const void *, so programmer should provides the
+	 * elements of the array is refered by pointer (const void *), so programmer should provides the
 	 * compare function. only programmer knows the real data types.
 	 * */
 	qsort(suffix, i, sizeof(char*), cmpstr);
