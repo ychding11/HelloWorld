@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <cstring>
+#include <string>
+#include <map>
 #include <ctime>
 #include <cassert>
 using namespace std;
@@ -152,11 +154,45 @@ static void count_word_freq2()
 	LOG_I("%s contains %d words\n", __FILE__, words);
 }
 
+/* take advantage of C++ STL map 
+ * http://www.cplusplus.com/reference/map/map/operator[]/
+ * 
+ */
+static void count_word_freq3()
+{	
+	char wordBuf[128];        /* longest world 127 character */
+	char lineBuf[2048];       /* longest line 2047 character */
+	int lines = 0;
+	int words = 0;
+	memset(bucket, 0, sizeof(bucket)); /* clear Hash Bucket */
+	map<string, int> mapTable;
+	map<string, int>::iterator i;
+	
+	while (fgets(lineBuf, 2048, stdin) != NULL)
+	{
+		lines++;
+		char *p = strtok(lineBuf, DELIMETER);
+		while (NULL != p)
+		{	
+			words++;
+			LOG_D("Get word: %s\n", p);
+			mapTable[string(p)]++;
+			p = strtok(NULL, DELIMETER);
+		}
+	}
+	
+	for ( i = mapTable.begin(); i != mapTable.end(); i++)
+	{
+		{ printf("%-32s\t%3d\n", (i->first).c_str(), i->second);}
+	}
+	LOG_I("%s contains %d lines\n", __FILE__, lines);
+	LOG_I("%s contains %d words\n", __FILE__, words);
+}
 int main(int argc, char** argv)
 {
   LOG_I("+[ %s ]\n", __FUNCTION__);
   
-  count_word_freq2();
+  count_word_freq3();
   
   LOG_I("-[ %s ]\n", __FUNCTION__);
   return 0;

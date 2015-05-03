@@ -33,17 +33,6 @@ uint8_t to_lowcase(char ch)
         else return -1;
 }
 
-/* use a function template will be better! 
- * CAUTION: a and b should not refer to the same location
- *
- */
-static void swap(int &a, int &b)
-{
-	a = a ^ b;
-	b = a ^ b;
-	a = a ^ b;
-}
-
 /* fgets takes newline ('\n') as a valid character 
  * */
 static uint32_t count_line(char *filename)
@@ -68,67 +57,10 @@ static uint32_t count_line(char *filename)
 	return lines;
 }
 
-/* string hash node used to count world frequency 
- * */
-typedef struct node{
-char *word;
-int count;
-struct node *next;
-} node;
 
-#define NHASH 29989  // a prime number
-node *bucket[NHASH];
-#define MULT 31 /* ?? */
-
-static unsigned int hash(char *str)
-{
-	unsigned int n = 0;
-	for (; *str; str++)
-	{ n = MULT * n + *str; }
-	return n % NHASH;
-}
-
-/* insert a word into hash bucket, the hash function is above hash() 
- * the interface exposed to outside
- * */
-void insert_word(char *word)
-{
-	assert(word != NULL);
-	unsigned int index = hash(word);
-	node *p;
-	for(p = bucket[index]; p != NULL; p = p->next)
-	{
-		if (strcmp(p->word, word) == 0) { p->count++; return;}
-	}
-	p = (node*)malloc(sizeof(struct node));
-	p->count = 1;
-	p->word = (char*)malloc(sizeof(word) + 1);
-	strcpy(p->word, word);
-	p->next = bucket[index];
-	bucket[index] = p;
-}
-
-/* here we define the world : strings seperated by blank perhase it may not 
- * be a valid word having meanings 
- *
- */
-static void count_word_freq()
-{	
-	char buf[64];  /* assume the longest world is 63 character */
-	memset(bucket, 0, sizeof(bucket)); /* clear the bucket */
-	while (scanf("%s", buf) != EOF) /* use io redirection to test functionality */
-		insert_word(buf);
-	for (int i = 0; i < NHASH; i++)
-	{
-		for (node *p = bucket[i]; p != NULL; p = p->next)
-		{ printf("%s\t%d\n", p->word, p->count);}
-	}
-	printf("+++++++++++++++++ Count Word Frequency Complete +++++++++++++++++++++++\n");
-}
 
 /* This is an internal function, no parameter validy check!
  * return string common part length from the string beginning.
- * 
  */
 static int common_len(const char *p, const char *q)
 {
@@ -142,7 +74,7 @@ static int common_len(const char *p, const char *q)
 
 /* define string suffix array 
  * char *suffix[]
- * */
+ */
 char c[MAX_CHAR], *suffix[MAX_CHAR];
 
 static int cmpstr(const void *a, const void *b)
@@ -212,7 +144,6 @@ int main(int argc, char** argv)
 {
  
   LOG_I("+[ %s ]\n", __FUNCTION__);
-  //count_word_freq();
   demo_suffix_array();
   LOG_I("-[ %s ]\n", __FUNCTION__);
   return 0;
