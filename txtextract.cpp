@@ -111,7 +111,7 @@ static void count_word_freq()
 	for (int i = 0; i < NHASH; i++)
 	{
 		for (node *p = bucket[i]; p != NULL; p = p->next)
-		{ printf("%s\t%d\n", p->word, p->count);}
+		{ printf("%64s\t%d\n", p->word, p->count);}
 	}
 }
 
@@ -119,7 +119,8 @@ static void count_word_freq()
 
 /* here we define the world : strings seperated by blank  
  * be a valid word having meanings 
- *
+ * printf reference:
+ * http://www.cplusplus.com/reference/cstdio/printf/?kw=printf
  */
 static void count_word_freq2()
 {	
@@ -145,7 +146,7 @@ static void count_word_freq2()
 	for (int i = 0; i < NHASH; i++)
 	{
 		for (node *p = bucket[i]; p != NULL; p = p->next)
-		{ printf("%s\t%d\n", p->word, p->count);}
+		{ printf("%-32s\t%3d\n", p->word, p->count);}
 	}
 	LOG_I("%s contains %d lines\n", __FILE__, lines);
 	LOG_I("%s contains %d words\n", __FILE__, words);
