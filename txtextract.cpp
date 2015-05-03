@@ -98,7 +98,7 @@ void insert_word(char *word)
 	bucket[index] = p;
 }
 
-/* here we define the world : strings seperated by blank perhase it may not 
+/* here we define the world : strings seperated by blank  
  * be a valid word having meanings 
  *
  */
@@ -115,11 +115,47 @@ static void count_word_freq()
 	}
 }
 
+#define DELIMETER "():.,'?-! \n;"
+
+/* here we define the world : strings seperated by blank  
+ * be a valid word having meanings 
+ *
+ */
+static void count_word_freq2()
+{	
+	char wordBuf[128];        /* longest world 127 character */
+	char lineBuf[2048];       /* longest line 2047 character */
+	int lines = 0;
+	int words = 0;
+	memset(bucket, 0, sizeof(bucket)); /* clear Hash Bucket */
+	
+	while (fgets(lineBuf, 2048, stdin) != NULL)
+	{
+		lines++;
+		char *p = strtok(lineBuf, DELIMETER);
+		while (NULL != p)
+		{	
+			words++;
+			LOG_D("Get word: %s\n", p);
+			insert_word(p);
+			p = strtok(NULL, DELIMETER);
+		}
+	}
+	
+	for (int i = 0; i < NHASH; i++)
+	{
+		for (node *p = bucket[i]; p != NULL; p = p->next)
+		{ printf("%s\t%d\n", p->word, p->count);}
+	}
+	LOG_I("%s contains %d lines\n", __FILE__, lines);
+	LOG_I("%s contains %d words\n", __FILE__, words);
+}
+
 int main(int argc, char** argv)
 {
   LOG_I("+[ %s ]\n", __FUNCTION__);
   
-  count_word_freq();
+  count_word_freq2();
   
   LOG_I("-[ %s ]\n", __FUNCTION__);
   return 0;
