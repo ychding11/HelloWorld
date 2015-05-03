@@ -35,22 +35,28 @@ typedef int DataType;
 int gRawDataSet[DATA_SET_SIZE];
 int gDataSetCount = 0;
 
-void prepare_random_data()
-{	LOG_I("+[ %s ]\n", __FUNCTION__);
+void gen_randint(void)
+{	
+	LOG_I("+[ %s ]\n", __FUNCTION__);
+
 	#ifdef PERFORMANCE_METER
 	time_t tm1, tm2;
 	time(&tm1); /* get current time */
 	#endif
+	
 	for (int i = 0; i < DATA_SET_SIZE; i++ )
 	{
-		srand(time(NULL));
-		gRawDataSet[i] = rand();
+		//gRawDataSet[i] = rand();
+		printf("%d ", rand());
 	}
+	printf("\n");
+	
 	#ifdef PERFORMANCE_METER
 	time(&tm2);
 	double seconds = difftime(tm2, tm1); /* return double */
 	LOG_D("[Prepare data time] = %.lf seconds!\n", seconds);
 	#endif
+	
 	LOG_I("-[ %s ]\n", __FUNCTION__);
 }
 
@@ -66,26 +72,24 @@ void prepare_random_data()
  * prototype : double difftime (time_t end, time_t beginning); 
  * Calculates the difference in seconds between beginning and end.
  * this is an inexact method to meter the performance!
+ *
+ * advantage : no need extra space to operate.
  */
 void gen_sorted_randint(int n, int m)
 {
-	int i, j;
+	int i;
 	LOG_I("+[ %s ]\n", __FUNCTION__);
 	
 	#ifdef PERFORMANCE_METER
 	time_t tm1, tm2;
 	time(&tm1); /* get current time */
 	#endif
-	j = 0;
-	//srand(time(NULL)); /* initialize random seed */
+
 	for (i = 0; i < n; i++)
 	{			
 		if (rand() % (n - i) < m)
 		{	
-			gRawDataSet[gDataSetCount++] = i; 			 
-			m--;
-			printf("%4u ", i);
-			if (++j % 8 == 0) printf("\n");
+			m--; printf("%4u ", i);		
 		}
 	}
 	printf("\n");
@@ -99,8 +103,9 @@ void gen_sorted_randint(int n, int m)
 	LOG_I("-[ %s ]\n", __FUNCTION__);
 }
 
-/* generate the distinct sorted elements by rand() 
- * the 
+/* generate the distinct sorted elements 2nd EDITION
+ * advantage:    the idea is clear.
+ * disadvantage: need extra space.
  */
 void gen_sorted_randint2(int n, int m)
 {
@@ -143,7 +148,7 @@ void gen_distinct_randint(int n)
 	for (i = 0; i < n; i++)
 	{
 		int idx = randint(i, n - 1); //printf("idx = %d \n", idx);
-		int t = gRawDataSet[idx];   //swap elements
+		int t = gRawDataSet[idx];    //swap elements
 		gRawDataSet[idx] = gRawDataSet[i];
 		gRawDataSet[i] = t;
 		printf("%d ", gRawDataSet[i]);
@@ -151,7 +156,7 @@ void gen_distinct_randint(int n)
 	printf("\n");
 }
 
-int sorted(int n)
+static int sorted(int n)
 {
 	int i;
 	for (i = 0; i < n - 1; i++)
@@ -164,9 +169,9 @@ int sorted(int n)
 /* take advantage of C++ STL set.insert() to check the duplicate
  * reference location:
  * http://www.cplusplus.com/reference/set/set/insert/
- *
+ * 
  */
-int duplicated(int n)
+static int duplicated(int n)
 {
 	set<int> s;
 	pair<set<int>::iterator, bool> ret;
@@ -225,35 +230,39 @@ int tester_gen_distinct_randint(int argc, char** argv)
   return 0;
 
 }
-#if 0
-int main(int argc, char** argv)
-{
-  int count = 1;
-  LOG_I("+[ %s ]\n", __FUNCTION__);
-  printf("%s, %d\n",__FILE__, __LINE__);
-  if (argc > 2)
-  {
-    	printf("Usage Error!\n"
-		"%s [test case count] \n", argv[0]); 
-   	 return -1;
-  }
-  if (2 == argc)
-  {
-  	count = atoi(argv[1]);
-  }
-  srand(time(NULL)); /* initialize random seed */
-  for (int i = 0; i < count; i++)
-  {  	
-  	printf("Test Case: %d \t", i);
-  	printf("rand number = %d \n", bigrand());
-  }
-  LOG_I("-[ %s ]\n", __FUNCTION__);
-  return 0;
-}
-#else
+
 int main(int argc, char** argv)
 {  
-  //return tester_gen_distinct_randint( argc, argv);
-  return tester_gen_sorted_randint( argc, argv);
+  	int n = -1;
+	int m = -1;
+    if (argc > 3)
+	{
+		printf("Usage Error!\n"
+			   "%s [count] [select]\n", argv[0]); 
+	   	return -1;
+	}
+  	if (3 == argc)
+  	{	
+  		/* generate sorted distinct int sequence */
+  		n = atoi(argv[1]);
+  		m = atoi(argv[2]);
+  		srand(time(NULL)); /* initialize random seed */
+  		gen_sorted_randint2(n, m);
+  	}
+  	else if (2 == argc)
+  	{
+  		/* generate unsorted distinct int sequence */
+  		n = atoi(argv[1]);
+  		srand(time(NULL)); /* initialize random seed */
+  		gen_distinct_randint(n);
+  	}
+  	else if (1 == argc)
+  	{
+  		/* generate random int sequence size = 50 * 10000 */
+  		srand(time(NULL)); /* initialize random seed */
+  		gen_randint();
+  	}
+ 
+  return 0;
 }
-#endif
+
