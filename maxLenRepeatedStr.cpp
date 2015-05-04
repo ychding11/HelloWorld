@@ -9,6 +9,7 @@ using namespace std;
 #define BUFSIZE 1024
 #define LINE_TO_STRING(x) #x
 #define FILE_AND_LINE (__FILE__":"LINE_TO_STRING(__LINE__))
+
 typedef enum tagLogLevel
 {
 LOG_LEVEL_ERR,
@@ -17,7 +18,7 @@ LOG_LEVEL_DBG,
 LOG_LEVLE_ALL,
 } LogLevel;
 
-LogLevel gCurLoglevel = LOG_LEVEL_INFO; //set the current log level
+LogLevel gCurLoglevel = LOG_LEVEL_ERR; //set the current log level
 
 #define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG) fprintf(stdout,"[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
 #define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR) fprintf(stdout,"[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
@@ -34,7 +35,7 @@ uint8_t to_lowcase(char ch)
 }
 
 /* fgets takes newline ('\n') as a valid character 
- * */
+ */
 static uint32_t count_line(char *filename)
 {
 	int lines = 0;
@@ -50,16 +51,14 @@ static uint32_t count_line(char *filename)
 	{
 		if ( strlen(buf) == BUFSIZE - 1 && 
 		     buf[BUFSIZE-2] != '\n')
-		{ /* do nothing , no new line in buffer */}
+		{ /* do nothing , no new line in buffer */	}
 		else
 		{ lines++; }
 	}
 	return lines;
 }
 
-
-
-/* This is an internal function, no parameter validy check!
+/* This is an internal function, no parameter check!
  * return string common part length from the string beginning.
  */
 static int common_len(const char *p, const char *q)
@@ -95,7 +94,7 @@ static void demo_suffix_array()
 {
 	int i = 0;
 	char ch;
-	while ((ch = getchar()) != EOF) /* read a string */
+	while ((ch = getchar()) != EOF) /* read a char */
 	{
 		suffix[i] = &c[i];
 		c[i++] = ch;
