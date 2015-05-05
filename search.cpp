@@ -6,7 +6,6 @@
 #include <cassert>
 using namespace std;
 
-
 typedef enum tagLogLevel
 {
 LOG_LEVEL_ERR,
@@ -20,6 +19,29 @@ LogLevel gCurLoglevel = LOG_LEVEL_ERR; //set the current log level
 #define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG ) fprintf(stdout,"[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
 #define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR ) fprintf(stdout,"[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
 #define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout,"[ INFO ]  "fmt,##__VA_ARGS__ ); } while(0)
+
+#ifdef PERFORMANCE_METER
+	
+#endif
+
+#ifdef PERFORMANCE_METER
+	
+#endif
+
+
+#define METER_START()     \
+clock_t clkStart;         \
+{                         \
+	clkStart = clock();   \
+}
+
+#define METER_END(clkStart)                                 \
+{								                            \
+	clock_t clkEnd = clock();                               \
+	clock_t clkDelt = clkEnd - clkStart;                    \
+	float seconds = ((float)clkDelt) / CLOCKS_PER_SEC;      \
+	printf (" %d ticks, %.4fseconds\n", clkDelt, seconds ); \
+}
 
 typedef int DataType;
 
