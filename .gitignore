@@ -1,3 +1,11 @@
-*.o
-*~
-*.out
+*.txt
+*.jpg
+*.jpeg
+*.avi
+*.a
+*.so
+/CMakeFiles
+/build
+Makefile
+.*
+*.cmake
