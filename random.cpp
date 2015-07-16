@@ -1,7 +1,3 @@
-/*
- *
- */
-
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -36,32 +32,36 @@ typedef unsigned int uint32_t;
 typedef int DataType;
 
 #define DATA_SET_SIZE (50 * 10000)
+
 int gRawDataSet[DATA_SET_SIZE];
 int gDataSetCount = 0;
 
+/* generate the random integer number and
+ * result is outputed to stdout, it is easy to 
+ * redirect it to file
+ */
 void gen_randint(void)
-{	
-	LOG_I("+[ %s ]\n", __FUNCTION__);
+{   
+   LOG_I("+[ %s ]\n", __FUNCTION__);
 
-	#ifdef PERFORMANCE_METER
-	time_t tm1, tm2;
-	time(&tm1); /* get current time */
-	#endif
-	
-	for (int i = 0; i < DATA_SET_SIZE; i++ )
-	{
-		//gRawDataSet[i] = rand();
-		printf("%d ", rand());
-	}
-	printf("\n");
-	
-	#ifdef PERFORMANCE_METER
-	time(&tm2);
-	double seconds = difftime(tm2, tm1); /* return double */
-	LOG_D("[Prepare data time] = %.lf seconds!\n", seconds);
-	#endif
-	
-	LOG_I("-[ %s ]\n", __FUNCTION__);
+   #ifdef PERFORMANCE_METER
+   time_t tm1, tm2;
+   time(&tm1); /* get current time */
+   #endif
+   
+   for (int i = 0; i < DATA_SET_SIZE; i++ )
+   {
+      printf("%d ", rand());
+   }
+   printf("\n");
+   
+   #ifdef PERFORMANCE_METER
+   time(&tm2);
+   double seconds = difftime(tm2, tm1); /* return double */
+   LOG_D("[generate random int time] = %.lf seconds!\n", seconds);
+   #endif
+   
+   LOG_I("-[ %s ]\n", __FUNCTION__);
 }
 
 
@@ -78,195 +78,131 @@ void gen_randint(void)
  * this is an inexact method to meter the performance!
  *
  * advantage : no need extra space to operate.
+ *
+ * result is outputed to stdout, it is easy to 
+ * redirect it to file.
  */
 void gen_sorted_randint(int n, int m)
 {
-	int i;
-	LOG_I("+[ %s ]\n", __FUNCTION__);
-	
-	#ifdef PERFORMANCE_METER
-	time_t tm1, tm2;
-	time(&tm1); /* get current time */
-	#endif
+   int i;
+   LOG_I("+[ %s ]\n", __FUNCTION__);
+   
+   #ifdef PERFORMANCE_METER
+   time_t tm1, tm2;
+   time(&tm1); /* get current time */
+   #endif
 
-	for (i = 0; i < n; i++)
-	{			
-		if (rand() % (n - i) < m)
-		{	
-			m--; printf("%4u ", i);		
-		}
-	}
-	printf("\n");
-	
-	#ifdef PERFORMANCE_METER
-	time(&tm2);
-	double seconds = difftime(tm2, tm1); /* return double */
-	LOG_D("[Run time] %.lf s!\n", seconds);
-	#endif
-	
-	LOG_I("-[ %s ]\n", __FUNCTION__);
+   for (i = 0; i < n; i++) //sorted number i from 0 to n - 1
+   {         
+      if (rand() % (n - i) < m) //determine output or not
+      {   
+         m--; 
+         printf("%4u ", i);      
+      }
+   }
+   printf("\n");
+   
+   #ifdef PERFORMANCE_METER
+   time(&tm2);
+   double seconds = difftime(tm2, tm1); /* return double */
+   LOG_D("[generate sorted random int time] %.lf s!\n", seconds);
+   #endif
+   
+   LOG_I("-[ %s ]\n", __FUNCTION__);
 }
 
 /* generate the distinct sorted elements 2nd EDITION
  * advantage:    the idea is clear.
  * disadvantage: need extra space.
+ * use c++ STL to implement the idea.
+ * set<> containes distinct and sorted elements.
+ *
+ * result is outputed to stdout, it is easy to 
+ * redirect it to file.
  */
 void gen_sorted_randint2(int n, int m)
 {
-	set<int> s;
-	while (s.size() < m)
-	{
-		s.insert(rand() % n);
-	}
-	set<int>::iterator i;
-	for (i = s.begin(); i != s.end(); i++)
-	{
-		printf("%d ", *i);
-	}
-	printf("\n");	
+   set<int> s;
+   while (s.size() < m)
+   {
+      s.insert(rand() % n);
+   }
+   set<int>::iterator i;
+   for (i = s.begin(); i != s.end(); i++)
+   {
+      printf("%d ", *i);
+   }
+   printf("\n");   
 }
 
 static int bigrand()
-{	return RAND_MAX*rand() + rand();
+{   
+    return RAND_MAX*rand() + rand();
 }
 
 static int randint(int l, int u)
-{	return l + rand() % (u-l+1);
+{   
+    return l + rand() % (u-l+1);
 }
 
 /* generate n distinct unsoted random integer in range [0, n) 
  * the implementation depends on a global varible 
- *     int gRawDataSet[DATA_SET_SIZE];
+ * int gRawDataSet[DATA_SET_SIZE];
  * 
- * generate random index then replace the current element
- * with that one.
+ * 1. generate n ordered and distinct number.
+ * 2. disorder those numbers randomly.
  */
 void gen_distinct_randint(int n)
 {
-	//printf("%d\n", n);
-	int i;
-	for (i = 0; i < n; i++)
-	{
-		gRawDataSet[i] = i;
-	}
-	for (i = 0; i < n; i++)
-	{
-		int idx = randint(i, n - 1); //printf("idx = %d \n", idx);
-		int t = gRawDataSet[idx];    //swap elements
-		gRawDataSet[idx] = gRawDataSet[i];
-		gRawDataSet[i] = t;
-		printf("%d ", gRawDataSet[i]);
-	}
-	printf("\n");
-}
-
-static int sorted(int n)
-{
-	int i;
-	for (i = 0; i < n - 1; i++)
-	{
-		if (gRawDataSet[i] > gRawDataSet[i + 1]) return 0;
-	}
-	return 1;
-}
-
-/* take advantage of C++ STL set.insert() to check the duplicate
- * reference location:
- * http://www.cplusplus.com/reference/set/set/insert/
- * 
- */
-static int duplicated(int n)
-{
-	set<int> s;
-	pair<set<int>::iterator, bool> ret;
-	int i; 
-	for (i = 0; i < n; i++)
-	{
-		ret = s.insert(gRawDataSet[i]);
-		if (ret.second == false) return 1; // the duplicate exist!
-	}
-	return 0;
-}
-
-int tester_gen_sorted_randint(int argc, char** argv)
-{
-	int n = 10;
-	int m = 5;
-    if (argc > 3)
-	{
-			printf("Usage Error!\n"
-				   "%s [count] [select]\n", argv[0]); 
-	   	   return -1;
-	}
-  	if (3 == argc)
-  	{
-  		n = atoi(argv[1]);
-  		m = atoi(argv[2]);
-  	}
-  srand(time(NULL)); /* initialize random seed */
-  gen_sorted_randint2(n, m);
-  //printf("Random sequence sorted?    %d\n", sorted(m));
-  //printf("Random elements duplicate? %d\n", duplicated(m));
-  //gRawDataSet[1] = gRawDataSet[3];
-  //printf("Random elements duplicate? %d\n", duplicated(m));
-  return 0;
-}
-
-int tester_gen_distinct_randint(int argc, char** argv)
-{
-	int count = 10;
-    if (argc > 2)
-	{
-			printf("Usage Error!\n"
-				   "%s [test case count] \n", argv[0]); 
-	   	   return -1;
-	}
-  	if (2 == argc)
-  	{
-  		count = atoi(argv[1]);
-  	}
-  srand(time(NULL)); /* initialize random seed */
-  gen_distinct_randint(count);
-  printf("Random sequence sorted?    %d\n", sorted(count));
-  printf("Random elements duplicate? %d\n", duplicated(count));
-  gRawDataSet[1] = gRawDataSet[3];
-  printf("Random elements duplicate? %d\n", duplicated(count));
-  return 0;
-
+   //printf("%d\n", n);
+   int i;
+   for (i = 0; i < n; i++)
+   {
+      gRawDataSet[i] = i;
+   }
+   for (i = 0; i < n; i++)
+   {
+      int idx = randint(i, n - 1); //printf("idx = %d \n", idx);
+      int t = gRawDataSet[idx];    //swap elements
+      gRawDataSet[idx] = gRawDataSet[i];
+      gRawDataSet[i] = t;
+      printf("%d ", gRawDataSet[i]);
+   }
+   printf("\n");
 }
 
 int main(int argc, char** argv)
 {  
-  	int n = -1;
-	int m = -1;
+    int n = -1;
+    int m = -1;
     if (argc > 3)
-	{
-		printf("Usage Error!\n"
-			   "%s [count] [select]\n", argv[0]); 
-	   	return -1;
-	}
-  	if (3 == argc)
-  	{	
-  		/* generate sorted distinct int sequence */
-  		n = atoi(argv[1]);
-  		m = atoi(argv[2]);
-  		srand(time(NULL)); /* initialize random seed */
-  		gen_sorted_randint2(n, m);
-  	}
-  	else if (2 == argc)
-  	{
-  		/* generate unsorted distinct int sequence */
-  		n = atoi(argv[1]);
-  		srand(time(NULL)); /* initialize random seed */
-  		gen_distinct_randint(n);
-  	}
-  	else if (1 == argc)
-  	{
-  		/* generate random int sequence size = 50 * 10000 */
-  		srand(time(NULL)); /* initialize random seed */
-  		gen_randint();
-  	}
- 
-  return 0;
+    {
+        printf("Usage Error!\n"
+              "%s [count] [select]\n", argv[0]); 
+        return -1;
+    }
+    if (3 == argc)
+    {   
+        /* generate sorted distinct int sequence */
+        n = atoi(argv[1]);
+        m = atoi(argv[2]);
+        srand(time(NULL)); /* initialize random seed */
+        gen_sorted_randint2(n, m);
+    }
+    else if (2 == argc)
+    {
+        /* generate unsorted distinct int sequence */
+        n = atoi(argv[1]);
+        srand(time(NULL)); /* initialize random seed */
+        gen_distinct_randint(n);
+    }
+    else if (1 == argc)
+    {
+       /* generate random int sequence size = 50 * 10000 */
+       srand(time(NULL)); /* initialize random seed */
+       gen_randint();
+    }
+    
+    return 0;
 }
 
