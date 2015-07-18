@@ -31,4 +31,11 @@ txtextractor.cpp: the source code of demo counting the world and its frequency. 
 to count the word and its frequncy info by the demo, you need do it in this way.
 cat txt | txtextractor
 ***
- 
+##Introduce
+isduplicate.cpp: read data from stdin and check whether input sequence contains duplicates or not.
+
+isasending.cpp: read data from stdin and check whether input sequence is asending or not.
+
+isdesending.cpp:read data from stdin and check whether input sequence is desending or not.
+##Use Specification
+the example usage is like this: random | isduplicate. to check the generated random sequence contains duplicates or not.
