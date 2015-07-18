@@ -39,3 +39,11 @@ isasending.cpp: read data from stdin and check whether input sequence is asendin
 isdesending.cpp:read data from stdin and check whether input sequence is desending or not.
 ##Use Specification
 the example usage is like this: random | isduplicate. to check the generated random sequence contains duplicates or not.
+***
+##Introduce
+maxLenRepeatedStr.cpp: read data from stdin, build the string suffix array, caculate the max len of repeated string, just repeate one.
+
+##Use Specification
+the example usage is like this: cat txt | maxLenRepeatedStr. 
+
+

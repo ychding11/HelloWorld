@@ -8,8 +8,6 @@
 using namespace std;
 
 #define BUFSIZE 1024
-#define LINE_TO_STRING(x) #x
-#define FILE_AND_LINE (__FILE__":"LINE_TO_STRING(__LINE__))
 
 typedef enum tagLogLevel
 {
@@ -35,13 +33,12 @@ uint8_t to_lowcase(char ch)
         else return -1;
 }
 
-/* fgets takes newline ('\n') as a valid character 
- */
+/* fgets takes newline ('\n') as a valid character */
 static uint32_t count_line(char *filename)
 {
     int lines = 0;
     char buf[BUFSIZE] = { 0 };
-      FILE *fp = NULL;
+    FILE *fp = NULL;
     fp = fopen(filename, "r");
     if (NULL == fp)
     {
@@ -59,22 +56,21 @@ static uint32_t count_line(char *filename)
     return lines;
 }
 
-/* This is an internal function, no parameter check!
- * return string common part length from the string beginning.
- */
+/* 
+ * This is an internal function, no parameter check!
+ * return string common part length from the string beginning. */
 static int common_len(const char *p, const char *q)
 {
     assert(p != NULL && q != NULL);
     int Len = 0;    
-    while (*p && *p++ == *q++) Len++;
+    while (*p && *p++ == *q++) Len++; // very tricky
     return Len;
 }
 
 #define MAX_CHAR (100 * 10000)
 
 /* define string suffix array 
- * char *suffix[]
- */
+ * char *suffix[] */
 char c[MAX_CHAR], *suffix[MAX_CHAR];
 
 static int cmpstr(const void *a, const void *b)
@@ -84,13 +80,16 @@ static int cmpstr(const void *a, const void *b)
      char *c = *(char**)a;
      char *d = *(char**)b;
      int ret = 0;
-     for (; !(ret = *c - *d) && *c; c++, d++ );
+     for (; !(ret = *c - *d) && *c; c++, d++ ); // very tricky
      return  ret;
     #else
      return strcmp(c, d);  /* call string lib function */
     #endif
 }
-
+/*
+ * read input from stdin, build string suffix array
+ * sort the suffix array by qsort.
+ * caculate the max len of repeated string, just repeated once. */
 static void demo_suffix_array()
 {
     int i = 0;
@@ -130,7 +129,7 @@ static void demo_suffix_array()
     int maxlenIdx = -1;
     for (int j = 0; j < i - 1; j++)
     {
-        int len = common_len(suffix[j], suffix[j + 1]);
+        int len = common_len(suffix[j], suffix[j + 1]); // just repeated once
         if (len > maxlen)
         {  maxlen = len; maxlenIdx = j; }
         
