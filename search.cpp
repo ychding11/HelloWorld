@@ -4,6 +4,7 @@
 #include <cstring>
 #include <ctime>
 #include <cassert>
+
 using namespace std;
 
 typedef enum tagLogLevel
@@ -21,26 +22,26 @@ LogLevel gCurLoglevel = LOG_LEVEL_ERR; //set the current log level
 #define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout,"[ INFO ]  "fmt,##__VA_ARGS__ ); } while(0)
 
 #ifdef PERFORMANCE_METER
-	
+    
 #endif
 
 #ifdef PERFORMANCE_METER
-	
+    
 #endif
 
 
 #define METER_START()     \
 clock_t clkStart;         \
 {                         \
-	clkStart = clock();   \
+    clkStart = clock();   \
 }
 
 #define METER_END(clkStart)                                 \
-{								                            \
-	clock_t clkEnd = clock();                               \
-	clock_t clkDelt = clkEnd - clkStart;                    \
-	float seconds = ((float)clkDelt) / CLOCKS_PER_SEC;      \
-	printf (" %d ticks, %.4fseconds\n", clkDelt, seconds ); \
+{                                                            \
+    clock_t clkEnd = clock();                               \
+    clock_t clkDelt = clkEnd - clkStart;                    \
+    float seconds = ((float)clkDelt) / CLOCKS_PER_SEC;      \
+    printf (" %d ticks, %.4fseconds\n", clkDelt, seconds ); \
 }
 
 typedef int DataType;
@@ -51,30 +52,30 @@ int n = 0;
 
 int binSearch(DataType t)
 {
-	int l, u, m;
-	int idx;
-	l = -1; u = n;
-	while (l + 1 != u)
-	{
-		m = (l + u) / 2;
-		if (a[m] < t)
-		{	l = m; }
-		else
-		{	u = m; }
-	}
-	idx = u;
-	if (idx >= n || a[idx] != t)
-	{	return -1;	}
-	return idx;
+    int l, u, m;
+    int idx;
+    l = -1; u = n;
+    while (l + 1 != u)
+    {
+        m = (l + u) / 2;
+        if (a[m] < t)
+        {    l = m; }
+        else
+        {    u = m; }
+    }
+    idx = u;
+    if (idx >= n || a[idx] != t)
+    {    return -1;    }
+    return idx;
 }
 
 void prepareData()
 {
-	DataType temp;
-	while (scanf("%d", &temp) != EOF)
-	{
-		a[n++] = temp;
-	}
+    DataType temp;
+    while (scanf("%d", &temp) != EOF)
+    {
+        a[n++] = temp;
+    }
 }
 
 int main(int argc, char** argv)
@@ -83,13 +84,13 @@ int main(int argc, char** argv)
   DataType a;
   if (argc != 1)
   {
-  	printf("Usage Error! %s target\n", argv[0]);
+      printf("Usage Error! %s target\n", argv[0]);
   }
   a = atoi(argv[1]);
   prepareData();
   int ret = binSearch(a);
   if (ret < 0) printf("%d does not exist in file!\n", a);
-  else 		   printf("%d exist in file offset: %d\n", a, ret);
+  else            printf("%d exist in file offset: %d\n", a, ret);
   
   LOG_I("-[ %s ]\n", __FUNCTION__);
   return 0;

@@ -6,6 +6,7 @@
 #include <map>
 #include <ctime>
 #include <cassert>
+
 using namespace std;
 
 #define BUFSIZE 1024
@@ -34,9 +35,9 @@ char to_lowcase(char ch)
 }
 
 /* fgets takes newline ('\n') as a valid character 
- * reference:
- * http://www.cplusplus.com/reference/cstdio/fgets/?kw=fgets
- * return number of lines in a txt file. 
+ * reference: http://www.cplusplus.com/reference/cstdio/fgets/?kw=fgets
+ *
+ * return: number of lines in a txt file. 
  */
 static unsigned int count_line(char *filename)
 {
