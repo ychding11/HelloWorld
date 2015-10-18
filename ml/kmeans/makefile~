@@ -1,4 +1,4 @@
-SRC_DIR=$(HOME)/workspace/HelloWorld/ml/kmeans
+SRC_DIR=$(HOME)/workspace/ml/kmeans
 
 CXX=g++
 CXXFLAGS=-c -g -W -std=c++11 -I.  #-DOKM_DBG

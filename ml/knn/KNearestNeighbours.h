@@ -1,7 +1,8 @@
 /*
- * DataReader.h
+ * KNearestNeighbours.h
+ * K Nearest Neighbours algorithms applied for handwriting recognise.
  *
- * Source File
+ * Header Header
  *
  * Copyright (C) 2014-2015  Yaochuang Ding - <ych_ding@163.com>
  * 
@@ -29,16 +30,33 @@
  * THE SOFTWARE.
  *
  */
-#ifndef _DATA_READER_H_
-#define _DATA_READER_H_
 
-#include <string>
+#ifndef _K_NEAREST_NEIGHBOURS_H_
+#define _K_NEAREST_NEIGHBOURS_H_
 
-template<typename DataType>
-class DataReader 
+#include "InputDataSet.h"
+#include "Logger.h"
+
+/*
+ * Design of InputDataSet has a drawback that iterating it will change the state of InputDataSet.
+ * Thus here we can only pass InputDataSet objects by non-const reference.
+ */
+class KNearestNeighbours 
 {
+private:
+	InputDataSet& mTrainingSets;
+	InputDataSet& mTestSets;
+	int mkNN;
+	int mTotalTestSamples;
+	int mErrorTestSamples;
+    Logger &mlog;
 public:
-	virtual bool operator()(const std::string& digitStr, DataType& value) const = 0;
+	KNearestNeighbours(InputDataSet& training, InputDataSet& test, int k, Logger &log);
+	bool KNN(int testDigit, const std::bitset<1024>& testSample);
+	float getErrorRate() const;	
+	~KNearestNeighbours();
+private:
+	float distance(const std::bitset<1024>& sample1, const std::bitset<1024>& sample2)const;
 };
 
 #endif

@@ -38,7 +38,7 @@ template<typename DataType>
 class DataReader 
 {
 public:
-	virtual bool operator()(const std::string& digitStr, DataType& value) const = 0;
+	virtual bool operator()(const std::string& digitStr, DataType& value)const = 0;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * DataReader.h
+ * This a simple tester source file.
  *
  * Source File
  *
@@ -29,16 +29,29 @@
  * THE SOFTWARE.
  *
  */
-#ifndef _DATA_READER_H_
-#define _DATA_READER_H_
 
-#include <string>
+#include <iostream>
+#include "KNearestNeighbours.h"
+#include "Timing.h"
+#include "Logger.h"
 
-template<typename DataType>
-class DataReader 
+int main(int argc, char** argv) 
 {
-public:
-	virtual bool operator()(const std::string& digitStr, DataType& value) const = 0;
-};
+	std::string trainingDir = "trainingDigits";
+	std::string testDir     = "testDigits";
+	Logger log("log.txt");
+	int k = 3;
+	int64 start = getTimeMs64();
+	InputDataSet trainingSet(trainingDir, log), testSet(testDir, log);
+	log << "Time of constructing training and test sets: "<< getTimeMs64() - start << "ms" <<std::endl;
 
-#endif
+	start = getTimeMs64();
+	Logger knnlog("knn.txt");
+
+	KNearestNeighbours kNearestNeighbours(trainingSet, testSet, k, knnlog);
+	double errorRate = kNearestNeighbours.getErrorRate();
+	log << "ErrorRate = " << errorRate << std::endl;
+	log << "Time of K-Nearest Neighbours algorithm Test: " << getTimeMs64() - start << "ms" << std::endl;
+
+	return 0;
+}

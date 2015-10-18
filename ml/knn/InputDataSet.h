@@ -1,7 +1,8 @@
 /*
- * DataReader.h
+ * InputDataSet.h
+ * This a InputDataSet data type for handwriting recognise.
  *
- * Source File
+ * Header Header
  *
  * Copyright (C) 2014-2015  Yaochuang Ding - <ych_ding@163.com>
  * 
@@ -29,16 +30,41 @@
  * THE SOFTWARE.
  *
  */
-#ifndef _DATA_READER_H_
-#define _DATA_READER_H_
+#ifndef _INPUT_DATA_SET_H_
+#define _INPUT_DATA_SET_H_
 
 #include <string>
+#include <bitset>
+#include <vector>
+#ifndef CHECK_IO
+#include <sstream>
+#endif
+#include "Logger.h"
 
-template<typename DataType>
-class DataReader 
+class InputDataSet 
 {
 public:
-	virtual bool operator()(const std::string& digitStr, DataType& value) const = 0;
+	static const int DIGIT_NUM  = 10;
+	static const int SAMPLE_DIM = 32;
+
+private:
+	std::string dataDir;
+	std::vector<std::bitset<1024> > digits[DIGIT_NUM];
+	int nextIdx;
+	Logger &mlog;
+
+public:
+	InputDataSet(std::string dir, Logger &log);
+	~InputDataSet();
+	bool hasNext();
+	std::vector<std::bitset<1024> >& next();
+
+private:
+#ifdef CHECK_IO
+	bool readSample(std::string sampleFile, std::bitset<1024>& sample);
+#else
+	bool readSample(std::string sampleFile, std::ostringstream& sample);
+#endif
 };
 
 #endif
