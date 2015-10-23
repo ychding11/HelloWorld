@@ -52,37 +52,46 @@ typedef enum
 class InternalStreamBuf: public std::stringbuf
 {
     private:
-        std::ostream&  __mScreenStream;
-        std::ostream&  __mFileStream;
-        logger_level   __mlevel;
-        logger_level   __mline_level;
+        std::ostream&  mScreenStream;
+        std::ostream&  mFileStream;
+        logger_level   mLevel;
+        logger_level   mLineLevel;
     public:
         InternalStreamBuf(std::ostream& screenStream, std::ostream& fileStream) 
-                    : __mScreenStream(screenStream)
-                    , __mFileStream(fileStream)
-                    , __mlevel(DEBUG)
-                    , __mline_level(DEBUG)
+                    : mScreenStream(screenStream)
+                    , mFileStream(fileStream)
+                    , mLevel(DEBUG)
+                    , mLineLevel(INFO)
         { }
 
         /*  implement the virtual function to sync string buffer content */
         virtual int sync ( )
         {
-    	    __mFileStream << get_time() << " [ " << levelToStr(__mlevel) << " ] " << str();
-    	    __mScreenStream << get_time() << " [ " << levelToStr(__mlevel) << " ] " << str();
+            if (mLevel >= mLineLevel)
+            {
+                mFileStream << get_time() << " [ " << levelToStr(mLevel) << " ] " << str();
+        	    mScreenStream << get_time() << " [ " << levelToStr(mLevel) << " ] " << str();
+            }
             str(""); /* clear string buffer content */
-    	    __mFileStream.flush();
-    	    __mScreenStream.flush();
+    	    mFileStream.flush();
+    	    mScreenStream.flush();
             return 0;
         }
         
         inline const char* levelToStr(const logger_level& level);
         inline std::string get_time() const;
         inline void setLevel(const logger_level& level);
+        inline void setLineLevel(const logger_level& level);
 };
-  
+
+inline void InternalStreamBuf::setLineLevel(const logger_level& level)
+{
+    mLineLevel = level;
+}
+
 inline void InternalStreamBuf::setLevel(const logger_level& level)
 {
-    __mlevel = level;
+    mLevel = level;
 }
 
 inline std::string InternalStreamBuf::get_time() const
