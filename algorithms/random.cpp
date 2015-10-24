@@ -4,6 +4,8 @@
 #include <ctime>
 #include <cassert>
 #include <set>
+#include "Logger.h"
+
 using namespace std;
 
 #define BUFSIZE 1024

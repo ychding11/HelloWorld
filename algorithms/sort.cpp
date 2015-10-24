@@ -3,6 +3,7 @@
 #include <cstring>
 #include <ctime>
 #include <cassert>
+
 using namespace std;
 
 #define BUFSIZE 1024
@@ -253,7 +254,7 @@ int BitMap[BIT_MAP_SIZE] = { 0 };
 
 void set(unsigned int i) {             BitMap[i >> BIT_SORT_SHIFT] |=  (1 << (i & BIT_SORT_MASK));}
 void clr(unsigned int i) {             BitMap[i >> BIT_SORT_SHIFT] &= ~(1 << (i & BIT_SORT_MASK));}
-int test(unsigned int i) { return     BitMap[i >> BIT_SORT_SHIFT] &   (1 << (i & BIT_SORT_MASK));}
+int test(unsigned int i) { return      BitMap[i >> BIT_SORT_SHIFT] &   (1 << (i & BIT_SORT_MASK));}
 
 /* bit sort requires that no duplicate element in unsorted set
  * 1. read unsorted set & build the bit map
@@ -351,20 +352,16 @@ int main(int argc, char** argv)
 {
     int m, n;
     LOG_I("+[ %s ]\n", __FUNCTION__);
-    printf("%s\n",FILE_AND_LINE);
+
     if (argc != 3)
     {
-    printf("usage error!\n"
-    "%s [sort type]  [test number]\n", argv[0]); 
-    return -1;
+        printf("usage error!\n"
+                "%s [sort type]  [iteration number]\n", argv[0]); 
+        return -1;
     }
     m = atoi(argv[1]);
     n = atoi(argv[2]);
     LOG_D("%s %d times\n", sort_type_name[m], n);
-    //m = n = 2;
-    //swap(m, n); printf("m = %d, n = %d\n", m, n);
-    //m = n = 4;
-    //swap(m, n); printf("m = %d, n = %d\n", m, n);
     for (int i = 0; i < n; i++)
     {
         prepare_random_data();
