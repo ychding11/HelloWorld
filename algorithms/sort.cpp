@@ -3,8 +3,9 @@
 #include <cstring>
 #include <ctime>
 #include <cassert>
+#include "Logger.h"
 
-using namespace std;
+//using namespace std;
 
 #define BUFSIZE 1024
 #define LINE_TO_STRING(x) #x 
@@ -60,15 +61,21 @@ void prepare_random_data()
     LOG_I("-[ %s ]\n", __FUNCTION__);
 }
 
+template <class DataType>
 static bool is_sorted(DataType a[], int n)
 {
     assert(a != NULL && n > 1);
     for (int i = 0; i < n - 1; i++)
-    {    if (a[i] > a[i + 1]) return false;
+    {    
+        if (a[i] > a[i + 1])
+        { 
+            return false;
+        }
     }
     return true;
 }
 
+#if 0
 /*
  * CAUTION: a b should not refer to the same location
  * The code should be avoid, it is unsafe.
@@ -80,30 +87,40 @@ static void swap(DataType &a, DataType &b)
     b = a ^ b; //printf("b = %d\n", b);
     a = a ^ b; //printf("a = %d\n", a);
 }
+#endif
 
+template <class DataType>
+static void swap(DataType &a, DataType &b)
+{
+   DataType temp = a;
+   a = b;
+   b = temp;
+}
+
+template <class DataType>
 void simple_insert_sort(DataType a[], int n)
 {
-    LOG_I("+[ %s ]\n", __FUNCTION__);
-    int i, j;
     assert(a != NULL && n > 1);
-
+    logger << DEBUG << ">>>>" << __FUNCTION__ << std:: endl;
+   
     #ifdef PERFORMANCE_METER
     time_t tm1, tm2;
     time(&tm1); /* get current time */
     #endif
 
-    /* do sorting here */
+    /* do sorting here */      
+    int i, j;
     for (j = 1; j < n; j++)
     {
         DataType temp = a[j];
         for (i = j - 1; i >= 0; i--)
-        {    /* find a right place for a[j] */
+        {    
             if (temp < a[i])
             {    a[i + 1] = a[i];  }
-            else
+            else /* find right place for a[j] */
             {    break;    }
         }
-        a[i] = temp;
+        a[i + 1] = temp;
     }
 
     #ifdef PERFORMANCE_METER
@@ -112,7 +129,7 @@ void simple_insert_sort(DataType a[], int n)
     printf("[Simple insert sort time] = %.lf seconds!\n", seconds);
     #endif
 
-    LOG_I("-[ %s ]\n", __FUNCTION__);
+    logger << DEBUG << "<<<" << __FUNCTION__ << std:: endl;
 }
 
 void bubble_sort(DataType a[], int n)

@@ -47,7 +47,7 @@ $(COMMONOBJ) : $(COMMONSRC)
 .PHONY : clean
 clean :
 	@echo remove temporal files....     # @ avoid echo the cmd itself
-	@-rm -rf *.o  *.out		                # - tell make continue even if rm encounters errors	
+	@-rm -rf *.o  *.out		            # - tell make continue even if rm encounters errors	
 	@-rm -rf *~	
 	@echo clean finished....            # @ avoid echo the cmd itself		
 	
