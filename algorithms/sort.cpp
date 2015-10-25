@@ -296,10 +296,72 @@ void quick_sort(DataType a[], int n)
     #ifdef PERFORMANCE_METER
     clk2 = clock();
     float seconds = ((float)(clk2 - clk1)) / CLOCKS_PER_SEC; /* calculate in seconds units */
-    printf("[quick sort time] = %d ticks, %.4f seconds!\tsorted %d elements!\n", clk2 - clk1, seconds, n);
+    printf("[quick sort time] = %ld ticks, %.4f seconds!\tsorted %d elements!\n", clk2 - clk1, seconds, n);
     #endif
 
     EXIT_FUNCTION;
+}
+
+/* priority queue 
+ * class template definition 
+ * The heap is Min heap. the elements at heap top is minimum.
+ * */
+template <class T>
+class PriQueue
+{
+private:
+    T *_p;
+    int _n, _maxsize;
+    void swap(int i, int j)
+    { T temp = _p[i]; _p[i] = _p[j]; _p[j] = temp;    }
+
+public:
+    PriQueue(int m)
+    : _maxsize(m)
+    , _n(0)
+    {
+        _p = new T[_maxsize + 1];
+    }
+    
+    /* implementation in class definition will be inline */
+    void insert(T t) 
+    {
+        int i, p;
+        _p[++_n] = t; /* insert elements from tail, shift up to maintain the heap structure */
+        for (i = _n; i > 1 && _p[p = i / 2] > _p[i]; i = p) 
+        { swap(p, i); }
+    }
+
+    T extract_min()
+    {
+        int i, c;
+        T t = _p[1]; /* remove the min containing in _p[1] */
+        _p[1] = _p[_n--]; /* replace [1] with elements in tail and shit down to maintain */
+        for (i = 1; (c = 2 * i) <= _n; i = c)
+        {
+            if ( (c + 1) <= _n && _p[c + 1] < _p[c]) c++; /* find min child */
+            if ( _p[i] < _p[c]) break; /* heap maintain ok */
+            swap(i, c);
+        }
+        return t;
+    }
+};
+
+/* heap sort based on priority queue */
+template <class DataType>
+void heapSort(DataType a[], int n)
+{
+    PriQueue<DataType> prique(n);
+    for (int i = 0; i < n; i++)
+    {
+        prique.insert(a[i]);
+        logger << "Insert " << a[i] << " into min heap." << std::endl;
+    }
+    for (int i = 0; i < n; i++)
+    {
+        a[i] = prique.extract_min();
+        logger << "Extract " << a[i] << " from min heap." << std::endl;
+    }
 }
 
 #define BIT_SORT_MASK   0X1F   //
@@ -331,10 +393,11 @@ void bit_sort(DataType a[], int n)
 
 enum 
 {
-    SORT_TYPE_SIMPLE_INSERT,
+    SORT_TYPE_SIMPLE_INSERT = 0,
     SORT_TYPE_BUBBLE,
     SORT_TYPE_QUICK_SORT,
     SORT_TYPE_BIT_SORT,
+    SORT_TYPE_Heap_SORT,
     SORT_TYPE_COUNT,
 };
 const char* sort_type_name [SORT_TYPE_COUNT] = 
@@ -343,6 +406,7 @@ const char* sort_type_name [SORT_TYPE_COUNT] =
     "Bubble Sort",
     "Quick Sort",
     "Bit Sort",
+    "Heap Sort"
 };
 
 typedef void (*SortFunction)(DataType a[], int n);
@@ -353,45 +417,10 @@ SortFunction sort_func_tbl[SORT_TYPE_COUNT] =
     bubble_sort,
     quick_sort,
     bit_sort,
+    heapSort,
 };
 
-/* priority queue 
- * class template definition 
- * */
-template <class T>
-class PriQueue
-{
-private:
-    T *_p;
-    int _n, _maxsize;
-    void swap(int i, int j)
-    { T temp = _p[i]; _p[i] = _p[j]; _p[j] = temp;    }
 
-public:
-    PriQueue(int m):_maxsize(m), _n(0){_p = new T[_maxsize + 1];}
-
-    void insert(T t) /* implementation in class definition will be inline */
-    {
-        int i, p;
-        _p[++_n] = t; /* insert elements from tail, shift up to maintain the heap structure */
-        for (i = _n; i > 1 && _p[p = i / 2] > _p[i]; i = p) 
-        { swap(p, i); }
-    }
-
-    T extract_min()
-    {
-        int i, c;
-        T t = _p[1];
-        _p[1] = _p[_n--]; /* remove the min containing in _p[1], and replace it with elements in tail, shit down to maintain */
-        for (i = 1; (c = 2 * i) <= _n; i = c)
-        {
-            if ( (c + 1) <= _n && _p[c + 1] < _p[c]) c++;
-            if ( _p[i] < _p[c]) break;
-            swap(i, c);
-        }
-        return t;
-    }
-};
 
 int main(int argc, char** argv)
 {
