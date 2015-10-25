@@ -61,7 +61,7 @@ class InternalStreamBuf: public std::stringbuf
                     : mScreenStream(screenStream)
                     , mFileStream(fileStream)
                     , mLevel(DEBUG)
-                    , mLineLevel(INFO)
+                    , mLineLevel(DEBUG)
         { }
 
         /*  implement the virtual function to sync string buffer content */
@@ -144,14 +144,15 @@ class Logger: public std::ostream
         { /* do nothing */ }
 
         virtual ~Logger() { __mLogFile.close(); }
-        inline Logger& operator<<(const logger_level& level);
+	    inline void setLineLevel(const logger_level& level)
+        {
+            __mBuffer.setLineLevel(level);
+        }
+        inline void setLevel(const logger_level& level)
+        {
+            __mBuffer.setLevel(level);
+        }
 };
-
-inline Logger& Logger::operator<<(const logger_level& level)
-{
-  __mBuffer.setLevel(level);
-  return (*this);
-}
 
 extern Logger logger;
 #endif /* MYLOG_H_ */
