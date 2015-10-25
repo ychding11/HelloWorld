@@ -37,18 +37,18 @@ RandomTextGenerator::RandomTextGenerator( Logger & log)
                     : mBytes(0), mpInStream(new std::istringstream(LOREM_IPSUM))
                     , mlog(log)
 {
-    mlog<< DEBUG << "Construct RandomTextGenerator." << std::endl;
+    mlog << "Construct RandomTextGenerator." << std::endl;
     buildStateTable();
-    mlog<< DEBUG << "Construct RandomTextGenerator Finish." << std::endl;
+    mlog << "Construct RandomTextGenerator Finish." << std::endl;
 }
 
 RandomTextGenerator::RandomTextGenerator(const char *file, Logger & log )
                     : mBytes(0), mpInStream(new std::ifstream(file))
                     , mlog(log)
 {
-    mlog<< DEBUG << "Construct RandomTextGenerator." << std::endl;
+    mlog << "Construct RandomTextGenerator." << std::endl;
     buildStateTable();
-    mlog<< DEBUG << "Construct RandomTextGenerator Finish." << std::endl;
+    mlog << "Construct RandomTextGenerator Finish." << std::endl;
 }
 
 RandomTextGenerator::~RandomTextGenerator() 
@@ -63,7 +63,7 @@ void RandomTextGenerator::buildStateTable()
   {
     char c;
     mpInStream->get( c );
-    mlog<< DEBUG << "Read char: " << c << std::endl;
+    mlog << "Read char: " << c << std::endl;
     mStateTable[prev][c]++;
     prev = c;
   }

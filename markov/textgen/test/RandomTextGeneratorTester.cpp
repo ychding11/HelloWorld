@@ -48,6 +48,8 @@ void showhelp()
 
 int main(int argc, char* argv[]) 
 {
+      logger.setLevel(DEBUG);
+      logger.setLineLevel(DEBUG);
       logger << "Tester..." << std::endl;
       // parse command line args
       progName = argv[0];
