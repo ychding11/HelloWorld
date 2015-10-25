@@ -51,39 +51,15 @@ int main(int argc, char* argv[])
       logger.setLevel(DEBUG);
       logger.setLineLevel(DEBUG);
       logger << "Tester..." << std::endl;
-      // parse command line args
-      progName = argv[0];
-      long long bytes = -1;
-      char c;
-      while ( ( c = getopt ( argc, argv, "c:h" ) ) != -1 ) 
-      {
-        switch ( c ) 
-        {
-        case 'c':
-          bytes = strtol(optarg, NULL, 0);
-          if (bytes == 0) 
-          {
-	        printf("%s: Invalid number: '%s'\n", progName, optarg);
-	        showhelp();
-	        exit(1);
-          }
-          break;
-        case 'h':
-          showhelp();
-          exit(0);
-        case '?':
-          showhelp();
-          exit(1);
-        }
-      }      
-      if (optind >= argc) 
+      int bytes = 10;
+      if (argc == 1) 
       {
         RandomTextGenerator textgen;
-        textgen.randomText(bytes);
+        textgen.randomText(100);
       } 
-      else 
+      else if (argc > 1) 
       {
-        char *file = argv[optind];
+        const char *file = "";
         RandomTextGenerator textgen(file);
         textgen.randomText(bytes);
       }    

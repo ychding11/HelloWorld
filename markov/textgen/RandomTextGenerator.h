@@ -56,7 +56,7 @@ class RandomTextGenerator
 {
 private:
     int mBytes;
-    std::istream * mpInStream;
+    std::istream * mpInStream; /* in this case, pointer is more useful than reference. */
     std::map<char,std::map<char,int> > mStateTable;
     Logger & mlog;
 public:

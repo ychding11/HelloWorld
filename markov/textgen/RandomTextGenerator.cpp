@@ -34,19 +34,21 @@
 //using namespace std;
 
 RandomTextGenerator::RandomTextGenerator( Logger & log) 
-                    : mBytes(0), mpInStream(new std::istringstream(LOREM_IPSUM))
+                    : mBytes(0)
                     , mlog(log)
 {
     mlog << "Construct RandomTextGenerator." << std::endl;
+    mpInStream = new std::istringstream(LOREM_IPSUM);
     buildStateTable();
     mlog << "Construct RandomTextGenerator Finish." << std::endl;
 }
 
 RandomTextGenerator::RandomTextGenerator(const char *file, Logger & log )
-                    : mBytes(0), mpInStream(new std::ifstream(file))
+                    : mBytes(0)
                     , mlog(log)
 {
     mlog << "Construct RandomTextGenerator." << std::endl;
+    mpInStream = new std::ifstream(file);
     buildStateTable();
     mlog << "Construct RandomTextGenerator Finish." << std::endl;
 }
