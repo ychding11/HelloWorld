@@ -33,7 +33,7 @@ all : $(COMMONOBJ) $(TARGETS)
 .PHONY : $(TARGETS)	
 $(TARGETS): $(TARGETSOBJ)  
 	@echo "buildig the target [$< ===> $@.out ]"
-	$(CXX) $(COMMONOBJ) $< -o $@.out
+	$(CXX) $(COMMONOBJ) $@.o -o $@.out
 
 	
 %.o : %.cpp
@@ -48,6 +48,6 @@ $(COMMONOBJ) : $(COMMONSRC)
 clean :
 	@echo remove temporal files....     # @ avoid echo the cmd itself
 	@-rm -rf *.o  *.out		            # - tell make continue even if rm encounters errors	
-	@-rm -rf *~	
+	@-rm -rf *~ common/*.o
 	@echo clean finished....            # @ avoid echo the cmd itself		
 	
