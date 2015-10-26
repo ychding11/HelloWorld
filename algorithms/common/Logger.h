@@ -155,4 +155,8 @@ class Logger: public std::ostream
 };
 
 extern Logger logger;
+
+#define ENTER_FUNCTION logger << ">>>>" << __FUNCTION__ << std::endl
+#define EXIT_FUNCTION  logger << "<<<<" << __FUNCTION__ << std::endl
+
 #endif /* MYLOG_H_ */

@@ -39,9 +39,6 @@
 
 //using namespace std;
 
-#define ENTER_FUNCTION logger << ">>>>" << __FUNCTION__ << std::endl
-#define EXIT_FUNCTION  logger << "<<<<" << __FUNCTION__ << std::endl
-
 #define BUFSIZE 1024
 #define LINE_TO_STRING(x) #x 
 #define FILE_AND_LINE (__FILE__":"LINE_TO_STRING(__LINE__)) 
