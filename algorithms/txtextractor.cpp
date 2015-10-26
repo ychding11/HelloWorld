@@ -1,3 +1,34 @@
+/*
+ * txtextractor.cpp
+ *
+ * Source File
+ *
+ * Copyright (C) 2014-2015  Yaochuang Ding - <ych_ding@163.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to 
+ * deal in the Software without restriction, including without limitation the 
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, 
+ *    this list of conditions, and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice, 
+ *    this list of conditions and the following disclaimer in the documentation 
+ *    and/or other materials provided with the distribution, and in the same 
+ *    place and form as other copyright, license and disclaimer information.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+ * THE SOFTWARE.
+ *
+ */
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -6,12 +37,12 @@
 #include <map>
 #include <ctime>
 #include <cassert>
+#include "Logger.h"
 
-using namespace std;
+//using namespace std;
 
 #define BUFSIZE 1024
 #define LINE_TO_STRING(x) #x
-#define FILE_AND_LINE (__FILE__":"LINE_TO_STRING(__LINE__))
 
 typedef enum tagLogLevel
 {
@@ -34,7 +65,8 @@ char to_lowcase(char ch)
     else return -1;
 }
 
-/* fgets takes newline ('\n') as a valid character 
+/* 
+ * fgets takes newline ('\n') as a valid character 
  * reference: http://www.cplusplus.com/reference/cstdio/fgets/?kw=fgets
  *
  * return: number of lines in a txt file. 
@@ -61,26 +93,29 @@ static unsigned int count_line(char *filename)
     return lines;
 }
 
-/* struct hash node 
- * used to count world frequency 
+/* 
+ * struct hash node 
+ * used to count word frequency 
  */
 typedef struct node
 {
 char *word;
-int count;
+int   count;
 struct node *next;
 } node;
 
 #define NHASH 29989  // hash bucket number, a prime number
 #define MULT 31      // used in hash function, prime number
 
-node *bucket[NHASH];
+node* bucket[NHASH]; // hash bucket
 
-/* hash function: turn a string into an 
- * interger. the interger later will be
- * used as an index of hash bucket. */
+/* 
+ * Hash function: turn a string(word) into an  interger. 
+ * The interger will be used as an index to locate hash bucket. 
+ */
 static unsigned int hash(char *str)
 {
+    assert(str != NULL);
     unsigned int n = 0;
     for (; *str; str++)
     { n = MULT * n + *str; }
@@ -96,7 +131,10 @@ void insert_word(char *word)
     for(p = bucket[index]; p != NULL; p = p->next)
     {
         if (strcmp(p->word, word) == 0) // word already in bucket
-        { p->count++; return;}
+        {
+            p->count++; 
+            return;
+        }
     }
     p = (node*)malloc(sizeof(struct node));
     p->count = 1;
@@ -106,16 +144,18 @@ void insert_word(char *word)
     bucket[index] = p;
 }
 
-/* read word from stdin and count all world and its frequency.
- * we define world : strings seperated by blank regardless of
- * its actual meaning.  
+/* 
+ * read text from stdin and count all world and its frequency.
+ * define world : strings seperated by blank regardless of actual meaning.  
  */
 static void count_word_freq()
 {    
     char buf[128];       /* supose longest world 127 character */
     memset(bucket, 0, sizeof(bucket)); /* clear Hash Bucket */
     while (scanf("%s", buf) != EOF)  
-    {    insert_word(buf); }
+    {    
+        insert_word(buf); 
+    }
     for (int i = 0; i < NHASH; i++)
     {
         for (node *p = bucket[i]; p != NULL; p = p->next)
@@ -131,6 +171,7 @@ static void count_word_freq()
  */
 static void count_word_freq2()
 {    
+    ENTER_FUNCTION;
     char wordBuf[128];        /* longest world 127 character */
     char lineBuf[2048];       /* longest line 2047 character */
     int lines = 0;
@@ -144,35 +185,43 @@ static void count_word_freq2()
         while (NULL != p)
         {    
             words++;
-            LOG_D("Get word: %s\n", p);
+            logger << "Get word: " << p << std::endl;
             insert_word(p);
             p = strtok(NULL, DELIMETER);
         }
     }
     
+    sprintf(lineBuf, "contains %d lines\n", lines);
+    logger << lineBuf << std::endl;
+    sprintf(lineBuf, "contains %d words\n", words);
+    logger << lineBuf << std::endl;
+    
     for (int i = 0; i < NHASH; i++)
     {
         for (node *p = bucket[i]; p != NULL; p = p->next)
-        { printf("%-32s\t%3d\n", p->word, p->count);}
+        { 
+            sprintf(lineBuf, "%-32s\t%3d\n", p->word, p->count);
+            logger << lineBuf << std::endl;
+        }
     }
-    LOG_I("%s contains %d lines\n", __FILE__, lines);
-    LOG_I("%s contains %d words\n", __FILE__, words);
+
+    EXIT_FUNCTION;
 }
 
-/* take advantage of C++ STL map 
+/* 
+ * take advantage of C++ STL map 
  * http://www.cplusplus.com/reference/map/map/operator[]/
  * STL map: element in the container is sorted. it is 
  * the difference from privous function. 
  */
 static void count_word_freq3()
-{    
+{ 
+    ENTER_FUNCTION;   
     char wordBuf[128];        /* longest world 127 character */
     char lineBuf[2048];       /* longest line 2047 character */
-    int lines = 0;
-    int words = 0;
-    memset(bucket, 0, sizeof(bucket)); /* clear Hash Bucket */
-    map<string, int> mapTable;
-    map<string, int>::iterator i;
+    int lines = 0, words = 0;
+    std::map<std::string, int> mapTable;
+    std::map<std::string, int>::iterator i;
     
     while (fgets(lineBuf, 2048, stdin) != NULL)
     {
@@ -181,27 +230,36 @@ static void count_word_freq3()
         while (NULL != p)
         {    
             words++;
-            LOG_D("Get word: %s\n", p);
-            mapTable[string(p)]++;
+            logger << "Get word: " << p << std::endl;
+            mapTable[std::string(p)]++;
             p = strtok(NULL, DELIMETER);
         }
     }
     
+    sprintf(lineBuf, "contains %d lines\n", lines);
+    logger << lineBuf << std::endl;
+    sprintf(lineBuf, "contains %d words\n", words);
+    logger << lineBuf << std::endl;
+    
     for ( i = mapTable.begin(); i != mapTable.end(); i++)
     {
-        { printf("%-32s\t%3d\n", (i->first).c_str(), i->second);}
+       sprintf(lineBuf, "%-32s\t%3d\n", (i->first).c_str(), i->second);
+       logger << lineBuf << std::endl;
     }
-    LOG_I("%s contains %d lines\n", __FILE__, lines);
-    LOG_I("%s contains %d words\n", __FILE__, words);
+    
+    EXIT_FUNCTION;
 }
 
+/* cat file | program */
 int main(int argc, char** argv)
 {
-  LOG_I("+[ %s ]\n", __FUNCTION__);
+  logger.setLevel(DEBUG);
+  logger.setLineLevel(DEBUG);
+  ENTER_FUNCTION;
   
   count_word_freq3();
   
-  LOG_I("-[ %s ]\n", __FUNCTION__);
+  EXIT_FUNCTION;
   return 0;
 }
 
