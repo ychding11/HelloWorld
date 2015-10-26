@@ -1,8 +1,8 @@
 /*
- * InputDataSet.h
+ * InputDataSet.cpp
  * This a InputDataSet data type for handwriting recognise.
  *
- * Header Header
+ * Source File
  *
  * Copyright (C) 2014-2015  Yaochuang Ding - <ych_ding@163.com>
  * 

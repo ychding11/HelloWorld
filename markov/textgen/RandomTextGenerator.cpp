@@ -38,7 +38,7 @@ RandomTextGenerator::RandomTextGenerator( Logger & log)
                     , mlog(log)
 {
     mlog << "Construct RandomTextGenerator." << std::endl;
-    mpInStream = new std::istringstream(LOREM_IPSUM);
+    mpInStream = new std::istringstream(LOREM_IPSUM); // try-catch should be used.
     buildStateTable();
     mlog << "Construct RandomTextGenerator Finish." << std::endl;
 }
@@ -48,7 +48,7 @@ RandomTextGenerator::RandomTextGenerator(const char *file, Logger & log )
                     , mlog(log)
 {
     mlog << "Construct RandomTextGenerator." << std::endl;
-    mpInStream = new std::ifstream(file);
+    mpInStream = new std::ifstream(file); // try-catch should be used.
     buildStateTable();
     mlog << "Construct RandomTextGenerator Finish." << std::endl;
 }
