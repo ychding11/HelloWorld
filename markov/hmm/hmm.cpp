@@ -397,10 +397,7 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
                 {
                     for (size_t j = 0; j < mStateNum; ++j)
                     {
-                        epsilon[t][i][j] = alpha[t][i] \
-                            * mppTransPr[i][j] \
-                            * mppObservPr[sequence[t + 1]][j] \
-                            * beta[t + 1][j];
+                        epsilon[t][i][j] = alpha[t][i] * mppTransPr[i][j] * mppObservPr[sequence[t + 1]][j]  * beta[t + 1][j];
                         prob_sum += epsilon[t][i][j];
                     }
                 }
@@ -416,7 +413,8 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
                 }
             }
         }
-
+        
+        //update HMM State
         for (size_t i = 0; i < mStateNum; ++i)
         {
             // update initialize probability
@@ -555,7 +553,7 @@ void HMM::_forward(double **alpha, const Sequence &sequence) const
     {
         for (size_t j = 0; j < mStateNum; ++j)
         {
-            double prob = 0;
+            double prob = 0.0;
             for (size_t i = 0; i < mStateNum; ++i)
             {
                 prob += alpha[t][i] * mppTransPr[i][j];
@@ -566,6 +564,9 @@ void HMM::_forward(double **alpha, const Sequence &sequence) const
     }
 }
 
+/*************************************************
+ * HMM - Backward algorithms
+*************************************************/
 void HMM::_backward(double **beta, const Sequence &sequence) const
 {
     size_t length = sequence.size();
@@ -578,7 +579,7 @@ void HMM::_backward(double **beta, const Sequence &sequence) const
     {
         for (size_t i = 0; i < mStateNum; ++i)
         {
-            double prob = 0;
+            double prob = 0.0;
             for (size_t j = 0; j < mStateNum; ++j)
             {
                 prob += beta[t][j] * mppTransPr[i][j] * mppObservPr[sequence[t]][j];
