@@ -159,34 +159,34 @@ void HMM::dump(const std::string &filename, const HMM &model)
     logger << "Save HMM Object to file : " << filename << std::endl;
     
     fout << std::fixed << std::setprecision(DIGIT_NUM);
-    fout << "initial: " << model._state_num << std::endl;
-    for (size_t i = 0; i < model._state_num - 1; ++i)
+    fout << "initial: " << model.mStateNum << std::endl;
+    for (size_t i = 0; i < model.mStateNum - 1; ++i)
     {
-        fout << model.get_init_prob(i) << " ";
+        fout << model.getmpInitPr(i) << " ";
     }
 
-    fout << model.get_init_prob(model._state_num - 1) << std::endl;
+    fout << model.getmpInitPr(model.mStateNum - 1) << std::endl;
 
-    fout << "\ntransition: " << model._state_num << std::endl;
-    for (size_t i = 0; i < model._state_num; ++i)
+    fout << "\ntransition: " << model.mStateNum << std::endl;
+    for (size_t i = 0; i < model.mStateNum; ++i)
     {
-        for (size_t j = 0; j < model._state_num - 1; ++j)
+        for (size_t j = 0; j < model.mStateNum - 1; ++j)
         {
-            fout << model.get_trans_prob(i, j) << " ";
+            fout << model.getmppTransPr(i, j) << " ";
         }
 
-        fout << model.get_trans_prob(i, model._state_num - 1) << std::endl;
+        fout << model.getmppTransPr(i, model.mStateNum - 1) << std::endl;
     }
 
-    fout << "\nobservation: " << model._observ_num << std::endl;
-    for (size_t o = 0; o < model._observ_num; ++o)
+    fout << "\nobservation: " << model.mObservNum << std::endl;
+    for (size_t o = 0; o < model.mObservNum; ++o)
     {
-        for (size_t i = 0; i < model._state_num - 1; ++i)
+        for (size_t i = 0; i < model.mStateNum - 1; ++i)
         {
-            fout << model.get_observ_prob(o, i) << " ";
+            fout << model.getmppObservPr(o, i) << " ";
         }
 
-        fout << model.get_observ_prob(o, model._state_num - 1) << std::endl;
+        fout << model.getmppObservPr(o, model.mStateNum - 1) << std::endl;
     }
 
     fout.close();
@@ -198,27 +198,27 @@ void HMM::dump(const std::string &filename, const HMM &model)
 HMM::HMM(const std::string &name, size_t state_num, size_t observ_num,
          double *init_prob, double **trans_prob, double **observ_prob)
       : _name(name)
-      , _state_num(state_num)
-      , _observ_num(observ_num)
+      , mStateNum(state_num)
+      , mObservNum(observ_num)
 {
     logger << "Construct HMM." << std::endl;
     _malloc();
-    set_init_prob(init_prob);
-    set_trans_prob(trans_prob);
-    set_observ_prob(observ_prob);
+    setmpInitPr(init_prob);
+    setmppTransPr(trans_prob);
+    setmppObservPr(observ_prob);
     logger << "Construct HMM Finished." << std::endl;
 }
 
 HMM::HMM(const HMM &model) // can access private member
       : _name(model._name)
-      , _state_num(model._state_num)
-      , _observ_num(model._observ_num)
+      , mStateNum(model.mStateNum)
+      , mObservNum(model.mObservNum)
 {
     _malloc();
 
-    set_init_prob(model._init_prob);
-    set_trans_prob(model._trans_prob);
-    set_observ_prob(model._observ_prob);
+    setmpInitPr(model.mpInitPr);
+    setmppTransPr(model.mppTransPr);
+    setmppObservPr(model.mppObservPr);
 }
 
 HMM::~HMM(void)
@@ -233,20 +233,20 @@ HMM &HMM::operator=(const HMM &model)
 {
     //check this == model?
     // resize
-    if (model._state_num != _state_num || model._observ_num != _observ_num)
+    if (model.mStateNum != mStateNum || model.mObservNum != mObservNum)
     {
         _release();
 
-        _state_num = model._state_num;
-        _observ_num = model._observ_num;
+        mStateNum = model.mStateNum;
+        mObservNum = model.mObservNum;
 
         _malloc();
     }
 
     // copy probability
-    set_init_prob(model._init_prob);
-    set_trans_prob(model._trans_prob);
-    set_observ_prob(model._observ_prob);
+    setmpInitPr(model.mpInitPr);
+    setmppTransPr(model.mppTransPr);
+    setmppObservPr(model.mppObservPr);
 
     return *this;
 }
@@ -259,36 +259,36 @@ double HMM::evaluate(const Sequence &sequence) const
     size_t length = sequence.size();
 
     // calculate delta
-    double *delta = new double[_state_num];
-    double *new_delta = new double[_state_num];
-    for (size_t i = 0; i < _state_num; ++i)
+    double *delta = new double[mStateNum];
+    double *new_delta = new double[mStateNum];
+    for (size_t i = 0; i < mStateNum; ++i)
     {
-        delta[i] = _init_prob[i] * _observ_prob[sequence[0]][i];
+        delta[i] = mpInitPr[i] * mppObservPr[sequence[0]][i];
     }
 
     for (size_t t = 1; t < length; ++t)
     {
-        for (size_t j = 0; j < _state_num; ++j)
+        for (size_t j = 0; j < mStateNum; ++j)
         {
-            double max_prob = delta[0] * _trans_prob[0][j];
-            for (size_t i = 1; i < _state_num; ++i)
+            double max_prob = delta[0] * mppTransPr[0][j];
+            for (size_t i = 1; i < mStateNum; ++i)
             {
-                double prob = delta[i] * _trans_prob[i][j];
+                double prob = delta[i] * mppTransPr[i][j];
                 if (prob > max_prob)
                 {
                     max_prob = prob;
                 }
             }
 
-            new_delta[j] = max_prob * _observ_prob[sequence[t]][j];
+            new_delta[j] = max_prob * mppObservPr[sequence[t]][j];
         }
 
-        memcpy(delta, new_delta, sizeof(double) * _state_num);
+        memcpy(delta, new_delta, sizeof(double) * mStateNum);
     }
 
     // calculate probability
     double prob = delta[0];
-    for (size_t i = 1; i < _state_num; ++i)
+    for (size_t i = 1; i < mStateNum; ++i)
     {
         if (delta[i] > prob)
         {
@@ -320,48 +320,48 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
 
     for (size_t t = 0; t < length; ++t)
     {
-        alpha[t] = new double[_state_num];
-        beta[t]  = new double[_state_num];
-        gamma[t]  = new double[_state_num];
-        epsilon[t]  = new double*[_state_num];
+        alpha[t] = new double[mStateNum];
+        beta[t]  = new double[mStateNum];
+        gamma[t]  = new double[mStateNum];
+        epsilon[t]  = new double*[mStateNum];
 
-        sigma_gamma[t]  = new double[_state_num];
-        sigma_epsilon[t]  = new double*[_state_num];
+        sigma_gamma[t]  = new double[mStateNum];
+        sigma_epsilon[t]  = new double*[mStateNum];
 
-        for (size_t s = 0; s < _state_num; ++s)
+        for (size_t s = 0; s < mStateNum; ++s)
         {
-            epsilon[t][s] = new double[_state_num];
-            sigma_epsilon[t][s] = new double[_state_num];
+            epsilon[t][s] = new double[mStateNum];
+            sigma_epsilon[t][s] = new double[mStateNum];
         }
     }
 
     // allocate observ_gamma_sum
-    double **observ_gamma_sum = new double*[_observ_num];
-    for (size_t o = 0; o < _observ_num; ++o)
+    double **observ_gamma_sum = new double*[mObservNum];
+    for (size_t o = 0; o < mObservNum; ++o)
     {
-        observ_gamma_sum[o] = new double[_state_num];
+        observ_gamma_sum[o] = new double[mStateNum];
     }
 
     // perform learning
     for (size_t count = 0; count < iteration; ++count)
     {
         // initialize observ_gamma_sum, sigma_gamma and sigma_epsilon
-        for (size_t o = 0; o < _observ_num; ++o)
+        for (size_t o = 0; o < mObservNum; ++o)
         {
-            memset(observ_gamma_sum[o], 0, sizeof(double) * _state_num);
+            memset(observ_gamma_sum[o], 0, sizeof(double) * mStateNum);
         }
 
         for (size_t t = 0; t < length; ++t)
         {
-            memset(sigma_gamma[t], 0, sizeof(double) * _state_num);
-            for (size_t s = 0; s < _state_num; ++s)
+            memset(sigma_gamma[t], 0, sizeof(double) * mStateNum);
+            for (size_t s = 0; s < mStateNum; ++s)
             {
-                memset(sigma_epsilon[t][s], 0, sizeof(double) * _state_num);
+                memset(sigma_epsilon[t][s], 0, sizeof(double) * mStateNum);
             }
         }
-
-        for (std::vector<Sequence>::const_iterator iter = sequences.begin();
-             iter != sequences.end(); ++iter)
+        
+        //loop all sequence
+        for (std::vector<Sequence>::const_iterator iter = sequences.begin(); iter != sequences.end(); ++iter)
         {
             const Sequence &sequence = *iter;
 
@@ -373,7 +373,7 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
             for (size_t t = 0; t < length; ++t)
             {
                 double prob_sum = 0;
-                for (size_t i = 0; i < _state_num; ++i)
+                for (size_t i = 0; i < mStateNum; ++i)
                 {
                     gamma[t][i] = alpha[t][i] * beta[t][i];
                     prob_sum += gamma[t][i];
@@ -381,7 +381,7 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
 
                 if (prob_sum == 0) { continue; }
 
-                for (size_t i = 0; i < _state_num; ++i)
+                for (size_t i = 0; i < mStateNum; ++i)
                 {
                     gamma[t][i] /= prob_sum;
                     sigma_gamma[t][i] += gamma[t][i];
@@ -393,13 +393,13 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
             for (size_t t = 0; t < length - 1; ++t)
             {
                 double prob_sum = 0;
-                for (size_t i = 0; i < _state_num; ++i)
+                for (size_t i = 0; i < mStateNum; ++i)
                 {
-                    for (size_t j = 0; j < _state_num; ++j)
+                    for (size_t j = 0; j < mStateNum; ++j)
                     {
                         epsilon[t][i][j] = alpha[t][i] \
-                            * _trans_prob[i][j] \
-                            * _observ_prob[sequence[t + 1]][j] \
+                            * mppTransPr[i][j] \
+                            * mppObservPr[sequence[t + 1]][j] \
                             * beta[t + 1][j];
                         prob_sum += epsilon[t][i][j];
                     }
@@ -407,9 +407,9 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
 
                 if (prob_sum == 0) { continue; }
 
-                for (size_t i = 0; i < _state_num; ++i)
+                for (size_t i = 0; i < mStateNum; ++i)
                 {
-                    for (size_t j = 0; j < _state_num; ++j)
+                    for (size_t j = 0; j < mStateNum; ++j)
                     {
                         sigma_epsilon[t][i][j] += epsilon[t][i][j] / prob_sum;
                     }
@@ -417,10 +417,10 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
             }
         }
 
-        for (size_t i = 0; i < _state_num; ++i)
+        for (size_t i = 0; i < mStateNum; ++i)
         {
             // update initialize probability
-            _init_prob[i] = sigma_gamma[0][i] / number;
+            mpInitPr[i] = sigma_gamma[0][i] / number;
 
             // update transition probability
             double gamma_sum = 0;
@@ -431,7 +431,7 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
 
             if (gamma_sum > 0)
             {
-                for (size_t j = 0; j < _state_num; ++j)
+                for (size_t j = 0; j < mStateNum; ++j)
                 {
                     double epsilon_sum = 0;
                     for (size_t t = 0; t < length - 1; ++t)
@@ -439,12 +439,12 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
                         epsilon_sum += sigma_epsilon[t][i][j];
                     }
 
-                    _trans_prob[i][j] = epsilon_sum / gamma_sum;
+                    mppTransPr[i][j] = epsilon_sum / gamma_sum;
                 }
             }
             else
             {
-                memset(_trans_prob[i], 0, sizeof(double) * _state_num);
+                memset(mppTransPr[i], 0, sizeof(double) * mStateNum);
             }
 
             // update observation probability
@@ -452,23 +452,23 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
 
             if (gamma_sum > 0)
             {
-                for (size_t o = 0; o < _observ_num; ++o)
+                for (size_t o = 0; o < mObservNum; ++o)
                 {
-                    _observ_prob[o][i] = observ_gamma_sum[o][i] / gamma_sum;
+                    mppObservPr[o][i] = observ_gamma_sum[o][i] / gamma_sum;
                 }
             }
             else
             {
-                for (size_t o = 0; o < _observ_num; ++o)
+                for (size_t o = 0; o < mObservNum; ++o)
                 {
-                    _observ_prob[o][i] = 0;
+                    mppObservPr[o][i] = 0;
                 }
             }
         }
     }
 
     // release variables
-    for (size_t o = 0; o < _observ_num; ++o)
+    for (size_t o = 0; o < mObservNum; ++o)
     {
         delete observ_gamma_sum[o];
     }
@@ -477,7 +477,7 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
 
     for (size_t t = 0; t < length; ++t)
     {
-        for (size_t s = 0; s < _state_num; ++s)
+        for (size_t s = 0; s < mStateNum; ++s)
         {
             delete sigma_epsilon[t][s];
             delete epsilon[t][s];
@@ -507,58 +507,61 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
 void HMM::_malloc(void)
 {
     // unsafe
-    _init_prob   = new double [_state_num];
-    _trans_prob  = new double*[_state_num];
-    _observ_prob = new double*[_observ_num];
+    mpInitPr   = new double [mStateNum];
+    mppTransPr  = new double*[mStateNum];
+    mppObservPr = new double*[mObservNum];
 
-    for (size_t i = 0; i < _state_num; ++i)
+    for (size_t i = 0; i < mStateNum; ++i)
     {
-        _trans_prob[i] = new double[_state_num];
+        mppTransPr[i] = new double[mStateNum];
     }
 
-    for (size_t o = 0; o < _observ_num; ++o)
+    for (size_t o = 0; o < mObservNum; ++o)
     {
-        _observ_prob[o] = new double[_state_num];
+        mppObservPr[o] = new double[mStateNum];
     }
 }
 
 void HMM::_release(void)
 {
     // unsafe
-    for (size_t i = 0; i < _state_num; ++i)
+    for (size_t i = 0; i < mStateNum; ++i)
     {
-        delete _trans_prob[i];
+        delete mppTransPr[i];
     }
 
-    for (size_t o = 0; o < _observ_num; ++o)
+    for (size_t o = 0; o < mObservNum; ++o)
     {
-        delete _observ_prob[o];
+        delete mppObservPr[o];
     }
 
-    delete _init_prob;
-    delete _trans_prob;
-    delete _observ_prob;
+    delete mpInitPr;
+    delete mppTransPr;
+    delete mppObservPr;
 }
 
+/*************************************************
+ * HMM - Forward algorithms
+*************************************************/
 void HMM::_forward(double **alpha, const Sequence &sequence) const
 {
     size_t length = sequence.size();
-    for (size_t i = 0; i < _state_num; ++i)
+    for (size_t i = 0; i < mStateNum; ++i)
     {
-        alpha[0][i] = _init_prob[i] * _observ_prob[sequence[0]][i];
+        alpha[0][i] = mpInitPr[i] * mppObservPr[sequence[0]][i];
     }
 
     for (size_t t = 0; t < length - 1; ++t)
     {
-        for (size_t j = 0; j < _state_num; ++j)
+        for (size_t j = 0; j < mStateNum; ++j)
         {
             double prob = 0;
-            for (size_t i = 0; i < _state_num; ++i)
+            for (size_t i = 0; i < mStateNum; ++i)
             {
-                prob += alpha[t][i] * _trans_prob[i][j];
+                prob += alpha[t][i] * mppTransPr[i][j];
             }
 
-            alpha[t + 1][j] = prob * _observ_prob[sequence[t + 1]][j];
+            alpha[t + 1][j] = prob * mppObservPr[sequence[t + 1]][j];
         }
     }
 }
@@ -566,19 +569,19 @@ void HMM::_forward(double **alpha, const Sequence &sequence) const
 void HMM::_backward(double **beta, const Sequence &sequence) const
 {
     size_t length = sequence.size();
-    for (size_t i = 0; i < _state_num; ++i)
+    for (size_t i = 0; i < mStateNum; ++i)
     {
         beta[length - 1][i] = 1;
     }
 
     for (size_t t = length - 1; t > 0; --t)
     {
-        for (size_t i = 0; i < _state_num; ++i)
+        for (size_t i = 0; i < mStateNum; ++i)
         {
             double prob = 0;
-            for (size_t j = 0; j < _state_num; ++j)
+            for (size_t j = 0; j < mStateNum; ++j)
             {
-                prob += beta[t][j] * _trans_prob[i][j] * _observ_prob[sequence[t]][j];
+                prob += beta[t][j] * mppTransPr[i][j] * mppObservPr[sequence[t]][j];
             }
 
             beta[t - 1][i] = prob;

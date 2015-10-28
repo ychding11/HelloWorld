@@ -69,14 +69,14 @@ class HMM
         // Setter(s) / Getter(s)
         std::string get_name(void) const;
         void        set_name(const std::string &name);
-        size_t      get_state_num(void) const;
-        size_t      get_observ_num(void) const;
-        double      get_init_prob(size_t state) const;
-        void        set_init_prob(double *prob);
-        double      get_trans_prob(size_t state_from, size_t state_to) const;
-        void        set_trans_prob(double **prob);
-        double      get_observ_prob(size_t observ, size_t state) const;
-        void        set_observ_prob(double **prob);
+        size_t      getmStateNum(void) const;
+        size_t      getmObservNum(void) const;
+        double      getmpInitPr(size_t state) const;
+        void        setmpInitPr(double *prob);
+        double      getmppTransPr(size_t state_from, size_t state_to) const;
+        void        setmppTransPr(double **prob);
+        double      getmppObservPr(size_t observ, size_t state) const;
+        void        setmppObservPr(double **prob);
 
         // Operate Method(s)
         double      evaluate(const Sequence &sequence) const;
@@ -91,11 +91,11 @@ class HMM
 
         // Data Member(s)
         std::string _name;
-        size_t      _state_num;
-        size_t      _observ_num;
-        double      *_init_prob;
-        double      **_trans_prob;
-        double      **_observ_prob;
+        size_t      mStateNum;
+        size_t      mObservNum;
+        double      *mpInitPr;
+        double      **mppTransPr;
+        double      **mppObservPr;
 };
 
 /*************************************************
@@ -111,54 +111,54 @@ inline void HMM::set_name(const std::string &name)
     _name = name;
 }
 
-inline size_t HMM::get_state_num(void) const
+inline size_t HMM::getmStateNum(void) const
 {
-    return _state_num;
+    return mStateNum;
 }
 
-inline size_t HMM::get_observ_num(void) const
+inline size_t HMM::getmObservNum(void) const
 {
-    return _observ_num;
+    return mObservNum;
 }
 
-inline double HMM::get_init_prob(size_t state) const
+inline double HMM::getmpInitPr(size_t state) const
 {
-    if (state >= _state_num) { return 0.0; }
-    return _init_prob[state];
+    if (state >= mStateNum) { return 0.0; }
+    return mpInitPr[state];
 }
 
-inline void HMM::set_init_prob(double *prob)
+inline void HMM::setmpInitPr(double *prob)
 {
-    memcpy(_init_prob, prob, sizeof(double) * _state_num);
+    memcpy(mpInitPr, prob, sizeof(double) * mStateNum);
 }
 
-inline double HMM::get_trans_prob(size_t state_from, size_t state_to) const
+inline double HMM::getmppTransPr(size_t state_from, size_t state_to) const
 {
     /* input parameter check is not good, should improve */
-    if (state_from >= _state_num || state_to >= _state_num) { return 0; }
-    return _trans_prob[state_from][state_to];
+    if (state_from >= mStateNum || state_to >= mStateNum) { return 0; }
+    return mppTransPr[state_from][state_to];
 }
 
-inline void HMM::set_trans_prob(double **prob)
+inline void HMM::setmppTransPr(double **prob)
 {
-    for (size_t s = 0; s < _state_num; ++s)
+    for (size_t s = 0; s < mStateNum; ++s)
     {
-        memcpy(_trans_prob[s], prob[s], sizeof(double) * _state_num);
+        memcpy(mppTransPr[s], prob[s], sizeof(double) * mStateNum);
     }
 }
 
-inline double HMM::get_observ_prob(size_t observ, size_t state) const
+inline double HMM::getmppObservPr(size_t observ, size_t state) const
 {
     /* input parameter check is not good, should improve */
-    if (state >= _state_num || observ >= _observ_num) { return 0; }
-    return _observ_prob[observ][state];
+    if (state >= mStateNum || observ >= mObservNum) { return 0; }
+    return mppObservPr[observ][state];
 }
 
-inline void HMM::set_observ_prob(double **prob)
+inline void HMM::setmppObservPr(double **prob)
 {
-    for (size_t o = 0; o < _observ_num; ++o)
+    for (size_t o = 0; o < mObservNum; ++o)
     {
-        memcpy(_observ_prob[o], prob[o], sizeof(double) * _state_num);
+        memcpy(mppObservPr[o], prob[o], sizeof(double) * mStateNum);
     }
 }
 
