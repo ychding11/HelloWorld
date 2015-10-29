@@ -84,9 +84,9 @@ void DecisionTree::build(InnerNode*& parent,
 	}
 	else
 	{
-	    innerNode = new InnerNode(policyOrValue + ": " + mTrainingSamples.getFeatureName(splitColumn));
+	    innerNode = new InnerNode(mTrainingSamples.getFeatureName(splitColumn) + "-"+ policyOrValue );
 		parent->addChild(innerNode);
-		mlog << "Construct Inner Node : " << policyOrValue + ": " + mTrainingSamples.getFeatureName(splitColumn) << std::endl;
+		mlog << "Construct Inner Node : " << mTrainingSamples.getFeatureName(splitColumn) + "-"+ policyOrValue << std::endl;
     }
 			
 	for(auto iter = splits.begin(); iter != splits.end(); ++iter) 
