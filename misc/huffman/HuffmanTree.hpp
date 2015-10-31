@@ -64,8 +64,8 @@ class HuffmanNodePtrComp
 class HuffmanTree 
 {
   private:
-    HuffmanNode* root;
-    vector<HuffmanNode*> leaves;
+    HuffmanNode* mpRoot;
+    vector<HuffmanNode*> mLeaves;
 
     /*
      * This function is used to post-order traverse the tree and
@@ -95,9 +95,10 @@ class HuffmanTree
 
   public:
     explicit HuffmanTree() 
-            : root(0) 
+            : mpRoot(0)
+            , mLeaves(256, (HuffmanNode*) 0) 
     {
-      leaves = vector<HuffmanNode*>(256, (HuffmanNode*) 0);
+      //mLeaves = vector<HuffmanNode*>(256, (HuffmanNode*) 0);
     }
 
     ~HuffmanTree();
@@ -105,22 +106,22 @@ class HuffmanTree
     /** Use the Huffman algorithm to build a Huffman coding trie.
      *  PRECONDITION: freqs is a vector of ints, such that freqs[i] is 
      *  the frequency of occurrence of byte i in the message.
-     *  POSTCONDITION:  root points to the root of the trie,
-     *  and leaves[i] points to the leaf node containing byte i.
+     *  POSTCONDITION:  mpRoot points to the mpRoot of the trie,
+     *  and mLeaves[i] points to the leaf node containing byte i.
      */
     void build(const vector<int>& freqs);
 
     /** Write to the given BitOutputStream
      *  the sequence of bits coding the given symbol.
      *  PRECONDITION: build() has been called, to create the coding
-     *  tree, and initialize root pointer and leaves vector.
+     *  tree, and initialize mpRoot pointer and mLeaves vector.
      */
     void encode(byte symbol, BitOutputStream& out) const;
 
     /** Write to the given ofstream
      *  the sequence of bits (as ASCII) coding the given symbol.
      *  PRECONDITION: build() has been called, to create the coding
-     *  tree, and initialize root pointer and leaves vector.
+     *  tree, and initialize mpRoot pointer and mLeaves vector.
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT 
      *  BE USED IN THE FINAL SUBMISSION.
      */
@@ -129,14 +130,14 @@ class HuffmanTree
 
     /** Return symbol coded in the next sequence of bits from the stream.
      *  PRECONDITION: build() has been called, to create the coding
-     *  tree, and initialize root pointer and leaves vector.
+     *  tree, and initialize mpRoot pointer and mLeaves vector.
      */
     int decode(BitInputStream& in) const;
 
     /** Return the symbol coded in the next sequence of bits (represented as 
      *  ASCII text) from the ifstream.
      *  PRECONDITION: build() has been called, to create the coding
-     *  tree, and initialize root pointer and leaves vector.
+     *  tree, and initialize mpRoot pointer and mLeaves vector.
      *  THIS METHOD IS USEFUL FOR THE CHECKPOINT BUT SHOULD NOT BE USED
      *  IN THE FINAL SUBMISSION.
      */
