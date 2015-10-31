@@ -53,6 +53,6 @@ $(BUILD_PATH):
 		
 .PHONY: clean
 clean:
-	@$(RM) -rf $(BUILD_PATH)
-	@$(RM) -rf *~ *.o test/*.o
+	@$(RM) -rf $(BUILD_PATH) $(TESTER)
+	@$(RM) -rf *~ *.o test/*~
 	
