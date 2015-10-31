@@ -11,7 +11,7 @@
 *************************************************/
 HuffmanTree::~HuffmanTree() 
 {
-  deleteAllNodes(root);
+  deleteAllNodes(mpRoot);
 }
 
 /*************************************************
@@ -26,7 +26,7 @@ void HuffmanTree::build(const vector<int>& freqs)
   // Priority queue is used to sort the nodes in increasing order of frequency.
   priority_queue<HuffmanNode*, vector<HuffmanNode*>, HuffmanNodePtrComp> pq; 
 
-  int index = 0;  // Used to store new nodes in leaves array only when the
+  int index = 0;  // Used to store new nodes in mLeaves array only when the
                   // corresponding frequency is not 0.
   
   // Loop to make new nodes and push them into pq.
@@ -36,13 +36,13 @@ void HuffmanTree::build(const vector<int>& freqs)
     if(freqs[i] != 0) 
     {
       // Allocate memory for a new node
-      leaves[index] = new HuffmanNode(freqs[i], (int) i);
-      pq.push(leaves[index]);
+      mLeaves[index] = new HuffmanNode(freqs[i], (int) i);
+      pq.push(mLeaves[index]);
       index++;
     }
   }
 
-  // Build the Huffman tree bottom-up until there is only the root node left.
+  // Build the Huffman tree bottom-up until there is only the mpRoot node left.
   while(pq.size() > 1) 
   {
 
@@ -63,8 +63,8 @@ void HuffmanTree::build(const vector<int>& freqs)
     pq.push(newNode); // push the new node into the priority queue.
   }
 
-  // Last node in the pq is the root node.
-  root = pq.top();
+  // Last node in the pq is the mpRoot node.
+  mpRoot = pq.top();
 }
 
 /*
@@ -83,16 +83,16 @@ void HuffmanTree::encode(byte symbol, BitOutputStream& out) const
   stack<int> code;    // To implement the LIFO order of the traversal path
   
   // Finds the leaf node whose key matches the symbol
-  for(unsigned long i=0; i<leaves.size(); i++) 
+  for(unsigned long i=0; i<mLeaves.size(); i++) 
   {
-    if(leaves[i]->symbol == symbol) 
+    if(mLeaves[i]->symbol == symbol) 
     {
-      node = leaves[i];
+      node = mLeaves[i];
       break;
     }
   }
   
-  // Loop until the root node is reached
+  // Loop until the mpRoot node is reached
   while(node->p != 0)
   {
     
@@ -125,7 +125,7 @@ void HuffmanTree::encode(byte symbol, BitOutputStream& out) const
 int HuffmanTree::decode(BitInputStream& in) const 
 {
   
-  HuffmanNode* node = root;  // Traversal starts from the root.
+  HuffmanNode* node = mpRoot;  // Traversal starts from the mpRoot.
   int direction;        // Stores the next bit read from the input file.
   
   // Loop until the leaf node is reached.
@@ -165,21 +165,21 @@ void HuffmanTree::encode(byte symbol, ofstream& out) const
 {
   HuffmanNode* node(0);    // Placeholder for the node with the symbol we're looking for.
   
-  stack<char> code;   // Since we're traversing the tree from the leaf to root, the
+  stack<char> code;   // Since we're traversing the tree from the leaf to mpRoot, the
                       // encoding path is reversed if it's written in the traversal
                       // order. To prevent this in a easy way, I used a stack.
 
   // Locate the node with the symbol
-  for(unsigned long i=0; i<leaves.size(); i++) 
+  for(unsigned long i=0; i<mLeaves.size(); i++) 
   {
-    if(leaves[i]->symbol == symbol) 
+    if(mLeaves[i]->symbol == symbol) 
     {
-      node = leaves[i];
+      node = mLeaves[i];
       break;
     }
   }
 
-  // Go up the parent pointer all the way up to the root, saving the path in
+  // Go up the parent pointer all the way up to the mpRoot, saving the path in
   // the stack.
   while(node->p != 0) 
   {
@@ -224,7 +224,7 @@ int HuffmanTree::decode(ifstream& in) const
     return EOF;
   }
 
-  HuffmanNode* node = root;  // Start the traversal at the root
+  HuffmanNode* node = mpRoot;  // Start the traversal at the mpRoot
   int direction;        // The character read from the input file.
 
   // Keep going down the tree until the leaf node is reached.
