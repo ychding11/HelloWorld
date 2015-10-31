@@ -1,7 +1,7 @@
 # makefile for basic algorithms 
 #
 
-$(warning Building..........)
+$(warning .......... Run Makefile ..........)
 $(warning default CXX = $(CXX))
 $(warning default CURDIR = $(CURDIR))
 $(warning default CXXFLAGS = $(CXXFLAGS))
