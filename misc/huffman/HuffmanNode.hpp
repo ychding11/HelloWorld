@@ -39,8 +39,12 @@ typedef unsigned char byte;
 
 using namespace std;
 
-/** A class, instances of which are nodes in an HuffmanTree.
- */
+
+/*************************************************
+ *  HuffmanNode of HuffmanTree.
+ *  WARNING:    operator< must be overloaded in 
+ *  class  HuffmanNode.
+*************************************************/
 class HuffmanNode 
 {
   friend bool comp(HuffmanNode* one, HuffmanNode* other);

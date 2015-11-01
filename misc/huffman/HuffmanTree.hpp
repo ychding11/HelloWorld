@@ -78,14 +78,10 @@ class HuffmanTree
       {
         return;
       }
-
-      // If there is a left child, go left
       if(node->c0 != nullptr) 
       {
         deleteAllNodes(node->c0);
       }
-
-      // If there is a right child, go right
       if(node->c1 != nullptr) 
       {
         deleteAllNodes(node->c1);
@@ -116,7 +112,7 @@ class HuffmanTree
      *  PRECONDITION: build() has been called, to create the coding
      *  tree, and initialize mpRoot pointer and mLeaves vector.
      */
-    void encode(byte symbol, BitOutputStream& out) const;
+    int encode(byte symbol, BitOutputStream& out) const;
 
     /** Write to the given ofstream
      *  the sequence of bits (as ASCII) coding the given symbol.

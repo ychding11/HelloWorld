@@ -53,8 +53,8 @@ int main(int argc, char** argv)
   vector<int> counts(256, 0); // Keeps track of each character's frequency
   int nextChar;   // Used to store the character read from the input file    
   int total = 0;
-
-  // If the number of command-line arguments is not 3
+  int bits = 0;
+  
   if(argc != 3) 
   {
     cerr << "ERROR: Incorrect number of arguments" << endl;
@@ -99,7 +99,8 @@ int main(int argc, char** argv)
   // Encode every byte in the input file and write to the output file.
   while((nextChar = infile.get()) != EOF) 
   {
-    tree.encode(nextChar, out);
+    bits += tree.encode(nextChar, out);
   }
   out.flush();
+  printf("%d, %d, %lf\n", total, bits >> 3, (double)(bits) / (total << 3));
 }

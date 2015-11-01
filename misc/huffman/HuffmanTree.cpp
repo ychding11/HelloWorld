@@ -67,23 +67,21 @@ void HuffmanTree::build(const vector<int>& freqs)
   mpRoot = pq.top();
 }
 
-/*
- * Encodes a symbol using the Huffman tree.
- * Parameters: symbol - the symbol we are encoding
- *             out - BitOutputStream (our own implementation of a buffered
- *                   output stream)
- *
- * Result: The symbol gets encoded following the path in the Huffman tree
- *         to find that symbol, and that path, in 0s and 1s, gets written
- *         on the output file.
- */
-void HuffmanTree::encode(byte symbol, BitOutputStream& out) const 
+
+/*************************************************
+ *  Encodes a symbol using the Huffman tree 
+ *  and Write the code into bit output stream.
+ *  
+ *  return bit number used for encoding the symbol.
+*************************************************/
+int HuffmanTree::encode(byte symbol, BitOutputStream& out) const 
 {
   HuffmanNode* node(0);    // Placeholder used to traverse the tree
   stack<int> code;    // To implement the LIFO order of the traversal path
+  int bits = 0;
   
-  // Finds the leaf node whose key matches the symbol
-  for(unsigned long i=0; i<mLeaves.size(); i++) 
+  // Finds the leaf node matches the symbol
+  for(unsigned long i = 0; i < mLeaves.size(); i++) 
   {
     if(mLeaves[i]->symbol == symbol) 
     {
@@ -95,13 +93,8 @@ void HuffmanTree::encode(byte symbol, BitOutputStream& out) const
   // Loop until the mpRoot node is reached
   while(node->p != 0)
   {
-    
-    // If the node is the left child of its parent, push 0 to stack.
-    // Otherwise, push 1.
     (node == node->p->c0) ? code.push(0) : code.push(1);
-
-    // Traverse up the tree.
-    node = node->p;   
+     node = node->p;   
   }
 
   // Write all the bits in the stack in FILO order.
@@ -109,7 +102,9 @@ void HuffmanTree::encode(byte symbol, BitOutputStream& out) const
   {
     out.writeBit(code.top());
     code.pop();
+    ++bits;
   }
+  return bits;
 }
 
 /*
