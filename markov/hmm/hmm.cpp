@@ -414,7 +414,7 @@ void HMM::learn(const std::vector<Sequence> &sequences, size_t iteration)
             }
         }
         
-        //update HMM State
+        //update HMM State.
         for (size_t i = 0; i < mStateNum; ++i)
         {
             // update initialize probability
