@@ -7,12 +7,6 @@ $(warning default CXXFLAGS = $(CXXFLAGS))
 
 BUILD_PATH:=build
 
-compress_SOURCES = compress.cpp HCTree.cpp HCNode.cpp \
-                   BitInputStream.cpp BitOutputStream.cpp
-                   
-uncompress_SOURCES = uncompress.cpp HCTree.cpp HCNode.cpp \
-                     BitInputStream.cpp BitOutputStream.cpp
-
 CXX=g++
 CXXFLAGS=-c -std=c++11 -Wall -Wextra -g -O2 -I.
 LINK_FLAGS= -g -O2
