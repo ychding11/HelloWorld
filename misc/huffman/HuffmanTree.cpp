@@ -4,6 +4,7 @@
 #include "BitOutputStream.hpp"
 #include "HuffmanTree.hpp"
 #include <stack>
+#include <deque>
 
 /*************************************************
  *  Destructor.
@@ -135,6 +136,42 @@ int HuffmanTree::decode(BitInputStream& in) const
   return (int) node->symbol;
 }
 
+/*************************************************
+ *  Friend Function.
+ *  overload the operator<<.
+ *  
+ *  MUST return reference.
+ *  Why can not declare const HuffmanTree &tree
+*************************************************/
+ostream& operator<<(ostream &os,  HuffmanTree &tree) 
+{
+    
+    HuffmanNode *root = tree.mpRoot;
+    if (root == NULL)
+    {
+        os << "Huffman Tree is empty." << std::endl;
+        return os;
+    }
+    std::deque<HuffmanNode*> que;
+    que.push_back(root);
+    que.push_back(NULL);
+    while (!que.empty())
+    {
+        HuffmanNode *cur = que.front(); que.pop_front();
+        if (cur == NULL)
+        {
+            os << std::endl;
+            if (!que.empty()) que.push_back(NULL);
+        }
+        else
+        {
+            os << *cur; // pointer converted to reference
+            if (cur->c0) que.push_back(cur->c0);
+            if (cur->c1) que.push_back(cur->c1);
+        }
+    }
+    return os;
+}
 // Final Submission ends here.
 
 

@@ -56,7 +56,7 @@ public:
   HuffmanNode* c1;  // pointer to '1' child
   HuffmanNode* p;   // pointer to parent
 
-  HuffmanNode(int count, byte symbol, HuffmanNode* c0 = 0, HuffmanNode* c1 = 0, HuffmanNode* p = 0)
+  HuffmanNode(int count, byte symbol, HuffmanNode* c0 = NULL, HuffmanNode* c1 = NULL, HuffmanNode* p = NULL)
   : count(count)
   , symbol(symbol)
   , c0(c0)
@@ -71,13 +71,14 @@ public:
   bool operator<(const HuffmanNode& other);
 };
 
-/** For printing an HuffmanNode to an ostream
- *  Possibly useful for debugging.
- */
+/*************************************************
+ *  Overload operator<<.
+ *  It it useful for debugging.
+*************************************************/
 ostream& operator<<(ostream&, const HuffmanNode&) __attribute__((weak)); // shut the linker up
 ostream& operator<<(ostream& stm, const HuffmanNode& n) 
 {
-    stm << "[" << n.count << "," << (int) (n.symbol) << "]";
+    stm << "[" << n.count << "," << (int) (n.symbol) << "] ";
     return stm;
 }
 

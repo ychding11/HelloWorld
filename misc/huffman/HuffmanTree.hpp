@@ -138,6 +138,8 @@ class HuffmanTree
      *  IN THE FINAL SUBMISSION.
      */
     int decode(ifstream& in) const;
+    
+    friend ostream& operator<<(ostream &os, HuffmanTree &root);
 
 };
 

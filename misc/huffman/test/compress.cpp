@@ -80,6 +80,7 @@ int main(int argc, char** argv)
   }
  
   tree.build(counts);
+  std::cout << tree;
   
   infile.clear(); // Required to rewind the file, since it already reached EOF
   infile.seekg(0, ios::beg); // Rewind the file to beginning
