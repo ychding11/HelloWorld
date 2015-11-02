@@ -45,6 +45,7 @@
 
 #define PERFORMANCE_METER
 
+#if 0
 typedef enum tagLogLevel
 {
 LOG_LEVEL_ERR,
@@ -61,6 +62,7 @@ LogLevel gCurLoglevel = LOG_LEVLE_ALL;
 
 typedef unsigned char uint8_t;
 typedef unsigned int uint32_t;
+#endif
 
 typedef int DataType;
 
