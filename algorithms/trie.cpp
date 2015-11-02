@@ -4,39 +4,62 @@
 
 using namespace std;
 
-class TrieNode {
+class TrieNode 
+{
 public:
-    // Initialize your data structure here.
-    TrieNode() 
+    TrieNode* table[26]; //letter is case insenstive.
+    
+/*************************************************
+ *  default Constructor.
+ *  
+ *  TODO: try catch throw.
+*************************************************/
+TrieNode() 
+{
+    for (int i = 0; i < 26; i++)
     {
-        for (int i = 0; i < 26; i++)
-        {
-            table[i] = NULL;
-        }
+        table[i] = NULL;
     }
-    TrieNode* table[26];
+}    
 };
-class Trie {
+
+class Trie 
+{
+private:
+    TrieNode* root;
+    
 public:
-    Trie() 
+    
+/*************************************************
+ *  default Constructor.
+ *  
+ *  TODO: try catch throw.
+*************************************************/
+Trie() 
+{
+    root = new TrieNode();
+}
+    
+/*************************************************
+ *  Inserts a word into the trie.
+ *  
+ *  TODO: .
+*************************************************/
+void insert(string word) 
+{
+    int n = word.length();
+    TrieNode *cur = root;
+    for (int i = 0; i < n; i++)
     {
-        root = new TrieNode();
-    }
-    // Inserts a word into the trie.
-    void insert(string word) 
-    {
-        int n = word.length();
-        TrieNode *cur = root;
-        for (int i = 0; i < n; i++)
+        char ch = word[i];
+        if (NULL == cur->table[ch-'a'])
         {
-            char ch = word[i];
-            if (NULL == cur->table[ch-'a'])
-            {
-                cur->table[ch - 'a'] = new TrieNode();
-            }
-            cur = cur->table[ch-'a'];
+            cur->table[ch - 'a'] = new TrieNode();
         }
+        cur = cur->table[ch-'a'];
     }
+}
+    
     // Returns if the word is in the trie.
     bool search(string word) 
     {
@@ -53,6 +76,7 @@ public:
         }
         return true;
     }
+    
     // Returns if there is any word in the trie
     // that starts with the given prefix.
     bool startsWith(string prefix)
@@ -78,9 +102,9 @@ public:
         
         return true;
     }
-private:
-    TrieNode* root;
+
 };
+
 // Your Trie object will be instantiated and called as such:
 // Trie trie;
 // trie.insert("somestring");
