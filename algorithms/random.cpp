@@ -109,20 +109,6 @@ void gen_randint(void)
    EXIT_FUNCTION;
 }
 
-
-/* generate m distinct sorted random number in [0, n) 
- * 
- * 
- * prototype : double difftime (time_t end, time_t beginning); 
- * Calculates the difference in seconds between beginning and end.
- * this is an inexact method to meter the performance!
- *
- * advantage : no need extra space to operate.
- *
- * result is outputed to stdout, it is easy to 
- * redirect it to file.
- */
-
 /*************************************************
  *  generate m distinct sorted random numbers in 
  *  range [0, n). put the random numbers to stdout.
