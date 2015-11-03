@@ -178,6 +178,7 @@ static void count_word_freq2()
     int words = 0;
     memset(bucket, 0, sizeof(bucket)); /* clear Hash Bucket */
     
+    //read a line from stdin
     while (fgets(lineBuf, 2048, stdin) != NULL)
     {
         lines++;
@@ -200,20 +201,23 @@ static void count_word_freq2()
     {
         for (node *p = bucket[i]; p != NULL; p = p->next)
         { 
-            sprintf(lineBuf, "%-32s\t%3d\n", p->word, p->count);
-            logger << lineBuf << std::endl;
+            //sprintf(lineBuf, "%-32s\t%3d\n", p->word, p->count);
+            //logger << lineBuf << std::endl;
+            printf("%s ", p->word);
         }
     }
 
     EXIT_FUNCTION;
 }
 
-/* 
- * take advantage of C++ STL map 
- * http://www.cplusplus.com/reference/map/map/operator[]/
- * STL map: element in the container is sorted. it is 
- * the difference from privous function. 
- */
+/*************************************************
+ *  count word frequency 
+ *  take advantage of C++ STL std::map<string, int>
+ *  element in the container is sorted. So it is different
+ *  self-defined version.
+ *  http://www.cplusplus.com/reference/map/map/operator[]/
+ *   
+*************************************************/
 static void count_word_freq3()
 { 
     ENTER_FUNCTION;   
