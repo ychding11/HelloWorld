@@ -5,9 +5,6 @@
 #include <cassert>
 using namespace std;
 
-#define BUFSIZE 1024
-#define LINE_TO_STRING(x) #x 
-#define FILE_AND_LINE (__FILE__":"LINE_TO_STRING(__LINE__)) 
 
 #define PERFORMANCE_METER
 
@@ -27,7 +24,7 @@ LogLevel gCurLoglevel = LOG_LEVLE_ALL;
 
 #define MAX_WORD_LEN 128
 
-int cmp_char(const void *a, const void *b)
+int cmpChar(const void *a, const void *b)
 {
 	return *(char*)a - *(char*)b; // without type conversion
 }
@@ -38,9 +35,9 @@ int main()
 	while ((scanf("%s", word)) != EOF)
 	{
 		strcpy(key, word);
-		qsort(key, strlen(word), sizeof(char), cmp_char);
+		qsort(key, strlen(word), sizeof(char), cmpChar);
 		printf("%s %s\n", key, word);
 	}
-
+    return 0;
 }
 
