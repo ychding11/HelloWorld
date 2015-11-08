@@ -38,10 +38,13 @@
 #include <cstring>
 #include <ctime>
 #include <cassert>
+#include "Logger.h"
 
 using namespace std;
 
 #define BUFSIZE 1024
+#define DEBUG_BUFSIZE 1024
+#define ADEBUG
 
 typedef enum tagLogLevel
 {
@@ -163,11 +166,14 @@ static void demo_suffix_array()
     }
     c[i] = '\0'; /* ending of the string */
 
-    #ifdef DEBUG
-    printf("%s\n", c);
+    #ifdef ADEBUG
+    //printf("%s\n", c);
+    char buffer[DEBUG_BUFSIZE] = { 0 };
+    logger << c << std::endl;
     for (int j = 0; j < i; j++)
-    {
-        printf("%p\t%s", suffix[j], suffix[j]);
+    {        
+        sprintf(buffer, "%p\t%s\n", suffix[j], suffix[j]);
+        logger << buffer;
     }
     #endif
     
@@ -182,11 +188,12 @@ static void demo_suffix_array()
      * */
     qsort(suffix, i, sizeof(char*), cmpstr);
 
-    #ifdef DEBUG
-    printf("++++++++++++++ After sorting +++++++++++++++++""\n");
+    #ifdef ADEBUG
+    logger << "++++++++++++++ After sorting +++++++++++++++++" << std::endl;
     for (int j = 0; j < i; j++)
     {
-        printf("%p\t%s", suffix[j], suffix[j]);
+        sprintf(buffer, "%p\t%s", suffix[j], suffix[j]);
+        logger << buffer;
     }
     #endif
 
@@ -211,10 +218,11 @@ static void demo_suffix_array()
 *************************************************/
 int main(int argc, char** argv)
 {
- 
-  LOG_I("+[ %s ]\n", __FUNCTION__);
+  logger.setLevel(DEBUG);
+  logger.setLineLevel(DEBUG);
+  ENTER_FUNCTION;
   demo_suffix_array();
-  LOG_I("-[ %s ]\n", __FUNCTION__);
+  EXIT_FUNCTION;
   return 0;
 }
 
