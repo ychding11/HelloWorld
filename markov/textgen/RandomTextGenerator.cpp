@@ -58,6 +58,10 @@ RandomTextGenerator::~RandomTextGenerator()
     if (mpInStream) delete mpInStream;
 }
 
+/*************************************************
+ *  build state transition table from a input stream.
+ *  state table is used to track char transition.
+ *************************************************/
 void RandomTextGenerator::buildStateTable()
 {
   char prev = 0;
@@ -71,6 +75,11 @@ void RandomTextGenerator::buildStateTable()
   }
   mStateTable[prev][0]++;
 }
+
+/*************************************************
+ *  generate a random character for given transition
+ *  table entry.
+ *************************************************/
 char RandomTextGenerator::next(std::map<char,int> &table)
 {
     int sum = 0;
@@ -85,10 +94,12 @@ char RandomTextGenerator::next(std::map<char,int> &table)
         r -= i->second;
         if (r <= 0) { return i->first; }
     }
-
     return 0;
 }
 
+/*************************************************
+ *  generate random text with default 20 bytes.
+ *************************************************/
 void RandomTextGenerator::randomText(int bytes)
 {
     int prv = 0;
