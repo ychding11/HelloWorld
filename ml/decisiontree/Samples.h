@@ -55,7 +55,7 @@ class Samples
 private:
 	std::string dataFile;
 	const DataReader<DataType>& dataReader; //template used in template
-	std::vector<std::string> featureNames;
+	std::vector<std::string> mFeatureNames;
 	int mFeatureNum;	// number of features, excluding class label
 	std::vector<DataType*> samples;
 	int mSampleNum;
@@ -94,28 +94,34 @@ Samples<DataType>::Samples(const std::string& file, const DataReader<DataType>& 
 {
     __mlog << "Construct Sample..." << std::endl;
 	std::ifstream dataStream(dataFile.c_str());
-	if(!dataStream) throw std::runtime_error("Unable to open file " + dataFile + "!");
+	if(!dataStream)
+	{ 
+	    throw std::runtime_error("Unable to open file " + dataFile + "!");
+	}
 
+    //construct mFeatureNames from first line of input data file.
 	char line[256];
-	dataStream.getline(line, 256);  std::string str(line);
+	dataStream.getline(line, 256);  
+	std::string str(line);
     int start = 0, end = 0;
-	for(end = str.find_first_of('\t', start); end != std::string::npos; 
+	for(end = str.find_first_of('\t', start); 
+	    end != std::string::npos; 
 		start = end + 1, end = str.find_first_of('\t', start)) 
 	{
 	    log << "Search pos = " << end;
 		std::string feature = str.substr(start, end-start);
-		featureNames.push_back(feature);    ++mFeatureNum;
+		mFeatureNames.push_back(feature);    ++mFeatureNum;
 		log << " Feature Name:" << feature << " " << mFeatureNum << std::endl;
 	}	
-	featureNames.push_back(str.substr(start, str.length()-start));
-	log << "Feature Name:" << featureNames.back() << " " << mFeatureNum << std::endl;
+	mFeatureNames.push_back(str.substr(start, str.length()-start));
+	log << "Feature Name:" << mFeatureNames.back() << " " << mFeatureNum << std::endl;
 	
 #ifdef SAMPLES_DEBUG
 	std::cout<<"mFeatureNum = "<<mFeatureNum<<std::endl;
 	for(int i = 0; i < mFeatureNum; ++i)
-		std::cout<<featureNames[i]<<"\t";
+		std::cout<<mFeatureNames[i]<<"\t";
 	std::cout<<std::endl;
-	std::cout<<"category = "<<featureNames[mFeatureNum]<<std::endl;
+	std::cout<<"category = "<<mFeatureNames[mFeatureNum]<<std::endl;
 #endif
 
 	while(true) 
@@ -159,20 +165,26 @@ Samples<DataType>::~Samples()
 	}
 }
 
+/*************************************************
+ *  parse data fields from buffer line and construct
+ *  the sample.
+ *  the data fields was seperate by '\t'
+*************************************************/
 template<typename DataType>
 bool Samples<DataType>::readSample(char line[256], DataType* sample) 
 {
 	std::string str(line);
 	
 #ifdef SAMPLES_DEBUG
-	std::cout<<"str = "<<str<<std::endl;
+	std::cout<<"str = "<< str <<std::endl;
 #endif
 
 	DataType digit;
 	int i = 0;
 	size_t start = 0, end = 0;
 	__mlog << "Read data line : ";
-	for(end = str.find_first_of('\t', start); (end != std::string::npos) && (i <= mFeatureNum); 
+	for(end = str.find_first_of('\t', start); 
+	    (end != std::string::npos) && (i <= mFeatureNum); 
 	    start = end + 1, end = str.find_first_of('\t', start)) 
 	{
 		std::string digitStr = str.substr(start, end - start);
@@ -180,7 +192,14 @@ bool Samples<DataType>::readSample(char line[256], DataType* sample)
 		sample[i++] = digit;
 		__mlog << digit << " ";
 	}
-	if(dataReader(str.substr(start, str.length() - start), digit) == false) return false;
+	
+    /**
+     * handle the last columu, it is the category of the current sample
+     **/
+	if(dataReader(str.substr(start, str.length() - start), digit) == false)
+	{
+	 return false;
+	}
 	sample[i] = digit;
     __mlog << digit << std::endl;
     
@@ -192,7 +211,7 @@ bool Samples<DataType>::readSample(char line[256], DataType* sample)
 }
 
 template<typename DataType>
-int Samples<DataType>::getFeatureNum()const 
+int Samples<DataType>::getFeatureNum() const 
 {
 	return mFeatureNum;
 }
@@ -201,7 +220,7 @@ template<typename DataType>
 std::string Samples<DataType>::getFeatureName(const int index) const throw(IndexOutOfBound) 
 {
 	if(index >= mFeatureNum) throw IndexOutOfBound(index);
-	return featureNames[index];
+	return mFeatureNames[index];
 }
 
 template<typename DataType>
