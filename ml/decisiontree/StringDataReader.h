@@ -42,6 +42,10 @@
 class StringDataReader: public DataReader<std::string> 
 {
 public:
+
+/*************************************************
+ *  used as a data convertor, from string to string.
+*************************************************/
 bool operator()(const std::string& digitStr, std::string& value) const;
 };
 
