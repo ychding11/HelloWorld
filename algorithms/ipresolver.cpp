@@ -95,7 +95,7 @@ private:
              * s[startIndex] == '0' is invalid 01.xxx   03.xxx, 00.xxx
              * but 0.0.0.0 is a valid ip address 
              */
-            if (num == 0) break; 
+            if (num == 0 || num > 255)  break; 
         }
     }
 };
