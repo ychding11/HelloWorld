@@ -45,13 +45,13 @@ DecisionTree::DecisionTree(const Samples<std::string>& samples, Logger &log)
 	         , mlog(log)
 {
     mlog << "Construct DecisionTree." << std::endl;
-	std::vector<int> indexes(mSampleNum);
+	std::vector<int> indexes(mSampleNum, 0);
 	for(int i = 0; i < mSampleNum; ++i)	indexes[i] = i;
 
 	std::list<int> nonSplitColumns;
 	for(int i = 0; i < mFeatureNum; ++i) nonSplitColumns.push_back(i);
 	
-	build(mpRoot, "", indexes, nonSplitColumns);
+	build(mpRoot, "", indexes, nonSplitColumns); // learn processing
 	mlog << "Construct DecisionTree Finished." << std::endl;
 }
 

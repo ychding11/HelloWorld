@@ -40,11 +40,12 @@
 #include "Node.h"
 #include "Logger.h"
 
-/*
- * PLAN: 
- * Write a general serialize/deserialize framework in C++, 
- * and use it to store the decision tree to disk for later use.
- */
+/*************************************************
+ *  class DecisionTree
+ * 
+ *  NOTE:  it need a general serialize/deserialize 
+ *         framework to store learned decision tree.
+*************************************************/
 class DecisionTree 
 {
 private:
@@ -54,6 +55,7 @@ private:
 	InnerNode* mpRoot;
 	std::list<int> mSplitColumns;
     Logger & mlog;
+    
 public:
 	DecisionTree(const Samples<std::string>& samples, Logger &log);
 	~DecisionTree();
