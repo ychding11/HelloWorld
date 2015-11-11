@@ -47,7 +47,7 @@ using namespace std;
 #define PERFORMANCE_METER
 
 /*************************************************
- *  The class is to solver N Queens problem.
+ *  The class is to resolve the IP V4 Address.
  *
  *  NOTE: max N supported is 32.
 *************************************************/
@@ -62,18 +62,23 @@ public:
         return ret;
     }
     
-private:   
+private:  
+    /*************************************************
+     *  The helper to resolve the IP V4 Address.
+     *
+     *  result: store all resolved results.
+    *************************************************/
     void restoreIpAddressesDFS(vector<string> &result, string ip,  string &s, int startIndex, int depth) 
     {
         /* search end condition */
-        if (startIndex == s.size() && depth == 4) 
+        if (startIndex == s.size() && depth == 4) //ip address has 4 segments.
         {  
-            ip.resize(ip.size() - 1);
+            ip.resize(ip.size() - 1); //remove tail '.'
             result.push_back(ip);
             return;
         }
         
-        if (depth > 4) return;
+        if (depth > 4) return; //invalid case, skip
         
         int num = 0;
         for (int i = startIndex; i < startIndex + 3; i++) 
@@ -85,12 +90,28 @@ private:
                 ip += s[i];
                 restoreIpAddressesDFS(result, ip + '.',  s, i + 1, depth + 1);
             }
-            if (num == 0) break; /* s[startIndex] == '0' is invalid 01.xxx   03.xxx, but 0.0.0.0 is valid ip */
+            
+            /* 
+             * s[startIndex] == '0' is invalid 01.xxx   03.xxx, 00.xxx
+             * but 0.0.0.0 is a valid ip address 
+             */
+            if (num == 0) break; 
         }
     }
 };
+
+void printResult(vector<string> &ret)
+{
+    int n = ret.size();
+    for (int i = 0; i < n; i++)
+    {
+        cout << ret[i] << std::endl;
+    }
+}
+
 /*************************************************
- * just call the demo string.
+ * just for a simple testing.
+ *
 *************************************************/
 int main(int argc, char** argv)
 {
@@ -102,14 +123,17 @@ int main(int argc, char** argv)
   IpAddressResolver solver;
   while (true)
   {
-    cout << "Enter Queens number:";
+    cout << "Enter ip string(enter 'q' to quit):";
     cin >> ip;
-    if ("" == ip)
+    if ("q" == ip)
     {
         cout << "Game Over." << std::endl;
         return 0;
     }
-    solver.resolveIpAddresses(ip);
+    cout << "Ip Address: " << ip << std::endl ;
+    vector<string> ret = solver.resolveIpAddresses(ip);
+    cout << "Result:" << std::endl;
+    printResult(ret);
   }
   
   EXIT_FUNCTION;
