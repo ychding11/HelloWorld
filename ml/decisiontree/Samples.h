@@ -39,8 +39,8 @@
 #include "DataReader.h"
 #include "Logger.h"
 /*
- * Class Samples reads trainging or test samples from file and store them in a vector.
- * To read samples stored in file, user-defined converter should be provided to translate the string into data as expected.
+ * Class Samples reads trainging or test mpSamples from file and store them in a vector.
+ * To read mpSamples stored in file, user-defined converter should be provided to translate the string into data as expected.
  * Users can define their converter by inherting from interface Converter.
  */
 
@@ -57,9 +57,9 @@ private:
 	const DataReader<DataType>& dataReader; //template used in template
 	std::vector<std::string> mFeatureNames;
 	int mFeatureNum;	// number of features, excluding class label
-	std::vector<DataType*> samples;
+	std::vector<DataType*> mpSamples;
 	int mSampleNum;
-	DataType* categories;
+	DataType* mpCategories;
     Logger & __mlog;
     
 public:
@@ -76,11 +76,11 @@ public:
 	    {
             throw IndexOutOfBound(index);
 	    }
-	    return samples[index];
+	    return mpSamples[index];
 	}
 
 protected:
-	bool readSample(char line[256], DataType* sample);
+	bool readSample(char line[256], DataType* mpSample);
 };
 
 
@@ -110,7 +110,8 @@ Samples<DataType>::Samples(const std::string& file, const DataReader<DataType>& 
 	{
 	    log << "Search pos = " << end;
 		std::string feature = str.substr(start, end-start);
-		mFeatureNames.push_back(feature);    ++mFeatureNum;
+		mFeatureNames.push_back(feature);    
+		++mFeatureNum;
 		log << " Feature Name:" << feature << " " << mFeatureNum << std::endl;
 	}	
 	mFeatureNames.push_back(str.substr(start, str.length()-start));
@@ -124,33 +125,38 @@ Samples<DataType>::Samples(const std::string& file, const DataReader<DataType>& 
 	std::cout<<"category = "<<mFeatureNames[mFeatureNum]<<std::endl;
 #endif
 
+    //construct Sample from remaining lines of input data file.
 	while(true) 
 	{
 		dataStream.getline(line, 256);
-		if(dataStream.bad()) 
+		if(dataStream.bad()) //read error occurs
 		{
 			dataStream.close();
 			throw std::runtime_error("Unrecoverable errors detected when reading from file " + dataFile + "!");
 		}
-		if(dataStream.fail() && !dataStream.eof()) 
+		if(dataStream.fail() && !dataStream.eof()) //file corrupted
 		{
 			dataStream.close();
 			throw std::runtime_error("File " + dataFile + " is corrupted!");
 		}
-		if(dataStream.eof())
+		if(dataStream.eof()) //read all lines
 		{
 			dataStream.close();
 			break;
 		}
-
-		DataType* sample = new DataType[mFeatureNum + 1]; //allocate space for smaple vector
-		if(readSample(line, sample) == false) throw std::runtime_error("File " + dataFile + " is corrupted!");
-		samples.push_back(sample);
+		
+        //allocate space for a single smaple vector. the extra one is for category
+		DataType* mpSample = new DataType[mFeatureNum + 1]; 
+		if(readSample(line, mpSample) == false) 
+		{
+		    throw std::runtime_error("File " + dataFile + " is corrupted!");
+		}
+		mpSamples.push_back(mpSample);
 		++mSampleNum;
 	}
 	__mlog << "Sample Number = " << mSampleNum << std::endl;
-	categories = new DataType[mSampleNum];
-	for(int i = 0; i < mSampleNum; ++i)	categories[i] = samples[i][mFeatureNum];
+	mpCategories = new DataType[mSampleNum];
+	for(int i = 0; i < mSampleNum; ++i)	mpCategories[i] = mpSamples[i][mFeatureNum];
 	__mlog << "Construct Sample Finished" << std::endl;
 }
 
@@ -159,19 +165,19 @@ Samples<DataType>::~Samples()
 {
 	if(mSampleNum > 0) 
 	{
-		for(typename std::vector<DataType*>::iterator iter = samples.begin(); iter != samples.end(); ++iter)
+		for(typename std::vector<DataType*>::iterator iter = mpSamples.begin(); iter != mpSamples.end(); ++iter)
 		{    delete[] *iter; }
-		delete[] categories;
+		delete[] mpCategories;
 	}
 }
 
 /*************************************************
  *  parse data fields from buffer line and construct
- *  the sample.
+ *  the mpSample.
  *  the data fields was seperate by '\t'
 *************************************************/
 template<typename DataType>
-bool Samples<DataType>::readSample(char line[256], DataType* sample) 
+bool Samples<DataType>::readSample(char line[256], DataType* mpSample) 
 {
 	std::string str(line);
 	
@@ -189,18 +195,18 @@ bool Samples<DataType>::readSample(char line[256], DataType* sample)
 	{
 		std::string digitStr = str.substr(start, end - start);
 		if(dataReader(digitStr, digit) == false) return false;
-		sample[i++] = digit;
+		mpSample[i++] = digit;
 		__mlog << digit << " ";
 	}
 	
     /**
-     * handle the last columu, it is the category of the current sample
+     * handle the last columu, it is the category of the current mpSample
      **/
 	if(dataReader(str.substr(start, str.length() - start), digit) == false)
 	{
 	 return false;
 	}
-	sample[i] = digit;
+	mpSample[i] = digit;
     __mlog << digit << std::endl;
     
 #ifdef SAMPLES_DEBUG
@@ -226,7 +232,7 @@ std::string Samples<DataType>::getFeatureName(const int index) const throw(Index
 template<typename DataType>
 const DataType* Samples<DataType>::getCategories() const 
 {
-	return categories;
+	return mpCategories;
 }
 
 template<typename DataType>
