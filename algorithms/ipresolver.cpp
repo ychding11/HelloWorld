@@ -93,7 +93,8 @@ private:
             
             /* 
              * s[startIndex] == '0' is invalid 01.xxx   03.xxx, 00.xxx
-             * but 0.0.0.0 is a valid ip address 
+             * but 0.0.0.0 is a valid ip address.
+             * a tricky here to make 0.0.0.0 recoginsed as an invalid address.
              */
             if (num == 0 || num > 255)  break; 
         }
