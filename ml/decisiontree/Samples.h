@@ -125,7 +125,7 @@ Samples<DataType>::Samples(const std::string& file, const DataReader<DataType>& 
 	std::cout<<"category = "<<mFeatureNames[mFeatureNum]<<std::endl;
 #endif
 
-    //construct Sample from remaining lines of input data file.
+    //construct Samples from remaining lines of input data file.
 	while(true) 
 	{
 		dataStream.getline(line, 256);
@@ -225,7 +225,10 @@ int Samples<DataType>::getFeatureNum() const
 template<typename DataType>
 std::string Samples<DataType>::getFeatureName(const int index) const throw(IndexOutOfBound) 
 {
-	if(index >= mFeatureNum) throw IndexOutOfBound(index);
+	if(index >= mFeatureNum) //check the input param
+	{
+	    throw IndexOutOfBound(index);
+	}
 	return mFeatureNames[index];
 }
 

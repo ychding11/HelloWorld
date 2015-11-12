@@ -38,6 +38,9 @@
 #include "DecisionTree.h"
 #include "Utils.h"
 
+/*************************************************
+ * Constructor.
+*************************************************/
 DecisionTree::DecisionTree(const Samples<std::string>& samples, Logger &log)
              : mpRoot(NULL), mTrainingSamples(samples)
 	         , mFeatureNum(samples.getFeatureNum())
@@ -61,8 +64,7 @@ Node* DecisionTree::getRoot() const
 }
 
 /*************************************************
- * Function(s)
- * Test whether all samples in the same category.
+ * Check whether all samples in the same category.
 *************************************************/
 bool DecisionTree::inSameCategory(const std::vector<int>& indexes) const 
 {
@@ -201,6 +203,10 @@ float DecisionTree::calcEntropy(const int col)const
 	return -entropy;
 }
 
+/*************************************************
+ * traverse the built decision tree by level.
+ * it use queue struct
+*************************************************/
 void DecisionTree::breadthFirstTraverse() const 
 {
 	if(mpRoot == NULL)
@@ -210,10 +216,10 @@ void DecisionTree::breadthFirstTraverse() const
 	}
     mlog << "Decision Tree Info :" << std::endl;
     mlog << "------------------------------" << std::endl;
-	std::vector<int> nodeNumPerLevel(10, 0);
+	std::vector<int> nodeNumPerLevel(10, 0); //suppose max level is 10
 	++nodeNumPerLevel[0];
 	
-	std::queue<Node*> que;
+	std::queue<Node*> que; //base class pointer to reference
 	que.push(mpRoot);
 	
 	int level = 0;
