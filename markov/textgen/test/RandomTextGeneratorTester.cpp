@@ -46,22 +46,33 @@ void showhelp()
        << "-h\tDisplay this message\n\n";
 }
 
+/*************************************************
+ * a simple tester for random text generator.
+ *
+ * it can build markov model from user-defined text
+ * or a default text.
+*************************************************/
 int main(int argc, char* argv[]) 
 {
-      logger.setLevel(DEBUG);
-      logger.setLineLevel(DEBUG);
-      logger << "Tester..." << std::endl;
-      int bytes = 10;
-      if (argc == 1) 
-      {
+    logger.setLevel(DEBUG);
+    logger.setLineLevel(DEBUG);
+    logger << "Tester..." << std::endl;
+    
+    if (argc == 1) //no user cmd parameter
+    {
         RandomTextGenerator textgen;
         textgen.randomText(100);
-      } 
-      else if (argc > 1) 
-      {
-        const char *file = "";
-        RandomTextGenerator textgen(file);
-        textgen.randomText(bytes);
-      }    
+    } 
+    else if (argc > 1) 
+    {
+        if (argc == 3)
+        {
+            int bytes = atoi(argv[1]); //text bytes.
+            const char *file = argv[2];
+            logger << bytes << " " << file << std::endl;
+            RandomTextGenerator textgen(file);
+            textgen.randomText(bytes);
+        }
+    }    
     return 0;
 }
