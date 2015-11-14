@@ -128,17 +128,19 @@ void DecisionTree::build(InnerNode*& parent,
 	}
 }
 
-/*
- * Calculates entropies based on features in 'nonSplitColumns' and 
- * find the feature on which we will get the maximum entropy bases.
- * Split the items indexed by 'indexes' based on the feature found, 
- * store the feature index in 'splitColumn' and splits' indexes in splits.
+/*************************************************
+ * split samples that has not been split yet.
  *
- * [in] nonSplitColumns: input parameter, the columns hasn't been split.
- * [in] indexes: indexes of items in 'items' to split in this round.
- * [out] splitColumn: output parameter, the column on which the items will be split based in this round.
- * [out] splits: output parameter, the <feature value, item list> pairs after split in this round.
- */
+ * [in] nonSplitColumns: feartures has not been 
+ *      selected yet.
+ * [in] indexes: indexes of samples to split under
+ *               current round.
+ * [out] splitColumn: fearture selected according 
+ *                    to entropy.
+ * [out] splits: <feature value, item list> map,
+ *               the split result according to 
+ *               fearture selected.
+*************************************************/
 void DecisionTree::splitItems(const std::vector<int>& indexes, 
                               std::list<int>& nonSplitColumns, 
 	                          std::map<std::string, std::vector<int> >& splits, 
