@@ -55,7 +55,7 @@ void showhelp()
 int main(int argc, char* argv[]) 
 {
     logger.setLevel(DEBUG);
-    logger.setLineLevel(DEBUG);
+    logger.setLineLevel(INFO);
     logger << "Tester..." << std::endl;
     
     if (argc == 1) //no user cmd parameter
