@@ -7,7 +7,7 @@ $(warning default CURDIR = $(CURDIR))
 $(warning default CXXFLAGS = $(CXXFLAGS))
 
 CXX=g++
-CXXFLAGS=-c -g -W -I. -I./common
+CXXFLAGS=-c -g -W -std=c++11 -I. -I./common
 
 #SRCS := $(foreach dir,$(SUBDIRS), $(wildcard $(dir)/*.cpp)) #*/
 #LIB_SRCS := $(filter-out test.cpp,$(wildcard *.cpp))
