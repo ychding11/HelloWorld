@@ -115,6 +115,21 @@ ListNode* constructList(const vector<int> &nums)
 }
 
 /*************************************************
+ *  Helper function
+ *  destruct a linked list from a vector.
+ *  NOTE: list order is reversed.
+*************************************************/
+void destructList(ListNode *head)
+{
+    while (head)
+    {
+        ListNode *cur = head;
+        head = head->next;
+        delete cur;
+    }
+}
+
+/*************************************************
  *  Tester function
  *  reverseList algorithm tester.
  *  param: n number of elements
