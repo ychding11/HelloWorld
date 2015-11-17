@@ -169,7 +169,7 @@ void reverseListTester(int n)
         }
         tempHead = tempHead->next;
         ++c;
-    }
+    } //memory leak
     cout << "Algorithm is correct." << std::endl;
 }
 
