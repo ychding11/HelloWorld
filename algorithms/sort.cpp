@@ -262,12 +262,13 @@ void bubble_sort(DataType a[], int n)
     EXIT_FUNCTION;
 }
 
-/* quick sort helper which cannot called from outside
- * no need to check parameters.
- * do actual quick sorting here by recursion.
- * partition elements in a[p,q] into two parts.
- * 
- */
+/*************************************************
+ *  quick sort helper.
+ *  no need to check parameters.
+
+ *  do actual quick sorting here by recursion.
+ *  partition elements in a[p,q] into two parts.
+*************************************************/
 template <class DataType>
 static void partition(DataType a[], int p, int q)
 {
@@ -406,10 +407,15 @@ void set(unsigned int i) {             BitMap[i >> BIT_SORT_SHIFT] |=  (1 << (i 
 void clr(unsigned int i) {             BitMap[i >> BIT_SORT_SHIFT] &= ~(1 << (i & BIT_SORT_MASK));}
 int test(unsigned int i) { return      BitMap[i >> BIT_SORT_SHIFT] &   (1 << (i & BIT_SORT_MASK));}
 
-/* bit sort requires that no duplicate element in unsorted set
- * 1. read unsorted set & build the bit map
- * 2. check the bit map orderly, output element according to checking
- * */
+/*************************************************
+ *  bit sort requires that no duplicate elements
+ *  in unsorted set.
+ *  algorithm ideas:
+ *  1. read unsorted set & build the bit map
+ *  2. check the each bit in bit map and output 
+ *     element according to checking bit.
+ * 
+*************************************************/
 void bit_sort(DataType a[], int n)
 {
     
@@ -422,6 +428,96 @@ void bit_sort(DataType a[], int n)
     }
 }
 
+/*************************************************
+ *  Meger Sort based on linked list.             *
+ ************************************************/
+/*************************************************
+ *  ListNode struct.
+ *  NOTE: member is public.
+*************************************************/
+struct ListNode 
+{
+    int val;
+    ListNode *next;
+    
+    ListNode(int x) 
+    : val(x)
+    , next(NULL)
+    {}
+};
+
+/*************************************************
+ *  MergeSort class.
+ *  implement merge sort algorthm on linked list.
+*************************************************/
+class MergeSort
+{
+private:
+    /*************************************************
+     *  merge two sorted linked list.
+    *************************************************/
+    ListNode* merge(ListNode *a, ListNode *b)
+    {
+        ListNode node(0), *t = &node;
+        while (a && b)
+        {
+            if (a->val < b->val)
+            {
+                t->next = a; a = a->next;
+                t = t->next;
+            }
+            else
+            {
+                t->next = b; b = b->next;
+                t = t->next;
+            }
+        }
+        t->next = a ? a : b;
+        return node.next;
+    }
+
+    /*************************************************
+     * find median of a linked list.
+     * [1 2 3] return 2
+     * [1 2] return 1
+    *************************************************/   
+    ListNode* median(ListNode *h)
+    {
+        if (!h || !h->next)
+        {
+            return NULL;
+        }
+        ListNode *slow, *fast, *prv;
+        slow = fast = h;
+        prv = NULL;
+        while (fast)
+        {
+            prv = slow;
+            slow = slow->next;
+            fast = fast->next ? fast->next->next : NULL;
+        }
+        return prv;
+    }
+public:
+    /*************************************************
+     * implement merge sort.
+    *************************************************/
+    ListNode *sortList(ListNode *head) 
+    {
+        if (!head || !head->next)
+        {
+            return head;
+        }
+        ListNode *mid = median(head);
+        ListNode *back = mid->next; mid->next = NULL;
+        ListNode *front = head;
+        return merge(sortList(front), sortList(back)); //recursion    
+    }
+};
+
+/*************************************************
+ *  Tester                                       *
+*************************************************/
 enum 
 {
     SORT_TYPE_SIMPLE_INSERT = 0,
