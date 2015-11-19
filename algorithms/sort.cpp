@@ -416,11 +416,15 @@ void bit_sort(DataType a[], int n)
 {
     
     for (int i = 0; i < n; i++)
-    { set(a[i]); }
+    { 
+        set(a[i]); 
+    }
     for (int i = 0; i < MAX_INPUT_NUM; i++)
     { 
         if (test(i)) 
-        { printf(" %d ", i); }
+        { 
+            printf(" %d ", i); 
+        }
     }
 }
 
@@ -454,7 +458,7 @@ private:
     *************************************************/
     ListNode* merge(ListNode *a, ListNode *b)
     {
-        ListNode node(0), *t = &node;
+        ListNode node(0), *t = &node; //helper varible
         while (a && b)
         {
             if (a->val < b->val)
@@ -494,6 +498,7 @@ private:
         }
         return prv;
     }
+    
 public:
     /*************************************************
      * implement merge sort.
@@ -560,15 +565,16 @@ void mergeSortTester(int n)
         }
         head2 = head2->next;
     }
-    
+    std::cout << "Merge Sort algorithm correct. " << std::endl;
     //release resources
     
 }
 
 /*************************************************
- *  Tester                                       *
+ *  Tester
+ *  test algorithms based on array.
 *************************************************/
-enum 
+enum //can improve with c++11
 {
     SORT_TYPE_SIMPLE_INSERT = 0,
     SORT_TYPE_BUBBLE,
@@ -577,6 +583,7 @@ enum
     SORT_TYPE_Heap_SORT,
     SORT_TYPE_COUNT,
 };
+
 const char* sort_type_name [SORT_TYPE_COUNT] = 
 {
     "Simple insert Sort",
@@ -597,17 +604,19 @@ SortFunction sort_func_tbl[SORT_TYPE_COUNT] =
     heapSort,
 };
 
-
-
+/*************************************************
+ *  Tester
+ *  a simple tester
+*************************************************/
 int main(int argc, char** argv)
 {
     logger.setLevel(DEBUG);
-    logger.setLineLevel(DEBUG);
+    logger.setLineLevel(INFO);
     ENTER_FUNCTION;
 
     if (argc != 4)
     {
-        printf("usage error!\n"
+        printf("Usage error!\n"
                 "%s [sort type] [input size] [iteration number]\n", argv[0]); 
         return -1;
     }
@@ -615,22 +624,34 @@ int main(int argc, char** argv)
     type = atoi(argv[1]);
     n = atoi(argv[2]);
     m = atoi(argv[3]);
-    logger << DEBUG << "type = " << type << " m = " << m << " n= " << n << std:: endl;
+    logger << DEBUG << "type = " << type << " m = " << m << " n = " << n << std:: endl;
     if (n > DATA_SET_SIZE)
     {
         logger << ERROR << "input size invalid." << std::endl;
         return -2;
     }
-    for (int i = 0; i < m; i++)
+    if (type < 0) //test algorithm based on linked list
     {
-        prepare_random_data(n);
-        printf("Before\t Sorted ?  %d\n", is_sorted(gRawDataSet,n));
-        display(gRawDataSet,n);
-        sort_func_tbl[type](gRawDataSet, n);
-        printf("After\t Sorted ?  %d\n", is_sorted(gRawDataSet,n));
-        display(gRawDataSet,n);
-        printf("=============================================================\n");    
+        for (int i = 0; i < m; i++)
+        {
+            mergeSortTester(n);
+        }
     }
+    else
+    {
+        //test algorithm based on array.
+        for (int i = 0; i < m; i++)
+        {
+            prepare_random_data(n);
+            printf("Before\t Sorted ?  %d\n", is_sorted(gRawDataSet,n));
+            display(gRawDataSet,n);
+            sort_func_tbl[type](gRawDataSet, n);
+            printf("After\t Sorted ?  %d\n", is_sorted(gRawDataSet,n));
+            display(gRawDataSet,n);
+            printf("=============================================================\n");    
+        }
+    }
+       
     EXIT_FUNCTION;
     return 0;
 }
