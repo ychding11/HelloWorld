@@ -35,13 +35,12 @@
 #include <cstring>
 #include <ctime>
 #include <cassert>
+#include <vector>
 #include "Logger.h"
 
 //using namespace std;
 
 #define BUFSIZE 1024
-#define LINE_TO_STRING(x) #x 
-#define FILE_AND_LINE (__FILE__":"LINE_TO_STRING(__LINE__)) 
 
 #define PERFORMANCE_METER
 
@@ -56,12 +55,9 @@ LOG_LEVLE_ALL,
 
 LogLevel gCurLoglevel = LOG_LEVLE_ALL;
 
-#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG) fprintf(stdout,"[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR) fprintf(stdout,"[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout,"[ INFO ] "fmt,##__VA_ARGS__ ); } while(0)
-
-typedef unsigned char uint8_t;
-typedef unsigned int uint32_t;
+#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG) fprintf(stdout, "[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR) fprintf(stdout, "[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout, "[ INFO ] "fmt,##__VA_ARGS__ ); } while(0)
 #endif
 
 typedef int DataType;
@@ -508,12 +504,66 @@ public:
         {
             return head;
         }
-        ListNode *mid = median(head);
+        ListNode *mid  = median(head);
         ListNode *back = mid->next; mid->next = NULL;
         ListNode *front = head;
         return merge(sortList(front), sortList(back)); //recursion    
     }
 };
+
+/*************************************************
+ *  Helper
+ *  build a single linked list by order.
+ *  [1 2 3] ---> {1-->2-->3}
+*************************************************/
+ListNode* buildList(const std::vector<int> &nums)
+{
+    ListNode node(0), *tempTail = &node;
+    for (unsigned int i = 0; i < nums.size(); i++)
+    {
+        ListNode *temp = new ListNode(nums[i]);
+        if (temp)
+        {
+            tempTail->next = temp;
+            tempTail = temp;
+        }
+        else
+        {
+            std::cout << "Out of memory." << std::endl;
+            return node.next;
+        }
+    }
+    return node.next;
+}
+
+/*************************************************
+ *  Tester
+ *  check correctness of merge sort.
+*************************************************/
+void mergeSortTester(int n)
+{
+    assert(n > 0);
+    std::vector<int> nums(n, 0);
+    for (int i = 0; i < n; i++) //generate data 
+    {
+        nums[i] = rand() % n;
+    }
+    ListNode *head = buildList(nums);
+    MergeSort ms;
+    ListNode *head2 = ms.sortList(head); //apply algorithm
+    while (head2 && head2->next) //check result
+    {
+        if (head2->val > head2->next->val)
+        {
+            std::cout << "Unsorted " << head2->val << " " << head2->next->val << std::endl;
+            return;
+        }
+        head2 = head2->next;
+    }
+    
+    //release resources
+    
+}
 
 /*************************************************
  *  Tester                                       *
