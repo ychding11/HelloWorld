@@ -301,13 +301,17 @@ static void partition(DataType a[], int p, int q)
     EXIT_FUNCTION;
 }
 
-/* 
- * clock() : RETURN The number of clock ticks elapsed
- * since an epoch related to the particular program execution. so when the 
- * program is sleeping the time is not caculated! 
- * CLOCKS_PER_SEC is involved when caculating runtime in second unit.
- * quick sort is very fast. so to meter the perfomance, call time() is not practical.
- */
+/*************************************************
+ *  quick sort template.
+ *  clock() : RETURN The number of clock ticks
+ *  elapsed since an epoch related to the particular
+ *  program execution. so when the program is sleeping
+ *  the time is not caculated! 
+ *  CLOCKS_PER_SEC is involved when caculating runtime 
+ *  in second unit.
+ *  NOTE: quick sort is very fast. so to meter the
+ *        performance, call time() is not practical.
+*************************************************/
 template <class DataType>
 void quick_sort(DataType a[], int n)
 {
@@ -330,18 +334,27 @@ void quick_sort(DataType a[], int n)
     EXIT_FUNCTION;
 }
 
-/* priority queue 
- * class template definition 
- * The heap is Min heap. the elements at heap top is minimum.
- * */
-template <class T>
+/*************************************************
+ *  priority queue  template.
+ *  it is a MIN heap.
+ *  implement two interfaces:
+ *  1. insert().
+ *  2. extract_min().
+ *  NOTE: implementation in class definition will
+ *        be regarded as inline function.
+*************************************************/
+template <class T> 
 class PriQueue
 {
 private:
     T *_p;
     int _n, _maxsize;
     void swap(int i, int j)
-    { T temp = _p[i]; _p[i] = _p[j]; _p[j] = temp;    }
+    { 
+        T temp = _p[i]; 
+        _p[i]  = _p[j]; 
+        _p[j]  = temp;
+    }
 
 public:
     PriQueue(int m)
@@ -351,7 +364,6 @@ public:
         _p = new T[_maxsize + 1];
     }
     
-    /* implementation in class definition will be inline */
     void insert(T t) 
     {
         int i, p;
@@ -375,7 +387,14 @@ public:
     }
 };
 
-/* heap sort based on priority queue */
+/*************************************************
+ *  heap sort template.
+ *  heap sort based on priority queue.
+ *  algorithm ideas:
+ *  1. read data & build priority queue.
+ *  2. extract min element from queue one by one
+ *     & write value to an array.
+*************************************************/
 template <class DataType>
 void heapSort(DataType a[], int n)
 {
@@ -428,9 +447,6 @@ void bit_sort(DataType a[], int n)
     }
 }
 
-/*************************************************
- *  Meger Sort based on linked list.             *
- ************************************************/
 /*************************************************
  *  ListNode struct.
  *  NOTE: member is public.
