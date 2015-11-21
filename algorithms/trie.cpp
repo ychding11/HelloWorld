@@ -221,6 +221,15 @@ void trieTester(int n = 10)
     printf("Algorithms correct.\n");
 }
 
+/*************************************************
+ *  tester
+ *  test trie interface.
+ *  Segmentation fault core dumped.
+ *  ulimit -c  to check whether core dump is enabled.
+ *  ulimit -c unlimited  to enable core dump,
+ *  the dumped file in current directory.
+ *  gdb ./program ./core
+*************************************************/
 int main(int argc, char** argv)
 {
   logger.setLevel(DEBUG);
