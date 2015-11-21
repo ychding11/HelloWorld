@@ -85,6 +85,11 @@ public:
     bool insert(const std::string& word) 
     {
         int n = word.length();
+        if (n <= 0) 
+        {
+            printf("Error, empty string. line: %d\n", __LINE__);
+            return false;
+        }
         TrieNode *cur = root;
         for (int i = 0; i < n; i++)
         {
@@ -153,6 +158,25 @@ public:
 // trie.insert("somestring");
 // trie.search("key");
 
+void lowCase(char *str)
+{
+    assert(str != NULL);
+    for (; *str; ++str)
+    {
+        if (*str >= 'A' && *str <= 'Z')
+        {
+            *str = 'a' + (*str - 'A');
+        }
+        else if (*str >= 'a' && *str <= 'z')
+        {
+        }
+        else
+        {
+            *str = '\0'; break;
+        }
+    }
+}
+
 void trieTester(int n = 10)
 {
     assert(n > 0);
@@ -160,16 +184,17 @@ void trieTester(int n = 10)
 	char buf[128];
 	std::vector<std::string> pool;
 	int words = 0;
-	while ((scanf("%s", buf)) != EOF) //read word from stdin
+	while ((fgets(buf, 128, stdin)) != NULL) //read word from stdin
 	{
 	    ++words;
+	    lowCase(buf);
 	    std::string word(buf);
-	    logger << "Read <" << word << ">" << std::endl;
+	    logger << words << " Read <" << word << ">" << std::endl;
 	    pool.push_back(word);
 	    if (true != trie.insert(word))
 	    {
-	        printf("Test failed, insert <%s> error. \n", word.c_str());
-	        return;
+	        printf("Info, insert(%s) error. \n", word.c_str());
+	        //return;
 	    }
 	}
 	srand(time(NULL));
@@ -179,13 +204,13 @@ void trieTester(int n = 10)
 	    std::string str = pool[index];
 	    if ( true != trie.search(str)) //test search()
 	    {
-	        printf("Test failed. while search <%s>\n", str.c_str());
+	        printf("Test failed. while search(%s)\n", str.c_str());
 	        return;
 	    }
 	    str.pop_back();
 	    if ( true != trie.startsWith(str)) //test startsWith()
 	    {
-	        printf("Test failed. while startsWith <%s>\n", str.c_str());
+	        printf("Test failed. while startsWith(%s)\n", str.c_str());
 	        return;
 	    }
 	}
