@@ -79,18 +79,24 @@ public:
      *  Inserts a word into the trie. 
      *  TODO: .
     *************************************************/
-    void insert(std::string word) 
+    void insert(const std::string& word) 
     {
         int n = word.length();
         TrieNode *cur = root;
         for (int i = 0; i < n; i++)
         {
             char ch = word[i];
-            if (NULL == cur->table[ch-'a'])
+            int index = ch-'a';
+            if (index > 25 || index < 0)
             {
-                cur->table[ch - 'a'] = new TrieNode();
+                printf("Error, invalid character[%d]. line: %d\n", ch, __LINE__);
+                return;
             }
-            cur = cur->table[ch-'a'];
+            if (NULL == cur->table[index])
+            {
+                cur->table[index] = new TrieNode();
+            }
+            cur = cur->table[index];
         }
         cur->isword = true; //marking ending here is a word.
     }
