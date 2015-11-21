@@ -47,7 +47,6 @@ using namespace std;
 
 /*************************************************
  *  ListNode struct.
- *
  *  NOTE: member is public.
 *************************************************/
 struct ListNode 
@@ -64,7 +63,6 @@ struct ListNode
 /*************************************************
  *  ListAlgorithms class -- a collection of classic
  *  list algorithms.
- *
  *  NOTE: .
 *************************************************/
 class ListAlgorithms
@@ -86,6 +84,70 @@ public:
             hd->next = cur;
         }
         return tempHead.next;
+    }
+    
+    /*************************************************
+     *  rotateRight. 
+     *  example:
+     *  1->2->3->4->5->NULL and k = 2.
+     *  4->5->1->2->3->NULL.
+    *************************************************/
+    ListNode *rotateRight(ListNode *head, int k) 
+    {
+        again:  
+        if (!head || !head->next || k <= 0) //check param
+        {   return head;    }
+        
+        ListNode *p = head;
+        int n = 0, m = k;
+        while (p && m > 0) {    n++; p = p->next; m--; }
+        if (p == NULL)     {    k = k % n; goto again; }
+        if (m <= 0)
+        {
+            ListNode *cur = head, *ret = NULL;
+            while (p && p->next) {  cur = cur->next; p = p->next; }
+            ret = cur->next; cur->next = NULL; //find 'cut point'
+            if (p) p->next = head;
+            return ret;
+        }
+    }
+    
+     /*************************************************
+     *  removeNthFromEnd. 
+     *  example:
+     *  1->2->3->4->5->NULL and n = 2.
+     *  1->2->3->5->NULL.
+    *************************************************/
+    ListNode* removeNthFromEnd(ListNode* head, int n) 
+    {
+        assert((head != NULL) && (n > 0));
+        ListNode *p, *q, *prv;
+        p = q = head; prv = NULL;
+        int i = 0;
+        for (i = 0; q && i < n; i++, q = q->next); //move n step from head-->tail
+        if (!q && i < n)
+        {
+            printf("Error, invalid param n = %d, line: %d\n", n, __LINE__);
+            return head;
+        }
+        while (q) //continue moving p && q start moving
+        {   
+            prv = p; p = p->next;  
+            q = q->next; 
+        }
+        if (!prv)
+        { 
+            ListNode *ret = p->next;
+            delete p; /* delete Node p */
+            return ret;
+        }
+        else 
+        { 
+            prv->next = p->next; 
+            ListNode *temp = p; 
+            delete temp; /* delete Node p*/
+            return head;
+        }
     }
 };
 
