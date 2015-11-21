@@ -49,8 +49,9 @@ using namespace std;
 /*************************************************
  *  The class CourseJudge.
  *
- *  NOTE: indegrees[] is the key info for toplogic
- *        sort.
+ *  indegrees[] is the key info for toplogic
+ *  sort.
+ *  NOTE: it need c++11 support.
 *************************************************/
 class CourseJudge 
 {
