@@ -40,6 +40,10 @@
 #include "Logger.h"
 //using namespace std;
 
+/*************************************************
+ *  TrieNode.  
+ *  NOTE: only LOWCASE is supported.
+*************************************************/
 class TrieNode 
 {
 public:
@@ -47,7 +51,6 @@ public:
     bool isword;
     /*************************************************
      *  default Constructor.
-     *  
      *  TODO: try catch throw.
     *************************************************/
     TrieNode() : isword(false)
@@ -77,9 +80,9 @@ public:
         
     /*************************************************
      *  Inserts a word into the trie. 
-     *  TODO: .
+     *  NOTE: only lowcase letter is supported.
     *************************************************/
-    void insert(const std::string& word) 
+    bool insert(const std::string& word) 
     {
         int n = word.length();
         TrieNode *cur = root;
@@ -90,7 +93,7 @@ public:
             if (index > 25 || index < 0)
             {
                 printf("Error, invalid character[%d]. line: %d\n", ch, __LINE__);
-                return;
+                return false;
             }
             if (NULL == cur->table[index])
             {
@@ -99,6 +102,7 @@ public:
             cur = cur->table[index];
         }
         cur->isword = true; //marking ending here is a word.
+        return true;
     }
     
     /*************************************************
@@ -156,13 +160,17 @@ void trieTester(int n = 10)
 	char buf[128];
 	std::vector<std::string> pool;
 	int words = 0;
-	while ((scanf("%s", buf)) != EOF)
+	while ((scanf("%s", buf)) != EOF) //read word from stdin
 	{
 	    ++words;
 	    std::string word(buf);
-	    logger << "Read " << word << std::endl;
+	    logger << "Read <" << word << ">" << std::endl;
 	    pool.push_back(word);
-	    trie.insert(word);
+	    if (true != trie.insert(word))
+	    {
+	        printf("Test failed, insert <%s> error. \n", word.c_str());
+	        return;
+	    }
 	}
 	srand(time(NULL));
 	for (int i = 0; i < n; ++i)
@@ -171,13 +179,13 @@ void trieTester(int n = 10)
 	    std::string str = pool[index];
 	    if ( true != trie.search(str)) //test search()
 	    {
-	        printf("Test failed. while search %s\n", str.c_str());
+	        printf("Test failed. while search <%s>\n", str.c_str());
 	        return;
 	    }
 	    str.pop_back();
 	    if ( true != trie.startsWith(str)) //test startsWith()
 	    {
-	        printf("Test failed. while startsWith %s\n", str.c_str());
+	        printf("Test failed. while startsWith <%s>\n", str.c_str());
 	        return;
 	    }
 	}
