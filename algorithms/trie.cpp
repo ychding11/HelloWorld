@@ -31,28 +31,32 @@
  */
  
 #include <cstdio>
+#include <cassert>
+#include <ctime>
+#include <cstdlib>
 #include <string>
 #include <iostream>
-
-using namespace std;
+#include <vector>
+#include "Logger.h"
+//using namespace std;
 
 class TrieNode 
 {
 public:
     TrieNode* table[26]; //letter is case insenstive.
     bool isword;
-/*************************************************
- *  default Constructor.
- *  
- *  TODO: try catch throw.
-*************************************************/
-TrieNode() : isword(false)
-{
-    for (int i = 0; i < 26; i++)
+    /*************************************************
+     *  default Constructor.
+     *  
+     *  TODO: try catch throw.
+    *************************************************/
+    TrieNode() : isword(false)
     {
-        table[i] = NULL;
-    }
-}    
+        for (int i = 0; i < 26; i++)
+        {
+            table[i] = NULL;
+        }
+    }    
 };
 
 class Trie 
@@ -62,43 +66,41 @@ private:
     
 public:
     
-/*************************************************
- *  default Constructor.
- *  
- *  TODO: try catch throw.
-*************************************************/
-Trie() 
-{
-    root = new TrieNode();
-}
-    
-/*************************************************
- *  Inserts a word into the trie.
- *  
- *  TODO: .
-*************************************************/
-void insert(string word) 
-{
-    int n = word.length();
-    TrieNode *cur = root;
-    for (int i = 0; i < n; i++)
+    /*************************************************
+     *  default Constructor.
+     *  TODO: try catch throw.
+    *************************************************/
+    Trie() 
     {
-        char ch = word[i];
-        if (NULL == cur->table[ch-'a'])
-        {
-            cur->table[ch - 'a'] = new TrieNode();
-        }
-        cur = cur->table[ch-'a'];
+        root = new TrieNode();
     }
-    cur->isword = true; //marking ending here is a word.
-}
+        
+    /*************************************************
+     *  Inserts a word into the trie. 
+     *  TODO: .
+    *************************************************/
+    void insert(std::string word) 
+    {
+        int n = word.length();
+        TrieNode *cur = root;
+        for (int i = 0; i < n; i++)
+        {
+            char ch = word[i];
+            if (NULL == cur->table[ch-'a'])
+            {
+                cur->table[ch - 'a'] = new TrieNode();
+            }
+            cur = cur->table[ch-'a'];
+        }
+        cur->isword = true; //marking ending here is a word.
+    }
     
-/*************************************************
- *  Search word in trie.
- *  Returns if the word is in the trie.
- *  TODO: .
-*************************************************/
-    bool search(string word) 
+    /*************************************************
+     *  Search word in trie.
+     *  Return true if the word is in the trie.
+     *  TODO: .
+    *************************************************/
+    bool search(std::string word) 
     {
         int n = word.length();
         TrieNode *cur = root;
@@ -114,29 +116,25 @@ void insert(string word)
         return cur->isword;
     }
     
-    // Returns 
-    // that starts with the given prefix.
-/*************************************************
- *  Search if there is any word in the trie starting
- *  with prefix.
- *  
- *  TODO: .
-*************************************************/
-bool startsWith(string prefix)
-{
-    int n = prefix.length();
-    TrieNode *cur = root;
-    for (int i = 0; i < n; i++)
+    /*************************************************
+     *  Search if there are any words in the trie starting
+     *  with prefix, if so return true.
+    *************************************************/
+    bool startsWith(std::string prefix)
     {
-        char ch = prefix[i];
-        if (NULL == cur->table[ch-'a'])
+        int n = prefix.length();
+        TrieNode *cur = root;
+        for (int i = 0; i < n; i++)
         {
-           return false;
-        }
-        cur = cur->table[ch-'a'];
-    }      
-    return true; //don't care cur is word or not.
-}
+            char ch = prefix[i];
+            if (NULL == cur->table[ch-'a'])
+            {
+               return false;
+            }
+            cur = cur->table[ch-'a'];
+        }      
+        return true; //don't care cur is word or not.
+    }
 
 };
 
@@ -145,19 +143,57 @@ bool startsWith(string prefix)
 // trie.insert("somestring");
 // trie.search("key");
 
-int main()
+void trieTester(int n = 10)
 {
-	Trie trie;
+    assert(n > 0);
+    Trie trie;
 	char buf[128];
+	std::vector<std::string> pool;
+	int words = 0;
 	while ((scanf("%s", buf)) != EOF)
 	{
+	    ++words;
 	    std::string word(buf);
+	    logger << "Read " << word << std::endl;
+	    pool.push_back(word);
 	    trie.insert(word);
 	}
-	// how to analyze the memory usage after while loop?
-	printf("search word, startwith Enter your cmd>");
-	//scanf("%s",)
-	cout << trie.search("a");
-	cout << trie.startsWith("a");
-	cout << endl;
+	srand(time(NULL));
+	for (int i = 0; i < n; ++i)
+	{
+	    int index = rand() % words;
+	    std::string str = pool[index];
+	    if ( true != trie.search(str)) //test search()
+	    {
+	        printf("Test failed. while search %s\n", str.c_str());
+	        return;
+	    }
+	    str.pop_back();
+	    if ( true != trie.startsWith(str)) //test startsWith()
+	    {
+	        printf("Test failed. while startsWith %s\n", str.c_str());
+	        return;
+	    }
+	}
+    printf("Algorithms correct.\n");
+}
+
+int main(int argc, char** argv)
+{
+  logger.setLevel(DEBUG);
+  logger.setLineLevel(DEBUG);
+  ENTER_FUNCTION;
+  if (argc == 2)
+  {
+    int n = atoi(argv[1]);
+    logger << "n = " << n << std::endl;
+    trieTester(n);
+  }
+  else
+  {
+    trieTester();
+  }
+  EXIT_FUNCTION;
+  return 0;
+	
 }
