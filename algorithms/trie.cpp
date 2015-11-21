@@ -153,11 +153,11 @@ public:
 
 };
 
-// Your Trie object will be instantiated and called as such:
-// Trie trie;
-// trie.insert("somestring");
-// trie.search("key");
-
+/*************************************************
+ *  lowCase
+ *  transform a string into lowcase form.
+ *  NOTE: ensure only [a-z, A-Z] in string.
+*************************************************/
 void lowCase(char *str)
 {
     assert(str != NULL);
@@ -177,6 +177,10 @@ void lowCase(char *str)
     }
 }
 
+/*************************************************
+ *  tester
+ *  test trie interface.
+*************************************************/
 void trieTester(int n = 10)
 {
     assert(n > 0);
