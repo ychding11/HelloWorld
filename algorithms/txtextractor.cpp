@@ -54,9 +54,9 @@ LOG_LEVEL_ALL,
 
 LogLevel gCurLoglevel = LOG_LEVEL_ERR; //set the current log level
 
-#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG) fprintf(stdout,"[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR) fprintf(stdout,"[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout,"[ INFO ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG)  fprintf(stdout, "[ debug ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR)  fprintf(stdout, "[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout, "[ INFO ] "fmt,##__VA_ARGS__ ); } while(0)
 
 char to_lowcase(char ch)
 {
@@ -65,12 +65,12 @@ char to_lowcase(char ch)
     else return -1;
 }
 
-/* 
- * fgets takes newline ('\n') as a valid character 
- * reference: http://www.cplusplus.com/reference/cstdio/fgets/?kw=fgets
- *
- * return: number of lines in a txt file. 
- */
+/*************************************************
+ *  count lines in a txt file.
+ *  fgets takes newline ('\n') as a valid character 
+ *  reference: 
+ *  http://www.cplusplus.com/reference/cstdio/fgets/?kw=fgets
+*************************************************/
 static unsigned int count_line(char *filename)
 {
     int lines = 0;
@@ -79,7 +79,7 @@ static unsigned int count_line(char *filename)
     fp = fopen(filename, "r");
     if (NULL == fp)
     {
-        printf("Open file error! [ %s ] line:%d\n", filename, __LINE__);
+        printf("Open [ %s ] error!  line:%d\n", filename, __LINE__);
         return -1;
     }
     while (fgets(buf, BUFSIZE, fp)) 
@@ -93,10 +93,10 @@ static unsigned int count_line(char *filename)
     return lines;
 }
 
-/* 
- * struct hash node 
- * used to count word frequency 
- */
+/*************************************************
+ *  struct Hash node 
+ *  used to count word frequency 
+*************************************************/
 typedef struct node
 {
 char *word;
@@ -109,10 +109,10 @@ struct node *next;
 
 node* bucket[NHASH]; // hash bucket
 
-/* 
+/*************************************************
  * Hash function: turn a string(word) into an  interger. 
- * The interger will be used as an index to locate hash bucket. 
- */
+ * The int used as an index to locate hash bucket.
+*************************************************/
 static unsigned int hash(char *str)
 {
     assert(str != NULL);
@@ -122,12 +122,16 @@ static unsigned int hash(char *str)
     return n % NHASH;
 }
 
-/* insert a word into hash bucket. */
+/*************************************************
+ * insert a word into hash bucket.
+ * use linked list to solve confilicts.
+ * NOTE: ensure no space in word.
+*************************************************/
 void insert_word(char *word)
 {
     assert(word != NULL);
     unsigned int index = hash(word);
-    node *p;
+    node *p = NULL;
     for(p = bucket[index]; p != NULL; p = p->next)
     {
         if (strcmp(p->word, word) == 0) // word already in bucket
@@ -140,14 +144,17 @@ void insert_word(char *word)
     p->count = 1;
     p->word = (char*)malloc(sizeof(word) + 1);
     strcpy(p->word, word);
-    p->next = bucket[index];
+    p->next = bucket[index]; //put new hash node into bucket.
     bucket[index] = p;
 }
 
-/* 
- * read text from stdin and count all world and its frequency.
- * define world : strings seperated by blank regardless of actual meaning.  
- */
+/*************************************************
+ * read lines from stdin && count all world
+ * and its frequency.
+ * 
+ * define world : strings seperated by blank
+ *                regardless of actual meaning. 
+*************************************************/
 static void count_word_freq()
 {    
     char buf[128];       /* supose longest world 127 character */
@@ -159,17 +166,28 @@ static void count_word_freq()
     for (int i = 0; i < NHASH; i++)
     {
         for (node *p = bucket[i]; p != NULL; p = p->next)
-        { printf("%64s\t%d\n", p->word, p->count);}
+        { 
+            //printf("%64s\t%d\n", p->word, p->count); //print word and its frequency
+            printf("%64s\n", p->word); //print word only
+        }
     }
 }
 
 #define DELIMETER "():.,'?-! \n;"
 
 /* define the world : strings seperated by blank  
+ 
+ */
+/*************************************************
+ * read lines from stdin && count all distinct words
+ * and its frequency.
  * printf reference:
  * http://www.cplusplus.com/reference/cstdio/printf/?kw=printf
- */
-static void count_word_freq2()
+ *
+ * NOTE: it can seperate word by delimeter defined
+ *       by user.
+*************************************************/
+static void distinctWords()
 {    
     ENTER_FUNCTION;
     char wordBuf[128];        /* longest world 127 character */
@@ -203,10 +221,10 @@ static void count_word_freq2()
         { 
             //sprintf(lineBuf, "%-32s\t%3d\n", p->word, p->count);
             //logger << lineBuf << std::endl;
-            printf("%s ", p->word);
+            printf("%s\n", p->word);
         }
     }
-
+    printf("%d\n", words);
     EXIT_FUNCTION;
 }
 
@@ -258,10 +276,10 @@ static void count_word_freq3()
 int main(int argc, char** argv)
 {
   logger.setLevel(DEBUG);
-  logger.setLineLevel(DEBUG);
+  logger.setLineLevel(INFO);
   ENTER_FUNCTION;
   
-  count_word_freq3();
+  distinctWords();
   
   EXIT_FUNCTION;
   return 0;
