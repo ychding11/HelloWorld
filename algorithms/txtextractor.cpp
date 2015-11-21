@@ -44,6 +44,8 @@
 #define BUFSIZE 1024
 #define LINE_TO_STRING(x) #x
 
+#define DELIMETER "():.,'?-! \n;"
+
 typedef enum tagLogLevel
 {
 LOG_LEVEL_ERR,
@@ -126,12 +128,18 @@ static unsigned int hash(char *str)
  * insert a word into hash bucket.
  * use linked list to solve confilicts.
  * NOTE: ensure no space in word.
+ * what is different between 13 and '\n'
 *************************************************/
 void insert_word(char *word)
 {
     assert(word != NULL);
-    unsigned int index = hash(word);
-    node *p = NULL;
+    if (!*word || (*word == ' ') || (*word == 13)) //empty string || contains space or newline
+    {
+        logger << "Invalid word: <" << word << "> to insert." << std::endl;
+        return;
+    }
+    node* p = NULL;
+    int index = hash(word);
     for(p = bucket[index]; p != NULL; p = p->next)
     {
         if (strcmp(p->word, word) == 0) // word already in bucket
@@ -146,6 +154,7 @@ void insert_word(char *word)
     strcpy(p->word, word);
     p->next = bucket[index]; //put new hash node into bucket.
     bucket[index] = p;
+    logger << "Insert word: <" << word << "> (" << (int)*word << ") OK." << std::endl;
 }
 
 /*************************************************
@@ -173,11 +182,6 @@ static void count_word_freq()
     }
 }
 
-#define DELIMETER "():.,'?-! \n;"
-
-/* define the world : strings seperated by blank  
- 
- */
 /*************************************************
  * read lines from stdin && count all distinct words
  * and its frequency.
@@ -203,16 +207,15 @@ static void distinctWords()
         char *p = strtok(lineBuf, DELIMETER);
         while (NULL != p)
         {    
-            words++;
             logger << "Get word: " << p << std::endl;
             insert_word(p);
             p = strtok(NULL, DELIMETER);
         }
     }
     
-    sprintf(lineBuf, "contains %d lines\n", lines);
+    sprintf(lineBuf, "contains %d lines", lines);
     logger << lineBuf << std::endl;
-    sprintf(lineBuf, "contains %d words\n", words);
+    sprintf(lineBuf, "contains %d words", words);
     logger << lineBuf << std::endl;
     
     for (int i = 0; i < NHASH; i++)
@@ -222,6 +225,7 @@ static void distinctWords()
             //sprintf(lineBuf, "%-32s\t%3d\n", p->word, p->count);
             //logger << lineBuf << std::endl;
             printf("%s\n", p->word);
+            ++words;
         }
     }
     printf("%d\n", words);
@@ -258,9 +262,9 @@ static void count_word_freq3()
         }
     }
     
-    sprintf(lineBuf, "contains %d lines\n", lines);
+    sprintf(lineBuf, "contains %d lines", lines);
     logger << lineBuf << std::endl;
-    sprintf(lineBuf, "contains %d words\n", words);
+    sprintf(lineBuf, "contains %d words", words);
     logger << lineBuf << std::endl;
     
     for ( i = mapTable.begin(); i != mapTable.end(); i++)
