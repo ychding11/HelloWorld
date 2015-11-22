@@ -32,13 +32,65 @@
  */
  
 #include "HuffmanTree.hpp"
-
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <cstdio>
 
 using namespace std;
+
+int encode(const char *rawFile, const char *enFile)
+{
+    if (enFile == NULL || rawFile == NULL)
+    {
+        printf("ERROR, invalide params. line: %d\n", __LINE__);
+        return -1;
+    }   
+    HuffmanTree tree; // Huffman tree   
+    ifstream infile(rawFile, ios::binary);  //input file
+    ofstream outfile(enFile, ios::binary);  //output file
+    if(!infile.good() || infile.peek() == EOF) 
+    {
+        printf("ERROR: Input file is corrupted or empty.""line: %d\n", __LINE__);
+        return -2;
+    }
+     
+    vector<int> counts(256, 0); //keep track of each byte's frequency
+    int nextChar;   //store the character read from the input file
+    int total = 0;
+    int bits = 0;
+    //loop raw file to caculte 'byte frequency'
+    while((nextChar = infile.get()) != EOF) 
+    {
+      counts[nextChar]++;
+      total++;
+    } 
+    tree.build(counts);
+    //std::cout << tree;
+    
+    infile.clear(); //required to rewind the file, since it already reached EOF
+    infile.seekg(0, ios::beg); //rewind the file to beginning
+    
+    //construct bit Stream
+    BitInputStream  in(infile);
+    BitOutputStream out(outfile);
+
+    out.writeInt(total); // Write the total number of bytes to output file.
+    // Write the entire frequency vector to the header of the output file 
+    for(unsigned long i=0; i<counts.size(); i++) 
+    {
+        out.writeInt(counts[i]);
+    }
+
+    // Encode every byte in the input file and write to the output file.
+    while((nextChar = infile.get()) != EOF) 
+    {
+        bits += tree.encode(nextChar, out);
+    }
+    out.flush();
+    printf("Original size = %d, Encoded size = %d, %lf\n", total, bits >> 3, (double)(bits) / (total << 3));
+    return 0;
+}
 
 void usage(const char *app)
 {
@@ -47,61 +99,13 @@ void usage(const char *app)
 
 int main(int argc, char** argv) 
 {
-  HuffmanTree tree;      // Huffman tree
-  ifstream infile;  // Input file
-  ofstream outfile; // Output file
-  vector<int> counts(256, 0); // Keeps track of each character's frequency
-  int nextChar;   // Used to store the character read from the input file    
-  int total = 0;
-  int bits = 0;
-  
   if(argc != 3) 
   {
-    cerr << "ERROR: Incorrect number of arguments" << endl;
+    std::cerr << "Usage ERROR: Incorrect number of arguments" << std::endl;
     usage(argv[0]);
-    exit(0);
+    return 0;
   }
-  
-  infile.open(argv[1], ios::binary); 
-  outfile.open(argv[2], ios::binary);  
-
-  // If the file is good and has something
-  if(!infile.good() || infile.peek() == EOF) 
-  {
-    cerr << "ERROR: Input file is corrupted or empty." << endl;
-    exit(0);
-  }
-
-  // Loop Input file to caculte 'byte frequency'
-  while((nextChar = infile.get()) != EOF) 
-  {
-      counts[nextChar]++;
-      total++;
-  }
- 
-  tree.build(counts);
-  std::cout << tree;
-  
-  infile.clear(); // Required to rewind the file, since it already reached EOF
-  infile.seekg(0, ios::beg); // Rewind the file to beginning
-  
-  //Construct Bit Stream
-  BitInputStream  in(infile);
-  BitOutputStream out(outfile);
-
-  out.writeInt(total); // Write the total number of bytes in input file.
-
-  // Write the entire counts vector at the header of the output file 
-  for(unsigned long i=0; i<counts.size(); i++) 
-  {
-    out.writeInt(counts[i]);
-  }
-
-  // Encode every byte in the input file and write to the output file.
-  while((nextChar = infile.get()) != EOF) 
-  {
-    bits += tree.encode(nextChar, out);
-  }
-  out.flush();
-  printf("%d, %d, %lf\n", total, bits >> 3, (double)(bits) / (total << 3));
+  printf("Encode:<%s>---><%s>\n", argv[1], argv[2]);
+  encode(argv[1], argv[2]);
+  return 0;
 }
