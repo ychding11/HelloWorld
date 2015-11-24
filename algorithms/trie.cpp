@@ -219,6 +219,7 @@ void trieTester(int n = 10)
 	    }
 	}
     printf("Algorithms correct.\n");
+    //release resource
 }
 
 /*************************************************
