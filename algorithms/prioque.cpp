@@ -213,7 +213,7 @@ int main(int argc, char** argv)
 	n = atoi(argv[2]);  /* test iterations */
 	
 	logger << "m = " << m << "n = " << n << std::endl;
-    if (m < 0 || n < 0)
+    if (m < 0 || n < 0) //bugs here.
     {
         printf("ERROR, input error. line : %d\n", __LINE__);
         return -2;
