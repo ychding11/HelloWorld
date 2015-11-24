@@ -231,7 +231,8 @@ void reverseListTester(int n)
         }
         tempHead = tempHead->next;
         ++c;
-    } //memory leak
+    }
+    destructList(result); //release memory.
     cout << "Algorithm is correct." << std::endl;
 }
 
@@ -243,7 +244,7 @@ int main(int argc, char** argv)
   logger.setLevel(DEBUG);
   logger.setLineLevel(DEBUG);
   ENTER_FUNCTION;
-  int n;
+  int n;  //input size
   while (true)
   {
     cout << "Enter elements number:";
