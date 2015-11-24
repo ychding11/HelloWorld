@@ -36,12 +36,6 @@
 #include <cassert>
 #include "Logger.h"
 
-using namespace std;
-
-#define BUFSIZE 1024
-#define LINE_TO_STRING(x) #x 
-#define FILE_AND_LINE (__FILE__":"LINE_TO_STRING(__LINE__)) 
-
 #define PERFORMANCE_METER
 
 typedef enum tagLogLevel
