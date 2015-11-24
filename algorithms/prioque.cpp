@@ -54,9 +54,9 @@ LOG_LEVLE_ALL,
 
 LogLevel gCurLoglevel = LOG_LEVLE_ALL;
 
-#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG) fprintf(stdout,"[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR) fprintf(stdout,"[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout,"[ INFO ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG)  fprintf(stdout, "[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR)  fprintf(stdout, "[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout, "[ INFO ] "fmt,##__VA_ARGS__ ); } while(0)
 
 #define DATA_SET_SIZE (1000 * 10000)
 
@@ -92,7 +92,11 @@ bool is_sorted(DataType a[], int n)
 {
 	assert(a != NULL && n > 1);
 	for (int i = 0; i < n - 1; i++)
-	{	if (a[i] > a[i + 1]) return false;
+	{	
+	    if (a[i] > a[i + 1]) 
+	    {
+	        return false;
+	    }
 	}
 	return true;
 }
@@ -215,15 +219,26 @@ int main(int argc, char** argv)
 	n = atoi(argv[2]);  /* test iterations */
 	
 	logger << "m = " << m << "n = " << n << std::endl;
-    
+    if (m < 0 || n < 0)
+    {
+        printf("ERROR, input error. line : %d\n", __LINE__);
+        return -2;
+    }
 	for (int i = 0; i < n; i++)
 	{
 		PriQueue<int> prique(m);
 		prepare_random_data();
-		printf("Before\t Sorted ?  %d\n", is_sorted(gRawDataSet,m));
+		//printf("Before\t Sorted ?  %d\n", is_sorted(gRawDataSet,m));
 		//display(gRawDataSet,DATA_SET_SIZE);
 		prioque_sort(gRawDataSet, m);
- 		printf("After\t Sorted ?  %d\n", is_sorted(gRawDataSet,m));
+		if (true == is_sorted(gRawDataSet,m))
+		{
+		    printf("Algorithm correct.\n");
+		}
+		else
+		{
+		    printf("Algorithm incorrect.\n");
+		}		
 		//display(gRawDataSet,DATA_SET_SIZE);
 		printf("===================== Test Case: %d Complete ======================\n", i);	
 	}
