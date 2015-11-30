@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 	n = atoi(argv[1]);  /* input count*/
 	
 	logger << "n = " << n << std::endl;
-    if (n < 0) //bugs here.
+    if (n < 0 || n >= 1000) //fix bugs here.
     {
         printf("ERROR, input error. line : %d\n", __LINE__);
         return -2;
