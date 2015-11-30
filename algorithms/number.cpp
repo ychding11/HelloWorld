@@ -38,8 +38,8 @@
 class NumberToWords 
 {
 private:
-    static std::string tensNames[10];
-    static std::string numNames[20];
+    static std::string mTensNames[10];
+    static std::string mNumNames[20];
 public:
     std::string convertLessThanOneThousand(int number) 
     {
@@ -47,26 +47,26 @@ public:
 
         if (number % 100 < 20)
         {
-          str = numNames[number % 100];
+          str = mNumNames[number % 100];
           number /= 100;
         }
         else 
         {
-          str = numNames[number % 10];
+          str = mNumNames[number % 10];
           number /= 10;
 
-          str = tensNames[number % 10] + str;
+          str = mTensNames[number % 10] + str;
           number /= 10;
         }
         if (number == 0) 
         {
             return str;
         }
-        return numNames[number] + " hundred" + str;
+        return mNumNames[number] + " hundred" + str;
     }
 };
 
-std::string NumberToWords::tensNames[10] = 
+std::string NumberToWords::mTensNames[10] = 
 {
     "",
     " ten",
@@ -80,7 +80,7 @@ std::string NumberToWords::tensNames[10] =
     " ninety"
 };
 
-std::string NumberToWords::numNames[20] = 
+std::string NumberToWords::mNumNames[20] = 
 {
     "",
     " one",
