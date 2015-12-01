@@ -38,6 +38,7 @@
 class NumberToWords 
 {
 private:
+    //static member varible
     static std::string mTensNames[10];
     static std::string mNumNames[20];
 public:
@@ -63,6 +64,57 @@ public:
             return str;
         }
         return mNumNames[number] + " hundred" + str;
+    }
+    
+    std::string convertIntToWords(unsigned int n)
+    {
+        ENTER_FUNCTION;
+        
+        if (n == 0) return "Zero";
+        std::string ret;
+        char buf[13] = { 0 };
+        sprintf(buf, "%012d", n);
+        std::string number(buf);
+        logger << number << std::endl;
+        
+        std::string str = number.substr(0, 3);
+        int value = atoi(str.c_str());
+        if (value > 0)
+        {
+            std::string billions = convertLessThanOneThousand(value);
+            ret += billions; ret += " Billion";
+        }
+        logger << ret << std::endl;
+        
+        str = number.substr(3, 3);
+        value = atoi(str.c_str());
+        if (value > 0)
+        {
+            std::string millions = convertLessThanOneThousand(value);
+            ret += millions; ret += " Million";
+        }
+        logger << ret << std::endl;
+        
+        str = number.substr(6, 3);
+        value = atoi(str.c_str());
+        if (value > 0)
+        {
+            std::string thousands = convertLessThanOneThousand(value);
+            ret += thousands; ret += " Thousands";
+        }
+        logger << ret << std::endl;
+        
+        str = number.substr(9, 3);
+        value = atoi(str.c_str());
+        if (value > 0)
+        {
+            std::string lessThousands = convertLessThanOneThousand(value);
+            ret += lessThousands;
+        }
+        
+        logger << ret << std::endl;
+        EXIT_FUNCTION;
+        return ret;
     }
 };
 
@@ -104,7 +156,6 @@ std::string NumberToWords::mNumNames[20] =
     " nineteen"
 };
 
-
 int main(int argc, char** argv)
 {
     logger.setLevel(DEBUG);
@@ -120,14 +171,23 @@ int main(int argc, char** argv)
 	n = atoi(argv[1]);  /* input count*/
 	
 	logger << "n = " << n << std::endl;
-    if (n < 0 || n >= 1000) //fix bugs here.
+    if (n < 0) //fix bugs here.
     {
         printf("ERROR, input error. line : %d\n", __LINE__);
         return -2;
     }
+    printf("%012d ", n);
 	NumberToWords ntw;
-	std::string ret = ntw.convertLessThanOneThousand(n);
-	std::cout << ret << std::endl;
+	if (n < 1000)
+	{
+	    std::string ret = ntw.convertLessThanOneThousand(n);
+	    std::cout << ret << std::endl;
+	}
+	else
+	{
+	    std::string ret =ntw.convertIntToWords(n);
+	    std::cout << ret << std::endl;
+	}
 	
     EXIT_FUNCTION;
     return 0;
