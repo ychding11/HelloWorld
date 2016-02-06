@@ -114,6 +114,40 @@ bool arePairsExist(vector<int> &nums)
 	return false;
 }
 
+/*************************************************
+ * Function: given an array of integers, find the
+ * max length of subarray that subarray sum equal
+ * to zero.
+ *   
+ * Param[in]: nums integer array 
+ *   
+ * Retrun: int max length of subarray. 
+ *   
+ * Notice:  how about sequence -2 -1 0 1 2 
+ * Ideas:   
+*************************************************/
+int maxLenOfSubarray(vector<int> &nums)
+{
+	int n = nums.size();
+	int maxLen = 0;
+	unordered_map<int, int> indexMap;
+	int sum = 0;
+	for (int i = 0; i < n; i++)
+	{
+		sum += nums[i];
+		if (sum == 0) maxLen = i + 1; // no need to compare with maxLen
+		if (maxLen == 0 && nums[i] == 0) maxLen = 1; // for case  1 2 3 0 2 3
+		if (indexMap.find(sum) != indexMap.end())
+		{
+			maxLen = (i- indexMap[sum]) > maxLen ? (i- indexMap[sum]) : maxLen ;
+		}
+		else
+			indexMap[sum] = i;
+
+	}
+	return maxLen;
+}
+
 int main()
 {
 	return 0;
