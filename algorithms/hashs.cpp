@@ -180,6 +180,68 @@ void printPair(vector<int> &nums, int x)
 		}
 	}
 }
+
+/*************************************************
+ * Function: 
+ *   
+ * Param[in]:   
+ * Param[in]:   
+ *   
+ * Retrun: 
+ *   
+ * Notice:   
+*************************************************/
+vector<int> distinctCountInWindow(vector<int> nums, int k)
+{
+	//set up first window
+	int count = 0;
+	unordered_map<int,int> valueIndexMap;
+	int n = nums.size();
+	if (n < k) return vector<int>(); //no enough elements for window
+	vector<int> ret;
+	for (int i =0; i < k; i++)
+	{
+		if (valueIndexMap.find(nums[i]) == valueIndexMap.end())
+		{
+			valueIndexMap[nums[i]] = 1; 
+			++count;
+		}
+		else
+		{
+			valueIndexMap[nums[i]]++;
+		}
+	}
+	ret.push_back(count);
+	//sliding window elements by elements
+	for (int i = k; i < n; i++)
+	{
+		//handle previous window element
+		int prv = nums[i - k];
+		if (valueIndexMap[prv] == 1)
+		{
+			--count;
+			valueIndexMap.erase(prv);
+		}
+		else
+		{
+			valueIndexMap[prv]--;
+		}
+
+		//sliding window forward
+		if (valueIndexMap.find(nums[i]) == valueIndexMap.end())
+		{
+			valueIndexMap[nums[i]] = 1; 
+			++count;
+		}
+		else
+		{
+			valueIndexMap[nums[i]]++;
+		}
+	    ret.push_back(count);
+	}
+	return ret;
+}
+
 int main()
 {
 	return 0;
