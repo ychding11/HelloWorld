@@ -51,6 +51,7 @@ struct TreeNode
  * Retrun: a bool indicating valid or not 
  *   
  * Notice:   
+ * Ideas:  use stack 
 *************************************************/
 bool isValidBSTPreorderSequence(vector<int> &seq)
 {
@@ -80,6 +81,7 @@ bool isValidBSTPreorderSequence(vector<int> &seq)
  * Retrun: 
  *   
  * Notice:  suppose the searched node is in root 
+ * Ideas: use stack implement in-order traversal 
 *************************************************/
 void printAncestors(TreeNode *root, TreeNode *e)
 {
@@ -142,6 +144,50 @@ void postOrderIterativeTraversal(TreeNode * root)
 		stk2.pop();
 	}
 	printf("\n");
+}
+
+/*************************************************
+ * Function: judge whether a binary tree is a complete
+ * tree.
+ *   
+ * Param[in]:  root root of binary tree 
+ *   
+ * Retrun: bool  
+ *   
+ * Ideas:  define tree node with both left and right
+ * child as a full node. in level order traversal,
+ * once a non-full node is visited, all following
+ * node should be a leaf node for complete bianry
+ * tree. we apply this property to do the jugement.
+ * 
+ * Notice:  for a complete binary tree, a node has
+ * no left child imply it has no right node.
+*************************************************/
+bool isCompleteBinaryTree(TreeNode *root)
+{
+	if (!root) return true;
+	deque<TreeNode*> que;
+	bool noneFull = false;
+	que.push_back(root);
+	while (!que.empty())
+	{
+		TreeNode *cur = que.front(); que.pop_front();
+		if (!cur->left)
+			noneFull = true;
+		else
+		{
+			if (noneFull) return false;// seen non-full node before	
+			que.push_back(cur->left);
+		}
+		if (!cur->right)
+			noneFull = true;
+		else
+		{
+			if (noneFull) return false;// seen non-full node before	
+			que.push_back(cur->right);
+		}
+	}
+	return true;
 }
 
 int main()
