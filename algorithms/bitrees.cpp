@@ -190,6 +190,41 @@ bool isCompleteBinaryTree(TreeNode *root)
 	return true;
 }
 
+/*************************************************
+ * Function: 
+ *   
+ * Param[in]: root the root node of binary tree 
+ *   
+ * Retrun: int the height of bianry tree 
+ *   
+ * Notice:   
+ * Notice:   
+*************************************************/
+int binaryTreeHeightByLevel(TreeNode *root)
+{
+	int height = 0;
+	if (!root) return 0;
+	deque<TreeNode*> que;
+	que.push_back(root);
+	que.push_back(NULL);
+	while (!que.empty())
+	{
+		TreeNode *cur = que.front();
+		que.pop_front();
+		if (cur == NULL)
+		{
+			++height;
+			if (!que.empty()) que.push_back(NULL);
+	    }
+		else
+		{
+			if (cur->left) que.push_back(cur->left);
+			if (cur->right) que.push_back(cur->right);
+		}
+	}
+	return height;
+}
+
 int main()
 {
 	return 0;
