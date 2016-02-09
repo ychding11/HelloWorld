@@ -82,6 +82,34 @@ vector<int> flips(vector<int> &nums, int m)
 	return ret;
 }
 
+/*************************************************
+ * Function: 
+ *   
+ * Param[in]:   
+ * Param[out]:   
+ *   
+ * Retrun: 
+ *   
+ * Notice:   
+*************************************************/
+void reorderIndex(vector<int> &nums, vector<int> &index)
+{
+	int n = nums.size();
+	if (n <= 1) return;
+	for (int i = 0; i < n; i++)
+	{
+		while (index[i] != i) //disorder
+		{
+			int oldNum = nums[i];
+			int oldIdx = index[i];
+			nums[i] = nums[index[i]];
+			index[i] = index[index[i]];
+			nums[index[i]] = oldNum;
+			index[index[i]] = oldIdx;
+		}
+	}
+}
+
 int main()
 {
  return 0;
