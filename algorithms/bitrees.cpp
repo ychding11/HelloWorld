@@ -225,6 +225,29 @@ int binaryTreeHeightByLevel(TreeNode *root)
 	return height;
 }
 
+/*************************************************
+ * Function: given a binary search tree and two nodes 
+ * v1 and v2, find the lowest commom ancestor node of 
+ * v1 and v2.
+ *   
+ * Param[in]:  root, root node of BST 
+ * Param[in]:  v1, BST node value  
+ * Param[in]:  v2, BST node value 
+ *   
+ * Retrun: lowest common ancestor TreeNode 
+ *   
+ * Notice:  The binary tree is BST, node v1 v2
+ * must be in the tree
+ * Ideas: apply property of BST 
+*************************************************/
+TreeNode* lowestCommAncestor(TreeNode *root, int v1, int v2)
+{
+	if (!root) return NULL;
+	if (root->val > v1 && root->val > v2) return lowestCommAncestor(root->left, v1, v2);
+	if (root->val < v1 && root->val < v2) return lowestCommAncestor(root->right, v1, v2);
+	return root;
+}
+
 int main()
 {
 	return 0;
