@@ -63,9 +63,15 @@ bool isTwoRectangleOverlapped(Point &lt1, Point &rb1, Point &lt2, Point &rb2)
 	return true;
 }
 
-double triangleCost(vector<Point> &points, int i, int k, int j)
+static double dist(Point pt1, Point pt2)
 {
-	double cost;
+	return sqrt((pt1.x - pt2.x) * (pt1.x - pt2.x) + (pt1.y - pt2.y) * (pt1.y - pt2.y));
+}
+
+static double triangleCost(vector<Point> &points, int i, int k, int j)
+{
+	double cost = 0.0;
+	return dist(points[i], points[k])+dist(points[k], points[j])+dist(points[i], points[j]);
 }
 
 /*************************************************
