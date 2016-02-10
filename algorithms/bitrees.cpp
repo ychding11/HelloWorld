@@ -248,6 +248,25 @@ TreeNode* lowestCommAncestor(TreeNode *root, int v1, int v2)
 	return root;
 }
 
+/*************************************************
+ * Function: calculate the minimum depth of binary tree.
+ * we define minimum depth is the number of nodes on the
+ * shortest path from root to leaf.
+ *   
+ * Param[in]:  root, root node of binary search tree 
+ *   
+ * Retrun: minimum depth of binary tree. 
+ *   
+ * Notice:   
+*************************************************/
+int minDepth(TreeNode *root)
+{
+	if (!root) return 0;
+	if (!root->left) return minDepth(root->right) + 1;
+	if (!root->right) return minDepth(root->left) + 1;
+	return min(minDepth(root->left), minDepth(root->right)) + 1;
+}
+
 int main()
 {
 	return 0;
