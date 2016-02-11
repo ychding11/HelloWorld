@@ -1,8 +1,4 @@
 /*
- * sort.cpp
- *
- * Source File
- *
  * Copyright (C) 2014-2015  Yaochuang Ding - <ych_ding@163.com>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
