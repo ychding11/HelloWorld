@@ -31,6 +31,8 @@
 #include<vector>
 #include<climits>
 #include<cstdio>
+#include<deque>
+#include<unordered_set> //only in c++11 or above
 
 using namespace std;
 
@@ -267,6 +269,59 @@ int minDepth(TreeNode *root)
 	return min(minDepth(root->left), minDepth(root->right)) + 1;
 }
 
+/*************************************************
+ * Function: define queue item used to solve top
+ * view visible binary tree node set problem.
+ *   
+ * Notice:   
+*************************************************/
+struct queue_item
+{
+	TreeNode* node;
+	int horizonalDistance;
+	queue_item(TreeNode *nd, int hd) : node(nd), horizonalDistance(hd)
+	{  }
+};
+
+/*************************************************
+ * Function: generate visible binary tree node set
+ * when look from top side.
+ *   
+ * Param[in]:root, the root node of binary tree. 
+ *   
+ * Retrun: binary tree node set visible from top side. 
+ *   
+ * Notice:   
+ * Ideas:  level order traversal, define horizontal
+ * distance to judge whether a node is visible from
+ * top side, set to detect duplicate horizonal distance.
+*************************************************/
+vector<TreeNode*> topViewVisibleSet(TreeNode *root)
+{
+	vector<TreeNode*> ret;
+	if (!root) return vector<TreeNode*>();
+	deque<queue_item*> que;
+	unordered_set<int> horizonalDistanceSet;
+	que.push_back(new queue_item(root, 0));
+	while (!que.empty())
+	{
+		queue_item *cur = que.front(); que.pop_front();
+		int hd = cur->horizonalDistance;
+		TreeNode *curNode = cur->node;
+		// handle memory leak here
+		if (horizonalDistanceSet.find(hd) == horizonalDistanceSet.end())
+		{
+			horizonalDistanceSet.insert(hd);
+			ret.push_back(curNode);
+		}
+
+		if (curNode->left)
+			que.push_back(new queue_item(curNode->left, hd - 1));
+		if (curNode->right)
+			que.push_back(new queue_item(curNode->right, hd + 1));
+	}
+	return ret;
+}
 int main()
 {
 	return 0;
