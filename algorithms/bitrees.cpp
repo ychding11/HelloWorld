@@ -322,6 +322,89 @@ vector<TreeNode*> topViewVisibleSet(TreeNode *root)
 	}
 	return ret;
 }
+
+/*************************************************
+ * Function: 
+ *   
+ * Param[in]: root, root node of binay tree. 
+ *   
+ * Retrun: in order traversal sequence 
+ *   
+ * Notice:   
+*************************************************/
+vector<int> inOrderTraversal(TreeNode *root)
+{
+	vector<int> ret;
+	if (!root) return vector<int>();
+	vector<int> lc = inOrderTraversal(root->left);
+	ret.insert(ret.end(), lc.begin(), lc.end());
+	ret.push_back(root->val);
+	vector<int> rc = inOrderTraversal(root->right);
+	ret.insert(ret.end(), rc.begin(), rc.end());
+	return ret;
+}
+
+/*************************************************
+ * Function: 
+ *   
+ * Param[in]: root, root node of binary tree. 
+ *   
+ * Retrun: 
+ *   
+ * Notice:   
+*************************************************/
+vector<int> postOrderTraversal(TreeNode *root)
+{
+	vector<int> ret;
+	if (!root) return vector<int>();
+	vector<int> lc = inOrderTraversal(root->left);
+	ret.insert(ret.end(), lc.begin(), lc.end());
+	vector<int> rc = inOrderTraversal(root->right);
+	ret.insert(ret.end(), rc.begin(), rc.end());
+	ret.push_back(root->val);
+	return ret;
+}
+
+/*************************************************
+ * Function: determine whether array2 is subarray
+ * of array1.
+ *   
+ * Param[in]:   
+ * Param[in]:   
+ *   
+ * Retrun: 
+ *   
+ * Notice:   
+*************************************************/
+bool subArray(const vector<int> &array1, const vector<int> &array2)
+{
+	return true;
+}
+
+/*************************************************
+ * Function: determine whether binary tree root2 is
+ * a sub tree of binary tree root1.
+ *   
+ * Param[in]:   
+ * Param[in]:   
+ *   
+ * Retrun: bool, indicating whether root2 is a subtree
+ * of root1.
+ *   
+ * Notice:   
+*************************************************/
+bool isSubTree(TreeNode *root1, TreeNode *root2)
+{
+	vector<int> seq1, seq2;
+	seq1 = inOrderTraversal(root1);
+	seq2 = inOrderTraversal(root2);
+	if (!subArray(seq1, seq2)) return false;
+	seq1 = postOrderTraversal(root1);
+	seq2 = postOrderTraversal(root2);
+	if (!subArray(seq1, seq2)) return false;
+	return true;
+}
+
 int main()
 {
 	return 0;
