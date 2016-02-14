@@ -405,6 +405,55 @@ bool isSubTree(TreeNode *root1, TreeNode *root2)
 	return true;
 }
 
+void minDistance(TreeNode *root, int level, int &minDist)
+{
+	if (!root) return;
+	if (!root->left && !root->right && level < minDist) 
+	{	minDist = level; return; }
+	minDistance(root->left, level + 1, minDist);
+	minDistance(root->right, level + 1, minDist);
+}
+
+int minDistanceUpward(TreeNode *root, TreeNode *node, int &dist)
+{
+	if (!root) return -1;
+	if (root == node) return 0;
+	int level = minDistanceUpward(root->left, node, dist);
+	if (level != -1)
+	{
+		minDistance(root->right, level + 2, dist);
+		return level + 1;
+	}
+	level = minDistanceUpward(root->right, node, dist);
+	if (level != -1)
+	{
+		minDistance(root->left, level + 2, dist);
+		return level + 1;
+	}
+	return -1;
+}
+
+/*************************************************
+ * Function: given a binary tree and a node in that
+ * tree, find the closest distance to leaf from that
+ * node.
+ *   
+ * Param[in]:   
+ * Param[in]:   
+ *   
+ * Retrun: 
+ *   
+ * Notice: leaf search should have two directions.
+ * downward from the node, upward to other subtree.
+*************************************************/
+int minDistanceToLeaf(TreeNode *root, TreeNode *node)
+{
+	int ret = INT_MAX;
+	minDistance(root, 0, ret);
+	minDistanceUpward(root, node, ret);
+	return ret;
+}
+
 int main()
 {
 	return 0;
