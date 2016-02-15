@@ -34,7 +34,9 @@
 using namespace std;
 
 /*************************************************
- * Function: 
+ * Function: given an integer array containing only
+ * 1 and 0 and a integer m. flip m 0s at most so that 
+ * number of consecutive 1s is maximized.
  *   
  * Param[in]:  nums array of '1' '0' 
  * Param[in]:  max number of flipping 0 to 1 
