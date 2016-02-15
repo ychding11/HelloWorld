@@ -83,10 +83,14 @@ vector<int> flips(vector<int> &nums, int m)
 }
 
 /*************************************************
- * Function: 
+ * Function: reorder two array in asending order
+ * array nums contains values while array index
+ * contains corresponding index;
+ * array 2 3 5 1
+ * index 1 2 4 3
  *   
  * Param[in]:   
- * Param[out]:   
+ * Param[in]:   
  *   
  * Retrun: 
  *   
