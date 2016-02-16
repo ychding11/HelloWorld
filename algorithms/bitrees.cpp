@@ -414,6 +414,16 @@ void minDistance(TreeNode *root, int level, int &minDist)
 	minDistance(root->right, level + 1, minDist);
 }
 
+/*************************************************
+ * Function: 
+ *   
+ * Param[in]:   
+ * Param[out]:   
+ *   
+ * Retrun: level 
+ *   
+ * Notice:   
+*************************************************/
 int minDistanceUpward(TreeNode *root, TreeNode *node, int &dist)
 {
 	if (!root) return -1;
@@ -452,6 +462,30 @@ int minDistanceToLeaf(TreeNode *root, TreeNode *node)
 	minDistance(root, 0, ret);
 	minDistanceUpward(root, node, ret);
 	return ret;
+}
+
+/*************************************************
+ * Function: caculate single valued subtrees in a
+ * binary tree.
+ *   
+ * Param[in]: root, root node of binary tree. 
+ * Param[out]: count, single valued subtree number. 
+ *   
+ * Retrun: bool, indicating if the current tree is
+ * a single valued binary tree.
+ *   
+ * Notice:   
+*************************************************/
+bool isSingleValued(TreeNode *root, int &count)
+{
+	if (!root) return true;
+	bool leftSingled = isSingleValued(root->left, count);
+	bool rightSingled = isSingleValued(root->right, count);
+	if (leftSingled == false || rightSingled == false) return false;
+	if (root->left && root->val != root->left->val) return false;
+	if (root->right && root->val != root->right->val) return false;
+	++count;
+	return true;
 }
 
 int main()
