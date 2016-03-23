@@ -20,7 +20,7 @@ GLuint loadTexture(GLchar const * path);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void Do_Movement();
+void cameraMovement();
 void RenderScene(Shader &shader);
 void RenderCube();
 void RenderQuad();
@@ -63,7 +63,7 @@ int main()
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
-    // Options
+    // glfw Options
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Initialize GLEW to setup the OpenGL Function pointers
@@ -144,15 +144,13 @@ int main()
         lastFrame = currentFrame;
 
         glfwPollEvents();
-        Do_Movement();
+        cameraMovement();
 
-        // Change light position over time
-        lightPos.z = cos(glfwGetTime()) * 2.0f;
+        lightPos.z = cos(glfwGetTime()) * 2.0f; // Change light position over time
 
         // 1. Render depth of scene to texture (from light's perspective)
         //    Get light projection/view matrix.
-        glm::mat4 lightProjection, lightView;
-        glm::mat4 lightSpaceMatrix;
+        glm::mat4 lightProjection, lightView, lightSpaceMatrix;
         GLfloat near_plane = 1.0f, far_plane = 7.5f;
         //lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
         lightProjection = glm::perspective(45.0f, (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane);
@@ -168,9 +166,9 @@ int main()
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glClear(GL_DEPTH_BUFFER_BIT);
         RenderScene(simpleDepthShader);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         // 2. Render scene as normal
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glm::mat4 projection = glm::perspective(camera.Zoom, (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -243,7 +241,6 @@ void RenderScene(Shader &shader)
     glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
     RenderCube();
 }
-
 
 // RenderQuad() Renders a 1x1 quad in NDC, best used for framebuffer color targets
 // and post-processing effects.
@@ -390,7 +387,7 @@ bool keys[1024];
 bool keysPressed[1024];
 
 // Moves/alters the camera positions based on user input
-void Do_Movement()
+void cameraMovement()
 {
     // Camera controls
     if (keys[GLFW_KEY_W])
@@ -454,6 +451,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastX = xpos;
     lastY = ypos;
     camera.ProcessMouseMovement(xoffset, yoffset);
+	bytesUsed += myvsnprintf(messages + bytesUsed, messageSize - bytesUsed, "[%f, %f], <%f, %f> \n", xpos, ypos, xoffset, yoffset);
+
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
