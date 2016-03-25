@@ -3,10 +3,10 @@ out vec4 FragColor;
 
 in VS_OUT
 {
-    vec3 FragPos;
     vec3 Normal;
     vec2 TexCoords;
-    vec4 FragPosLightSpace;
+    vec3 posInWorld;
+    vec4 posInWorldLightSpace;
 } fs_in;
 
 uniform sampler2D diffuseTexture;
@@ -24,7 +24,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float closestDepth = texture(shadowMap, projCoords.xy).r; 
     float currentDepth = projCoords.z; // Get depth of current fragment from light's perspective
     vec3 normal = normalize(fs_in.Normal);
-    vec3 lightDir = normalize(lightPos - fs_in.FragPos);
+    vec3 lightDir = normalize(lightPos - fs_in.posInWorld);
     float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005); // Calculate bias (based on depth map resolution and slope)
     // Check whether current frag pos is in shadow
     // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
@@ -53,15 +53,15 @@ void main()
     vec3 normal = normalize(fs_in.Normal);
     vec3 lightColor = vec3(0.3);
     vec3 ambient = 0.3 * color; // Ambient
-    vec3 lightDir = normalize(lightPos - fs_in.FragPos);
+    vec3 lightDir = normalize(lightPos - fs_in.posInWorld);
     float diff = max(dot(lightDir, normal), 0.0);
     vec3 diffuse = diff * lightColor; // Diffuse
-    vec3 viewDir = normalize(viewPos - fs_in.FragPos);
+    vec3 viewDir = normalize(viewPos - fs_in.posInWorld);
     vec3 reflectDir = reflect(-lightDir, normal);
     vec3 halfwayDir = normalize(lightDir + viewDir);  
     float spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
     vec3 specular = spec * lightColor;  // Specular
-    float shadow = shadows ? ShadowCalculation(fs_in.FragPosLightSpace) : 0.0; // Calculate shadow
+    float shadow = shadows ? ShadowCalculation(fs_in.posInWorldLightSpace) : 0.0; // Calculate shadow
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    
     
     FragColor = vec4(lighting, 1.0f);
