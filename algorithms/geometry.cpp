@@ -32,6 +32,7 @@
 #include<vector>
 #include<climits>
 #include<cfloat>
+#include<cmath>
 
 using namespace std;
 
