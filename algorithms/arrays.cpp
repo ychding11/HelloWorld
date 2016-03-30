@@ -34,8 +34,8 @@
 using namespace std;
 
 /*************************************************
- * Function: given an integer array containing only
- * 1 and 0 and a integer m. flip m 0s at most so that 
+ * Function: Given an integer array containing only
+ * 1, 0 and a integer m. Flip m 0s at most so that 
  * number of consecutive 1s is maximized.
  *   
  * Param[in]:  nums array of '1' '0' 
@@ -91,17 +91,17 @@ vector<int> flips(vector<int> &nums, int m)
  * array 2 3 5 1
  * index 1 2 4 3
  *   
- * Param[in]:   
- * Param[in]:   
+ * Param[in]: nums, value array  
+ * Param[in]: index, index array 
  *   
- * Retrun: 
+ * Retrun: void 
  *   
  * Notice:   
 *************************************************/
 void reorderIndex(vector<int> &nums, vector<int> &index)
 {
 	int n = nums.size();
-	if (n <= 1) return;
+	if (n <= 1) return; // no need to reorder
 	for (int i = 0; i < n; i++)
 	{
 		while (index[i] != i) //disorder

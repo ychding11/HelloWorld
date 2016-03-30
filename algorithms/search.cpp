@@ -86,7 +86,7 @@ int size = 0;
 /*************************************************
  * Binary Search Function
  * search 't' in data array 'a'
- * It is a very excellent algorithms.
+ * It is a very excellent algorithm.
 *************************************************/
 template <class DataType>
 int binSearch(DataType a[], int n, DataType t)
@@ -95,7 +95,6 @@ int binSearch(DataType a[], int n, DataType t)
     assert(a != NULL && n > 0);
     
     int l, u, m;
-    int idx;
     l = -1; u = n;
     logger << "l = " << l << " u = " << u << std::endl;
     while (l + 1 != u)
@@ -108,7 +107,7 @@ int binSearch(DataType a[], int n, DataType t)
         {    u = m; }
         logger << "l = " << l << " u = " << u << std::endl;
     }
-    idx = u;
+    int idx = u;
     if (idx >= n || a[idx] != t)
     {    
         logger << "Not Find target " << t << std::endl;
@@ -119,7 +118,7 @@ int binSearch(DataType a[], int n, DataType t)
 
 /*************************************************
  * Load data from file 
- * Use pipe ' cat dat.txt | tester '.
+ * Usage `cat dat.txt | tester`.
 *************************************************/
 template <class DataType>
 void loadData(DataType a[])
