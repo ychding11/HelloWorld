@@ -117,16 +117,16 @@ void reorderIndex(vector<int> &nums, vector<int> &index)
 }
 
 /*************************************************
- * Function: given an integer array find the number
+ * Function: Given an integer array, find the number
  * of strictly increased subarrays in that array.
  *   
  * Param[in]:  array, integer array 
  *   
- * Retrun: 
+ * Retrun: int, subarray number  
  *   
  * Notice:   
 *************************************************/
-int NumberOfStrictlyIncreasedSubarrays(vector<int> &array)
+int NumberOfStrictlyIncreasedSubarrays(const vector<int> &array)
 {
 	int n = array.size();
 	if (n <= 0) return 0;
@@ -148,5 +148,5 @@ int NumberOfStrictlyIncreasedSubarrays(vector<int> &array)
 
 int main()
 {
- return 0;
+    return 0;
 }

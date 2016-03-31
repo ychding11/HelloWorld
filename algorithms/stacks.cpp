@@ -35,59 +35,59 @@
 using namespace std;
 
 /*************************************************
- * Function: 
+ * Function: Given a string containing only '{' and
+ * '}', calculate the min reversal number needed to
+ * make brackets match.
  *   
- * Param[in]:   
- * Param[out]:   
+ * Param[in]:  exp, string 
  *   
- * Retrun: 
+ * Retrun: int, min reversal count 
  *   
  * Notice:   
 *************************************************/
-int minReversalCount(string exp)
+int minReversalCount(const string& exp)
 {
 	int n = exp.length();
 	if (n <= 0) return 0;
 	if (n & 0x1) return -1; //only even length is valid
 	stack<char> st;
-
 	//remove matched brackets by stack
 	for (int i = 0; i < n; i++)
 	{
 		if (!st.empty() && exp[i] == '}')
 		{
 			if (st.top() == '{')
-			{
 				st.pop();
-			}
 			else
-			{
 				st.push(exp[i]);
-			}
 		}
 		else
 		{
 			st.push(exp[i]);
 		}
 	}
-	
-	int lefted = st.size(); // the remaining number must be even.
+
+	// remaining elements in stack may be '}}{{', '}{{{' 
+	// '}}}{'.
+	int lefted = st.size(); // remaining number must be even.
 	int m = 0;
 	while (!st.empty())
 	{
 		if (st.top() == '{') ++m;
 		st.pop();
 	}
-	return (lefted >> 1)+ (m & 0x1);
+	return (lefted >> 1) + (m & 0x1);
 }
 
 /*************************************************
- * Function: 
+ * Function: Given stock price array, calculate 
+ * span day number for each day's price.
  *   
- * Param[in]:   
- * Param[out]:   
+ * Param[in]:  prices, stock price array 
  *   
- * Retrun: 
+ * Retrun: vecotr<int>, span day number for each 
+ * price. span day, for example  [4 1 2 3] for price
+ * 3 span day number is 3. stock prices <= current 
  *   
  * Notice:   
 *************************************************/
@@ -95,9 +95,8 @@ vector<int> caculateStockSpan(const vector<int> &prices)
 {
 	int n = prices.size();
 	if (n <= 0) return vector<int>();
-	vector<int> spans(n, 1); //default is one
-	stack<int> st;
-	st.push(0);
+	vector<int> spans(n, 1); //default value is 1
+	stack<int> st; st.push(0);
 	for (int i = 1; i < n; i++)
 	{
 		while (!st.empty() && prices[st.top()] <= prices[i])
@@ -111,13 +110,11 @@ vector<int> caculateStockSpan(const vector<int> &prices)
 }
 
 /*************************************************
- * Function: 
+ * Function: stub  
  *   
  * Param[in]:   
- * Param[out]:   
  *   
  * Retrun: 
- *   
  * Notice:   
 *************************************************/
 int main()

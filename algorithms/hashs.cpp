@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2014-2015  Yaochuang Ding - <ych_ding@163.com>
  * 
@@ -149,27 +148,28 @@ int maxLenOfSubarray(vector<int> &nums)
 }
 
 /*************************************************
- * Function: print pairs in an integer array which 
- * satisfy sum of pair equal to x.
+ * Function: Print all pairs in an integer array 
+ * where pair sum equals to certain value.
  *   
- * Param[in]:  nums array of integers 
- * Param[in]:  x sum of pair 
+ * Param[in]:  array, integers 
+ * Param[in]:  int, pair sum 
  *   
- * Retrun: none 
- *   
- * Notice:   
+ * Retrun: void 
+ * Ideas: Store and Search, Hash to accelerate
+ * Notice: Suppose no duplicates in array.
+ * For example {[1 2 3 2], 5} is invalid.
 *************************************************/
-void printPair(vector<int> &nums, int x)
+void printPair(const vector<int> &nums, int x)
 {
 	int n = nums.size();
-	if (n < 2) return ;// no pair exist
+	if (n < 2) return ;// no pair exists
 	unordered_map<int, int> sumIdxMap;
 	for(int i = 0; i < n; i++)
 	{
 		int temp = x - nums[i];
 		if (sumIdxMap.find(temp) != sumIdxMap.end())
 		{
-			//get it
+			//got it
 			printf("pair found: [%d, %d], <%d, %d>", 
 					sumIdxMap[temp], i, temp, nums[i]);
 			sumIdxMap.erase(temp);

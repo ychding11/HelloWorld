@@ -55,7 +55,7 @@ class Combination
 {
 public:
     /* 
-     * given a set with n elements, caculate all
+     * Given a set with n elements [1, n], print all
      * possible combinations of k elements from 
      * the set.
      */
