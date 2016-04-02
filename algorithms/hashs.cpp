@@ -34,22 +34,24 @@
 using namespace std;
 
 /*************************************************
- * Function:  given an array of integers determine
- * whether it can be divide into groups and each 
+ * Function:  Given an array of integers, determine
+ * whether it can be divided into groups and each 
  * group can be divide by k.
  *   
- * Param[in]:  nums array of number 
- * Param[in]:  k dividor factor 
+ * Param[in]:  array, integers
+ * Param[in]:  int, dividor factor 
  *   
- * Retrun: the result of judgement 
+ * Retrun: bool value depending on whether it can 
+ * be divided.
  *   
  * Notice: how about an empty number array ?   
  * Ideas: store reminder infomation and search in
  * second pass.
 *************************************************/
-bool canDivideGroupsByK(vector<int> & nums, int k)
+bool canDivideGroupsByK(const vector<int>& nums, int k)
 {
 	int n = nums.size();
+	// ?? {[1, 2, 3], 3} {[1, 2, 3], 6}
 	if (n ^ 0x1) return false; //odd number cannot divide into groups
 	unordered_map<int, int> reminderFreqs;
 	for (int i = 0; i < n; i++)
@@ -61,47 +63,45 @@ bool canDivideGroupsByK(vector<int> & nums, int k)
 		int rem = nums[i] % k;
 		if (rem + rem == k)
 		{
-			if (reminderFreqs[rem] & 0x1) 
-				return false;
+			if (reminderFreqs[rem] & 0x1) return false;
 		}
 		else
 		{
-			if (reminderFreqs[rem] != reminderFreqs[k - rem])
-				return false;
+			if (reminderFreqs[rem] != reminderFreqs[k - rem]) return false;
 		}
 	}
 	return true;
 }
 
 /*************************************************
- * Function: given an array of integers, try to 
+ * Function: Given an array of integers, try to 
  * find four elements a, b, c and d such that
- * a+b=c+d. the function determines whether such
- * four elemnts exist or not.
+ * a+b=c+d. The function determines whether such
+ * four elemnts exist.
  *   
- * Param[in]:  nums the array of integers 
+ * Param[in]: array, nums
  *   
- * Retrun: bool indicating whether exist or not 
- *   
- * Notice:   
- * Ideas:  list all possible pairs and store the pair
- * sum and pair itself as an map entry.for each new
+ * Retrun: bool indicating whether pairs exist
+ * Notice: Suppose no duplicates. [1, 2, 1] is 
+ * an invalid input.
+ * Ideas:  Loop all possible pairs and store<pair 
+ * sum,pair itself> as an map entry. for each new
  * pair search its sum in map first, if got one such
  * four elements exist.
 *************************************************/
-bool arePairsExist(vector<int> &nums)
+bool arePairsExist(const vector<int> &nums)
 {
 	int n = nums.size();
-	if (n < 4) return false;
+	if (n < 4) return false; // rule out invalid vector
 	unordered_map<int, pair<int, int>> map;
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < n; i++) // loop possible pairs
 	{
 		for (int j = i + 1; j < n; j++)
 		{
 			int sum = nums[i] + nums[j];
 			if (map.find(sum) == map.end())
 			{
-				map[sum] =  make_pair(i, j);
+				map[sum] =  make_pair(i, j); // insert new map entry
 			}
 			else
 			{
@@ -114,34 +114,36 @@ bool arePairsExist(vector<int> &nums)
 }
 
 /*************************************************
- * Function: given an array of integers, find the
- * max length of subarray that subarray sum equal
- * to zero.
+ * Function: Given an array of integers, find the
+ * max length of subarray and the subarray's sum
+ * equal to zero.
  *   
- * Param[in]: nums integer array 
+ * Param[in]:  array, nums  
  *   
- * Retrun: int max length of subarray. 
+ * Retrun: int, max length of subarray. 
  *   
- * Notice:  how about sequence -2 -1 0 1 2 
  * Ideas:   
+ * Notice:  how about sequence [-2 -1 0 1 2] 
+ * ==> [-2, -3, -3, -2, 0] sum = 0 is a special
+ * [1, 2, 0, 1, 2] ==> [1, 3, 3, 4, 6]
+ * case.
 *************************************************/
-int maxLenOfSubarray(vector<int> &nums)
+int maxLenOfSubarray(const vector<int> &nums)
 {
 	int n = nums.size();
-	int maxLen = 0;
 	unordered_map<int, int> indexMap;
-	int sum = 0;
+	int sum = 0, maxLen = 0;
 	for (int i = 0; i < n; i++)
 	{
 		sum += nums[i];
 		if (sum == 0) maxLen = i + 1; // no need to compare with maxLen
-		if (maxLen == 0 && nums[i] == 0) maxLen = 1; // for case  1 2 3 0 2 3
-		if (indexMap.find(sum) != indexMap.end())
-		{
-			maxLen = (i- indexMap[sum]) > maxLen ? (i- indexMap[sum]) : maxLen ;
-		}
 		else
-			indexMap[sum] = i;
+		{
+		    if (indexMap.find(sum) != indexMap.end())
+		    	maxLen = (i- indexMap[sum]) > maxLen ? (i- indexMap[sum]) : maxLen ;
+     		else
+	     		indexMap[sum] = i;
+		}
 
 	}
 	return maxLen;
