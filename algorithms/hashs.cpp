@@ -184,60 +184,65 @@ void printPair(const vector<int> &nums, int x)
 }
 
 /*************************************************
- * Function: 
+ * Function:Given an integer array and a window 
+ * size k, sliding window from left to right each
+ * time one element, count the number of distinct
+ * numbers in window.
  *   
- * Param[in]:   
- * Param[in]:   
+ * Param[in]: array, integer 
+ * Param[in]: int, window size   
  *   
- * Retrun: 
+ * Retrun: vector,recording distinct number count 
+ * in each window.
  *   
  * Notice:   
 *************************************************/
-vector<int> distinctCountInWindow(vector<int> nums, int k)
+vector<int> distinctCountInWindow(const vector<int> nums, int k)
 {
-	//set up first window
 	int count = 0;
-	unordered_map<int,int> valueIndexMap;
 	int n = nums.size();
 	if (n < k) return vector<int>(); //no enough elements for window
 	vector<int> ret;
-	for (int i =0; i < k; i++)
+	unordered_map<int,int> elementFreqs;
+	for (int i =0; i < k; i++)	//set up first window
 	{
-		if (valueIndexMap.find(nums[i]) == valueIndexMap.end())
+		if (elementFreqs.find(nums[i]) == elementFreqs.end())
 		{
-			valueIndexMap[nums[i]] = 1; 
+			elementFreqs[nums[i]] = 1; 
 			++count;
 		}
 		else
 		{
-			valueIndexMap[nums[i]]++;
+			elementFreqs[nums[i]]++;
 		}
 	}
 	ret.push_back(count);
-	//sliding window elements by elements
+
+	//sliding window 
 	for (int i = k; i < n; i++)
 	{
-		//handle previous window element
+		// remove leftmost element in previous window
+		// because of fixed window length, it is easy 
 		int prv = nums[i - k];
-		if (valueIndexMap[prv] == 1)
+		if (elementFreqs[prv] == 1)
 		{
 			--count;
-			valueIndexMap.erase(prv);
+			elementFreqs.erase(prv);
 		}
 		else
 		{
-			valueIndexMap[prv]--;
+			elementFreqs[prv]--;
 		}
 
-		//sliding window forward
-		if (valueIndexMap.find(nums[i]) == valueIndexMap.end())
+		//sliding window toward right 
+		if (elementFreqs.find(nums[i]) == elementFreqs.end())
 		{
-			valueIndexMap[nums[i]] = 1; 
+			elementFreqs[nums[i]] = 1; 
 			++count;
 		}
 		else
 		{
-			valueIndexMap[nums[i]]++;
+			elementFreqs[nums[i]]++;
 		}
 	    ret.push_back(count);
 	}
