@@ -49,9 +49,8 @@ using namespace std;
 /*************************************************
  *  The class CourseJudge.
  *
- *  indegrees[] is the key info for toplogic
- *  sort.
- *  NOTE: it need c++11 support.
+ *  indegrees[] is the key info for toplogic sort.
+ *  NOTE: it needs c++11 support.
 *************************************************/
 class CourseJudge 
 {
@@ -61,7 +60,8 @@ public:
      *  course plan is possible.
      *  input param: numCourses
      *  input param: prerequisites, course dependency
-     *               list. [first] <--- [second]
+     *               list. It's an edge in Graph.
+	 *               Format: [first] <--- [second]
      *  NOTE: .
     *************************************************/
     bool canFinish(int numCourses, vector<pair<int, int> >& prerequisites) 
@@ -77,23 +77,24 @@ public:
             indegrees[a.first]++;
         }
         
-        //toplogical sort need the help of queue
+        //toplogical sort with the help of queue
         deque<int> que;
-        for (int i = 0; i < n; i++) //peak all zero indegrees node
+        for (int i = 0; i < n; i++) // pick all 0 indegrees node
         {
             if (indegrees[i] == 0) que.push_back(i);
         }
-        
-        while (!que.empty())
+       
+		// for example, such an input {3, [1-->2-->3-->2]}
+        while (!que.empty()) // when queue empty, loop ends
         {
             int u = que.front(); que.pop_front();
-            for (auto v : adjlist[u]) //update indgree list
+            for (auto v : adjlist[u]) //update indgree vector
             {
                 if (--indegrees[v] == 0) que.push_back(v);
             }
         }
         
-        for (auto v : indegrees)
+        for (auto v : indegrees) // if no loop in graph, all node's indegree should be 0
         {
             if (v > 0) return false;
         }
