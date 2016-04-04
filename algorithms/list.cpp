@@ -47,14 +47,13 @@ using namespace std;
 
 /*************************************************
  *  ListNode struct.
- *  NOTE: member is public.
+ *  NOTE: member variable is public.
 *************************************************/
 struct ListNode 
 {
     int val;
     ListNode *next;
-    ListNode(int x) : val(x), next(NULL)
-    {}
+    ListNode(int x) : val(x), next(NULL) { }
 };
 
 /*************************************************
@@ -72,10 +71,10 @@ public:
             return head;
         }
         ListNode tempHead(0), *hd = &tempHead;
-        hd->next = NULL;
+        hd->next = NULL; // it's not needed because of ListNode constructor
         while (head)
         {
-            ListNode *cur = head;
+            ListNode *cur = head; // operation order is important
             head = head->next;
             cur->next = hd->next;
             hd->next = cur;
@@ -88,6 +87,11 @@ public:
      *  example:
      *  1->2->3->4->5->NULL and k = 2.
      *  4->5->1->2->3->NULL.
+	 *  Idea: 
+	 *  1. find right cut point and glue two list part
+	 *     in new order.
+	 *  2. if k is large, it should mod list length n.
+	 *     so a very big k is valid.
     *************************************************/
     ListNode *rotateRight(ListNode *head, int k) 
     {
@@ -103,7 +107,7 @@ public:
         {
             ListNode *cur = head, *ret = NULL;
             while (p && p->next) {  cur = cur->next; p = p->next; }
-            ret = cur->next; cur->next = NULL; //find 'cut point'
+            ret = cur->next; cur->next = NULL; //find 'cut point' and cut
             if (p) p->next = head;
             return ret;
         }
@@ -114,6 +118,7 @@ public:
      *  example:
      *  1->2->3->4->5->NULL and n = 2.
      *  1->2->3->5->NULL.
+	 *  It applys trick that get Nth node from List End.
     *************************************************/
     ListNode* removeNthFromEnd(ListNode* head, int n) 
     {
