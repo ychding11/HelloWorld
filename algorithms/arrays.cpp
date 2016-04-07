@@ -146,6 +146,35 @@ int NumberOfStrictlyIncreasedSubarrays(const vector<int> &array)
 	return ret;
 }
 
+/*************************************************
+ * Function: Given two sorted integer array, calculate
+ * the intersect elements.
+ *   
+ * Param[in]: array
+ * Param[in]: array
+ *   
+ * Retrun: array, intersecting elements 
+ * Ideas:  
+ * Notice:  Two array must be sorted. 
+*************************************************/
+vector<int> intersectOfSortedArray(const vector<int> &a, const vector<int> &b)
+{
+	vector<int> ret;
+	int m = a.size(), n = b.size();
+	int i, j;
+	for (i = 0, j = 0; i < m && j < n;)
+	{
+		if (a[i] < b[j]) ++i;
+		else if (a[i] > b[j]) ++j;
+		else
+		{
+			ret.push_back(a[i]);	
+			++i; ++j;
+		}
+	}
+	return ret;
+}
+
 int main()
 {
     return 0;

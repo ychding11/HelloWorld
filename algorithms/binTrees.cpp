@@ -148,30 +148,32 @@ void postOrderIterativeTraversal(TreeNode * root)
 }
 
 /*************************************************
- * Function: Judge whether a binary tree is  complete
+ * Function: Judge whether a binary tree is complete
  *   
  * Param[in]:  root of binary tree 
  *   
  * Retrun: bool  
  *   
- * Ideas:  define tree node with both left and right
- * child as a full node. in level order traversal,
+ * Ideas:  Define tree node with both left and right
+ * child as a full node. In level order traversal,
  * once a non-full node is visited, all following
- * node should be a leaf node for complete bianry
- * tree. we apply this property to do the jugement.
+ * nodes should be leaf nodes for complete bianry
+ * tree. we take this property to do the jugement.
  * 
- * Notice:  for a complete binary tree, a node has
+ * Notice:  For a complete binary tree, a node has
  * no left child imply it has no right node.
 *************************************************/
-bool isCompleteBinaryTree(TreeNode *root)
+bool isCompleteBinaryTree(const TreeNode *root)
 {
-	if (!root) return true;
-	deque<TreeNode*> que;
+	if (!root) return true; // empty tree is complete
 	bool noneFull = false;
+	deque<const TreeNode*> que;
 	que.push_back(root);
+	// do "level order" traversal. It has some difference
+	// with normal "level order".
 	while (!que.empty())
 	{
-		TreeNode *cur = que.front(); que.pop_front();
+		const TreeNode *cur = que.front(); que.pop_front();
 		if (!cur->left)
 			noneFull = true;
 		else
@@ -191,32 +193,33 @@ bool isCompleteBinaryTree(TreeNode *root)
 }
 
 /*************************************************
- * Function: 
+ * Function: Caculate given binary tree height by 
+ * level order traversal.
  *   
- * Param[in]: root the root node of binary tree 
+ * Param[in]: root, the root node of binary tree 
  *   
- * Retrun: int the height of bianry tree 
+ * Retrun: int, the height of bianry tree 
  *   
- * Notice:   
- * Notice:   
+ * Ideas:   
+ * Notice: How to tell different levels and
+ * increase tree height.
 *************************************************/
-int binaryTreeHeightByLevel(TreeNode *root)
+int binaryTreeHeightByLevel(const TreeNode *root)
 {
 	int height = 0;
 	if (!root) return 0;
-	deque<TreeNode*> que;
+	deque<const TreeNode*> que;
 	que.push_back(root);
-	que.push_back(NULL);
+	que.push_back(NULL); // insert NULL to identify levels
 	while (!que.empty())
 	{
-		TreeNode *cur = que.front();
-		que.pop_front();
+		const TreeNode *cur = que.front(); que.pop_front();
 		if (cur == NULL)
 		{
 			++height;
 			if (!que.empty()) que.push_back(NULL);
 	    }
-		else
+		else // ONLY non-null node enqueue.
 		{
 			if (cur->left) que.push_back(cur->left);
 			if (cur->right) que.push_back(cur->right);
@@ -226,7 +229,7 @@ int binaryTreeHeightByLevel(TreeNode *root)
 }
 
 /*************************************************
- * Function: given a binary search tree and two nodes 
+ * Function: Given a binary search tree and two nodes 
  * v1 and v2, find the lowest commom ancestor node of 
  * v1 and v2.
  *   
@@ -236,11 +239,12 @@ int binaryTreeHeightByLevel(TreeNode *root)
  *   
  * Retrun: lowest common ancestor TreeNode 
  *   
+ * Ideas: apply property of BST. It's a recursion
+ * solution.
  * Notice:  The binary tree is BST, node v1 v2
  * must be in the tree
- * Ideas: apply property of BST 
 *************************************************/
-TreeNode* lowestCommAncestor(TreeNode *root, int v1, int v2)
+const TreeNode* lowestCommAncestor(const TreeNode *root, int v1, int v2)
 {
 	if (!root) return NULL;
 	if (root->val > v1 && root->val > v2) return lowestCommAncestor(root->left, v1, v2);
@@ -249,7 +253,7 @@ TreeNode* lowestCommAncestor(TreeNode *root, int v1, int v2)
 }
 
 /*************************************************
- * Function: calculate the minimum depth of binary tree.
+ * Function: Calculate the minimum depth of binary tree.
  * we define minimum depth is the number of nodes on the
  * shortest path from root to leaf.
  *   
@@ -257,9 +261,12 @@ TreeNode* lowestCommAncestor(TreeNode *root, int v1, int v2)
  *   
  * Retrun: minimum depth of binary tree. 
  *   
- * Notice:   
+ * Notice: It's a recursive solution. 
+ *     1
+ *  2    
+ *  The minimum depth of the above tree is 2 not 1.
 *************************************************/
-int minDepth(TreeNode *root)
+int minDepth(const TreeNode *root)
 {
 	if (!root) return 0;
 	if (!root->left) return minDepth(root->right) + 1;
@@ -268,45 +275,49 @@ int minDepth(TreeNode *root)
 }
 
 /*************************************************
- * Function: define queue item used to solve top
+ * Function: Define queue item to solve top
  * view visible binary tree node set problem.
  *   
  * Notice:   
 *************************************************/
 struct queue_item
 {
-	TreeNode* node;
+	const TreeNode* node;
 	int horizonalDistance;
-	queue_item(TreeNode *nd, int hd) : node(nd), horizonalDistance(hd)
+	queue_item(const TreeNode *nd, int hd) : node(nd), horizonalDistance(hd)
 	{  }
 };
 
 /*************************************************
- * Function: generate visible binary tree node set
- * when look from top side.
+ * Function: Generate visible binary tree node set
+ * when looking from top side.
  *   
  * Param[in]:root, the root node of binary tree. 
  *   
  * Retrun: binary tree node set visible from top side. 
  *   
- * Notice:   
- * Ideas:  level order traversal, define horizontal
+ * Ideas:  Level order traversal. Define horizontal
  * distance to judge whether a node is visible from
- * top side, set to detect duplicate horizonal distance.
+ * top side, STL set<int> is to detect duplicate
+ * horizonal distance. A node with duplicate horizontal 
+ * distance is not visible from top side.
+ * horizontal distance of root node is set to 0.
+ * left child -1, right child +1.
+ * Notice:   
 *************************************************/
-vector<TreeNode*> topViewVisibleSet(TreeNode *root)
+vector<const TreeNode*> topViewVisibleSet(const TreeNode *root)
 {
-	vector<TreeNode*> ret;
-	if (!root) return vector<TreeNode*>();
-	deque<queue_item*> que;
+	vector<const TreeNode*> ret;
+	if (!root) return vector<const TreeNode*>();
 	unordered_set<int> horizonalDistanceSet;
+	deque<queue_item*> que;
 	que.push_back(new queue_item(root, 0));
 	while (!que.empty())
 	{
 		queue_item *cur = que.front(); que.pop_front();
 		int hd = cur->horizonalDistance;
-		TreeNode *curNode = cur->node;
-		// handle memory leak here
+		const TreeNode *curNode = cur->node;
+		// NOTE handle memory leak here
 		if (horizonalDistanceSet.find(hd) == horizonalDistanceSet.end())
 		{
 			horizonalDistanceSet.insert(hd);
@@ -322,15 +333,15 @@ vector<TreeNode*> topViewVisibleSet(TreeNode *root)
 }
 
 /*************************************************
- * Function: 
+ * Function: in-order traversal 
  *   
  * Param[in]: root, root node of binay tree. 
  *   
- * Retrun: in order traversal sequence 
+ * Retrun: vector, in-order traversal sequence 
  *   
  * Notice:   
 *************************************************/
-vector<int> inOrderTraversal(TreeNode *root)
+vector<int> inOrderTraversal(const TreeNode *root)
 {
 	vector<int> ret;
 	if (!root) return vector<int>();
@@ -343,15 +354,15 @@ vector<int> inOrderTraversal(TreeNode *root)
 }
 
 /*************************************************
- * Function: 
+ * Function: Post-order traversal 
  *   
  * Param[in]: root, root node of binary tree. 
  *   
- * Retrun: 
+ * Retrun: vector, post-order traversal sequence 
  *   
  * Notice:   
 *************************************************/
-vector<int> postOrderTraversal(TreeNode *root)
+vector<int> postOrderTraversal(const TreeNode *root)
 {
 	vector<int> ret;
 	if (!root) return vector<int>();
@@ -364,34 +375,47 @@ vector<int> postOrderTraversal(TreeNode *root)
 }
 
 /*************************************************
- * Function: determine whether array2 is subarray
+ * Function: Determine whether array2 is a  subarray
  * of array1.
  *   
- * Param[in]:   
- * Param[in]:   
+ * Param[in]:  array1 
+ * Param[in]:  array2 
  *   
- * Retrun: 
- *   
+ * Retrun: bool, indicating whether array2 is a 
+ * subarray of array1.
  * Notice:   
 *************************************************/
 bool subArray(const vector<int> &array1, const vector<int> &array2)
 {
-	return true;
+	int m = array1.size(), n = array2.size();
+	if (n > m) return false;
+	int i, j;
+	for (i = 0; i <= m -n; ++i)
+	{
+		for (j = 0; j < n; ++j)
+			if (array2[j] != array1[i + j]) break;
+		if (j >= n) return true;
+	}
+	return false;
 }
 
 /*************************************************
- * Function: determine whether binary tree root2 is
+ * Function: Determine whether binary tree root2 is
  * a sub tree of binary tree root1.
  *   
- * Param[in]:   
- * Param[in]:   
+ * Param[in]: root1   
+ * Param[in]: root2
  *   
  * Retrun: bool, indicating whether root2 is a subtree
  * of root1.
  *   
+ * Idea: 1. binary tree root2 is a subtree of root1
+ * imply that in-order traversal sequence is subarray 
+ * of root1's in-order traversal sequence.
+ * 2. rule 1 is true for post-order traversal sequence.
  * Notice:   
 *************************************************/
-bool isSubTree(TreeNode *root1, TreeNode *root2)
+bool isSubTree(const TreeNode *root1, const TreeNode *root2)
 {
 	vector<int> seq1, seq2;
 	seq1 = inOrderTraversal(root1);
@@ -403,9 +427,22 @@ bool isSubTree(TreeNode *root1, TreeNode *root2)
 	return true;
 }
 
-void minDistance(TreeNode *root, int level, int &minDist)
+/*************************************************
+ * Function: Find the min distance in a binary tree. 
+ * Item distance refers to from root node to leaf node.
+ *   
+ * Param[in]:  root, binary tree root 
+ * Param[in]:  int, record current level 
+ * Param[out]: int, min distance  
+ *   
+ * Retrun: void 
+ * Ideas:  
+ * Notice:   
+*************************************************/
+void minDistance(const TreeNode *root, int level, int &minDist)
 {
 	if (!root) return;
+	// check point && search end
 	if (!root->left && !root->right && level < minDist) 
 	{	minDist = level; return; }
 	minDistance(root->left, level + 1, minDist);
@@ -416,13 +453,15 @@ void minDistance(TreeNode *root, int level, int &minDist)
  * Function: 
  *   
  * Param[in]:   
+ * Param[in]:   
  * Param[out]:   
  *   
  * Retrun: level 
- *   
+ * Idea: In binary tree root, define starting node's
+ * level = 0. 
  * Notice:   
 *************************************************/
-int minDistanceUpward(TreeNode *root, TreeNode *node, int &dist)
+int minDistanceUpward(const TreeNode *root, const TreeNode *node, int &dist)
 {
 	if (!root) return -1;
 	if (root == node) return 0;
@@ -442,28 +481,29 @@ int minDistanceUpward(TreeNode *root, TreeNode *node, int &dist)
 }
 
 /*************************************************
- * Function: given a binary tree and a node in that
+ * Function: Given a binary tree and a node in that
  * tree, find the closest distance to leaf from that
  * node.
  *   
- * Param[in]:   
- * Param[in]:   
+ * Param[in]:  root, binary tree root 
+ * Param[in]:  node, node in binary tree 
  *   
- * Retrun: 
+ * Retrun: int, min distance 
  *   
- * Notice: leaf search should have two directions.
- * downward from the node, upward to other subtree.
+ * Notice: Search should have two directions:
+ * 1. downward to leaf node
+ * 2. upward to leaft node in other subtree.
 *************************************************/
-int minDistanceToLeaf(TreeNode *root, TreeNode *node)
+int minDistanceToLeaf(const TreeNode *root, const TreeNode *node)
 {
 	int ret = INT_MAX;
-	minDistance(root, 0, ret);
+	minDistance(node, 0, ret);
 	minDistanceUpward(root, node, ret);
 	return ret;
 }
 
 /*************************************************
- * Function: caculate single valued subtrees in a
+ * Function: Count single-valued subtrees in a
  * binary tree.
  *   
  * Param[in]: root, root node of binary tree. 
@@ -472,7 +512,10 @@ int minDistanceToLeaf(TreeNode *root, TreeNode *node)
  * Retrun: bool, indicating if the current tree is
  * a single valued binary tree.
  *   
- * Notice:   
+ * Notice:  subtree number, a leaf node is a subtree.
+ *    2
+ *  2   2 
+ *  A tree itself is also a subtree.
 *************************************************/
 bool isSingleValued(TreeNode *root, int &count)
 {
