@@ -456,19 +456,30 @@ void minDistance(const TreeNode *root, int level, int &minDist)
  * Param[in]:   
  * Param[out]:   
  *   
- * Retrun: level 
+ * Retrun: int, current node's level 
  * Idea: In binary tree root, define starting node's
  * level = 0. 
- * Notice:   
+ * Notice:  For example search node 3 upward, mark level
+ * value for each node.
+ *    1(1)
+ *   /  \
+ *  2   3(0)
+ *     /  \
+ *    4   5
+ *    /    \
+ *   6     7 
+ *   /      \
+ *  8       9
 *************************************************/
 int minDistanceUpward(const TreeNode *root, const TreeNode *node, int &dist)
 {
 	if (!root) return -1;
 	if (root == node) return 0;
 	int level = minDistanceUpward(root->left, node, dist);
-	if (level != -1)
+	if (level != -1) // node resides in current node's left subtree.
 	{
-		minDistance(root->right, level + 2, dist);
+		// search in current node's right subtree.
+		minDistance(root->right, level + 2, dist); //!Caution, update right level
 		return level + 1;
 	}
 	level = minDistanceUpward(root->right, node, dist);
