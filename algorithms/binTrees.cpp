@@ -529,6 +529,22 @@ bool isSingleValued(TreeNode *root, int &count)
 	return true;
 }
 
+/*************************************************
+ * Function: Given two binary search tree, Print common 
+ * nodes of two binary trees.
+ *   
+ * Param[in]:   
+ * Param[in]:   
+ *   
+ * Retrun: void 
+ * Ideas: Find intersect elements of two sorted 
+ * array. Time Complexity is O(m + n) 
+ * Notice: The idea is only suitable for BST 
+*************************************************/
+void printCommonNodeOfBinaryTree(const TreeNode *root1, const TreeNode *root2)
+{
+}
+
 int main()
 {
 	return 0;
