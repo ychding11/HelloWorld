@@ -27,8 +27,11 @@
  */
 #include <iostream>
 #include <vector>
+#include <cstdlib>
 
-using namespace std;
+//using namespace std;
+using std::vector;  //better 
+using std::max;  //better 
 
 
 /*************************************************
@@ -118,6 +121,53 @@ int coinChange(int n, const int *coins, int m)
 int coinChangeWithMinCoins(int money, const vector<int> &coins)
 {
 }
+
+/*************************************************
+ * Function: Given a grid with each cell containing 
+ * an integer value. Calculate the max path sum 
+ * from (0, 0) --> (m-1, n-1). For each cell, only 
+ * two direction is possible: right, down.
+ *   
+ * Param[in]:  array,  
+ *   
+ * Retrun: int, max path sum 
+ * Ideas: Dynamic Programming 
+ * f(i,j) : max path sum of (0,0) --> (i, j)
+ * f(i,j) = max{f(i, j-1), f(i-1, j)} + grid[i][j], i>0, j>0
+ *
+ * Notice:  Handle boundary with caution 
+*************************************************/
+int maxPathSumOfGrid(const vector<vector<int>> &grid)
+{
+   int m = grid.size();
+   if (m <= 0) return 0;
+   int n = grid[0].size();
+   if (n <= 0) return 0;
+   vector<vector<int>> pathSum(m, vector<int>(n, 0));
+   pathSum[0][0] = grid[0][0];
+   int i, j;
+   for (i = 1; i < n; ++i) pathSum[0][i] = pathSum[0][i - 1] + grid[0][i];
+   for (i = 1; i < m; ++i) pathSum[i][0] = pathSum[i - 1][0] + grid[i][0];
+   for (i = 1; i < m; ++i)
+       for (j = 1; j < n; ++j)
+	   {
+		   pathSum[i][j] = max(pathSum[i][j - 1], pathSum[i - 1][j]) + grid[i][j]; 
+	   }
+   return pathSum[m - 1][n - 1];
+}
+
+int allPathsOfGrid(const vector<int> &grid, int n)
+{
+
+}
+
+int minInitialValueOfGrid(const vector<int> &grid, int n)
+{
+
+}
+
+
+
 int main()
 {
 	return 0;
