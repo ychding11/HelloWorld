@@ -166,7 +166,29 @@ int minInitialValueOfGrid(const vector<int> &grid, int n)
 
 }
 
+/*************************************************
+ * Function: Given a grid containing character, 
+ * and a start character in the grid,
+ * find the length of logest consecutive sequence. 
+ * a cell has 8 neighbours. 
+ * 
+ * Param[in]:  array, char grid 
+ * Param[in]:  char,  starting character. 
+ *   
+ * Retrun: int, max length 
+ * Ideas:  
+ * Notice:  For example, starting char is 'a' 
+ * a b c
+ * b a d 
+ * c d e
+ * the logest sequence is a->b->c->d->e.
+ * There are multiple start points. use dp to store
+ * calculated results can improve effiency.
+*************************************************/
+int longestConsecutiveSequenceOfGrid(const vector<char> &grid, char ch)
+{
 
+}
 
 int main()
 {
