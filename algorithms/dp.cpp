@@ -185,9 +185,43 @@ int minInitialValueOfGrid(const vector<int> &grid, int n)
  * There are multiple start points. use dp to store
  * calculated results can improve effiency.
 *************************************************/
-int longestConsecutiveSequenceOfGrid(const vector<char> &grid, char ch)
+int  longestConsecutiveSequenceOfGridHelper(const  vector<vector<char>> &grid, vector<vector<int>> &dp, int x, int y, int preChar)
 {
+	int m = grid.size(), n = grid[0].size();
+	const int detX[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+	const int detY[8] = {1, 1, 0, -1,-1, -1, 0, 1};
+	if (x >= m || x < 0 || y >= n || y < 0) return 0;
+	if (grid[x][y] != preChar - 1) return 0;
+	if (dp[x][y] != -1) return dp[x][y]; //this cell already calculated.
+	int ret = 0;
+	for (int i = 0; i < 8; ++i)
+	{
+        int temp = longestConsecutiveSequenceOfGridHelper(grid, dp, x+detX[i], y + detY[i], grid[x][y]);  
+		if (temp + 1 > ret) ret = temp + 1;
+	}
+	dp[x][y] = ret;
+	return ret;
+}
 
+int longestConsecutiveSequenceOfGrid(const vector<vector<char>> &grid, char ch)
+{
+	int m = grid.size();
+	if (m <= 0 ) return 0;
+	int n = grid[0].size();
+	int ret = 0;
+	vector<vector<int>> dp(m, vector<int>(n, -1));
+	for (int i = 0; i < m; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			if (grid[i][j] == ch)
+			{
+				int temp = longestConsecutiveSequenceOfGridHelper(grid, dp, i, j, ch);
+				if (temp > ret) ret = temp;
+			}
+		}
+	}
+	return ret;
 }
 
 int main()
