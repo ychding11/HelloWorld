@@ -17,8 +17,8 @@ struct Vec
   Vec operator*(double b) const { return Vec(x*b,y*b,z*b); }
   Vec mult(const Vec &b) const { return Vec(x*b.x,y*b.y,z*b.z); }
   Vec& norm(){ return *this = *this * (1/sqrt(x*x+y*y+z*z)); }
-  double dot(const Vec &b) const { return x*b.x+y*b.y+z*b.z; } // cross:
-  Vec operator%(Vec&b){return Vec(y*b.z-z*b.y,z*b.x-x*b.z,x*b.y-y*b.x);} //????
+  double dot(const Vec &b) const { return x*b.x+y*b.y+z*b.z; } // dot product
+  Vec operator%(Vec&b){return Vec(y*b.z-z*b.y,z*b.x-x*b.z,x*b.y-y*b.x);} // cross product
 };
 
 struct Ray { Vec o, d; Ray(Vec o_, Vec d_) : o(o_), d(d_) {} };
@@ -85,23 +85,24 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi)
   const Sphere &obj = spheres[id];        // the hit object
   Vec x=r.o+r.d*t; //intersect point 
   Vec n=(x-obj.p).norm(); //normal of intersecting point 
-  Vec nl=n.dot(r.d)<0?n:n*-1; 
-  Vec f=obj.c; // sphere color
+  Vec nl=n.dot(r.d)<0?n:n*-1; // oriented normal 
 
-  // find max color component
+  Vec f=obj.c; // sphere color
+  // find max color component as thresh
   double p = f.x>f.y && f.x>f.z ? f.x : f.y>f.z ? f.y : f.z; // max refl
 
-  // based on what assumption ?
+  // end recursion based on what assumption ?
   if (++depth>5) if (erand48(Xi)<p) f=f*(1/p); else return obj.e; //R.R.
   
   if (obj.refl == DIFF) // Ideal DIFFUSE reflection
   {                  
-    double r1=2*M_PI*erand48(Xi), 
+    double r1=2*M_PI*erand48(Xi), // generate a random angle 
 		   r2=erand48(Xi), 
 		   r2s=sqrt(r2);
-    Vec w=nl, 
-		u=((fabs(w.x)>.1?Vec(0,1):Vec(1))%w).norm(), 
-		v=w%u;
+    Vec w=nl, // normal 
+		u=((fabs(w.x)>.1 ? Vec(0,1) : Vec(1)) % w).norm(), 
+		v=w%u; // v perpendicular to w & u
+	// generate a new direction based on new coordinate system
     Vec d = (u*cos(r1)*r2s + v*sin(r1)*r2s + w*sqrt(1-r2)).norm();
     return obj.e + f.mult(radiance(Ray(x,d),depth,Xi));
   }
