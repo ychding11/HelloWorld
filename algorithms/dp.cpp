@@ -187,19 +187,19 @@ int minInitialValueOfGrid(const vector<int> &grid, int n)
 *************************************************/
 int  longestConsecutiveSequenceOfGridHelper(const  vector<vector<char>> &grid, vector<vector<int>> &dp, int x, int y, int preChar)
 {
-	int m = grid.size(), n = grid[0].size();
+	int m = grid.size(), n = grid[0].size(); // no need to check m & n here.
 	const int detX[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 	const int detY[8] = {1, 1, 0, -1,-1, -1, 0, 1};
-	if (x >= m || x < 0 || y >= n || y < 0) return 0;
-	if (grid[x][y] != preChar - 1) return 0;
-	if (dp[x][y] != -1) return dp[x][y]; //this cell already calculated.
+	if (x >= m || x < 0 || y >= n || y < 0) return 0; //check boundary
+	if (grid[x][y] != preChar - 1) return 0; // check requirements
+	if (dp[x][y] != -1) return dp[x][y]; // lookup dp table to see whether it really needs calculation
 	int ret = 0;
 	for (int i = 0; i < 8; ++i)
 	{
-        int temp = longestConsecutiveSequenceOfGridHelper(grid, dp, x+detX[i], y + detY[i], grid[x][y]);  
+        	int temp = longestConsecutiveSequenceOfGridHelper(grid, dp, x+detX[i], y + detY[i], grid[x][y]);  
 		if (temp + 1 > ret) ret = temp + 1;
 	}
-	dp[x][y] = ret;
+	dp[x][y] = ret; // record result in dp table
 	return ret;
 }
 
@@ -214,9 +214,9 @@ int longestConsecutiveSequenceOfGrid(const vector<vector<char>> &grid, char ch)
 	{
 		for (int j = 0; j < n; ++j)
 		{
-			if (grid[i][j] == ch)
+			if (grid[i][j] == ch) //find the starting char
 			{
-				int temp = longestConsecutiveSequenceOfGridHelper(grid, dp, i, j, ch);
+				int temp = longestConsecutiveSequenceOfGridHelper(grid, dp, i, j, ch - 1);
 				if (temp > ret) ret = temp;
 			}
 		}
