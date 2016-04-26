@@ -43,14 +43,15 @@ struct Point
 };
 
 /*************************************************
- * Function: 
+ * Function: Given a two retangles on 2D plane, 
+ * calculate whether these two retangles overlapped. 
  *   
  * Param[in]:  lt1, left top point of first rectangle 
  * Param[in]:  rb1, right bottom point of first rectangle 
  * Param[in]:  lt2, left top point of second rectangle 
  * Param[in]:  rb2, right bottom point of second rectangle 
  *   
- * Retrun: bool, indicating whether overlapped or not. 
+ * Retrun: bool, indicating whether overlapped. 
  *   
  * Notice:   
  * Ideas:  two retangles do not overlapped if and 
@@ -59,8 +60,8 @@ struct Point
 *************************************************/
 bool isTwoRectangleOverlapped(Point &lt1, Point &rb1, Point &lt2, Point &rb2)
 {
-	if (lt1.y < rb2.y || lt2.y < rb1.y) return false;
-	if (lt1.x > rb2.x || lt2.x > rb1.x) return false;
+	if (lt1.y < rb2.y || lt2.y < rb1.y) return false; //one over another
+	if (lt1.x > rb2.x || lt2.x > rb1.x) return false; //one at another's side
 	return true;
 }
 
@@ -76,7 +77,8 @@ static double triangleCost(vector<Point> &points, int i, int k, int j)
 }
 
 /*************************************************
- * Function: 
+ * Function: Given an array of points which stand 
+ * for a polygon, we need to trianglize it.  
  *   
  * Param[in]:  points, array of 2D points 
  * Param[in]:  i, starting index of point array, included 
