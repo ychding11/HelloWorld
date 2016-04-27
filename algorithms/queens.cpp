@@ -54,20 +54,30 @@ using namespace std;
 class NQueensSolver 
 {
 private:
-        map<int, int> columnMap;
+	// for example 4(0100) -- 3
+	// an integer only 1 bit set in it's
+	// binary format. The map stores 
+	// <integer, corresponding bit index>
+    map<int, int> columnMap;
 private:
     bool checkPath(vector<int>& path)
     {
+    	// check the new position is valid.
+	// new position is represented by 
+	// num2.
         int curRow = path.size() -1;
         int num2   = path[curRow];
         for(int i = 0; i < curRow; i++)
         {
             int num1    = path[i];
             int deltRow = curRow - i;
+	    // use bit operation to check collision
             if(num2 & num1 || num2 & (num1 << deltRow) || num2 & (num1 >> deltRow)) return false;
         }
         return true;
     }
+
+	// convert current solution into string format
     vector<string> path2Board( vector<int>& curPath)
     {
         int n = curPath.size();
@@ -79,6 +89,20 @@ private:
         }
         return ret;
     }
+
+    /*************************************************
+     * Function: search nxn chessboard to find all 
+     * possible solution.
+     *   
+     * Param[in]:  n, int nxn chessboard 
+     * Param[in]:  curRow, int currently searched row 
+     * Param[out]: allPath, array all feasible solutions 
+     * Param[out]: curPath, array current feasible solutions 
+     *   
+     * Retrun:void 
+     * Ideas: search nxn chessboard with constrains. 
+     * Notice:  How to check whether constrains are meet. 
+    *************************************************/
     void solveNQueensHelper(vector<vector<string> >& allPath, vector<int>& curPath, int n, int curRow)
     {
         /* stop search condition */
@@ -128,6 +152,7 @@ public:
         float seconds = ((float)(clk2 - clk1)) / CLOCKS_PER_SEC; /* calculate in seconds units */
         printf("[Solve time] = %ld ticks, %.4f seconds!\t Solve %d Queen!\n", clk2 - clk1, seconds, n);
         #endif
+
         return allPath;
     }
 };
