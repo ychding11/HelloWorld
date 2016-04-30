@@ -25,7 +25,7 @@
  */
 struct Node {
   double x, y;
-  Node(int xx = 0.0, int yy = 0.0)
+  Node(double xx = 0.0, double yy = 0.0)
   : x(xx)
   , y(yy)
   {}

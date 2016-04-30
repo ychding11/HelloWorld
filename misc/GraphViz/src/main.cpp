@@ -8,9 +8,10 @@
 
 using namespace std;
 
+#define DEBUG
 const double kPi = 3.14159265358979323;
-const double kRepel = 10e-3;
-const double kAttrack = 10e3;
+const double kRepel = 0.01;
+const double kAttrack = 100;
 
 void Welcome();
 
@@ -101,6 +102,9 @@ Node constructNode(size_t id, size_t nodeNum)
 	Node ret;
 	ret.x = cos(2 * kPi * ((double)id / (double)nodeNum));
 	ret.y = sin(2 * kPi * ((double)id / (double)nodeNum));
+	#if defined DEBUG
+	printf("node %d, initial position [%lf, %lf]\n", id, ret.x, ret.y);
+	#endif
 	return ret;
 }
 
@@ -156,6 +160,7 @@ void repelDetPos(const SimpleGraph &graph, vector<Node> &detpos)
 {
 	int n = graph.nodes.size();
 	for (int i = 0; i < n -1; ++i)
+	{
 		for (int j = i + 1; j < n; ++j)
 		{
 			double x0 = graph.nodes[i].x;
@@ -169,7 +174,15 @@ void repelDetPos(const SimpleGraph &graph, vector<Node> &detpos)
 			detpos[i].y += repelForce * p1toP0.y;
 			detpos[j].x -= repelForce * p1toP0.x;
 			detpos[j].y -= repelForce * p1toP0.y;
+			#if defined DEBUG
+			printf("node<%d, %d>, [%lf,  %lf] [%lf, %lf], distance = %lf, repelForce = %lf\n"
+			       "\tdetForce=[%lf, %lf], \tdetpos=[%lf, %lf] [%lf, %lf]\n",
+			       i, j, x0, y0, x1, y1, len, repelForce,
+				repelForce * p1toP0.x, repelForce * p1toP0.y,
+			       detpos[i].x, detpos[i].y, detpos[j].x, detpos[j].y);
+			#endif
 		}
+	}
 }
 
 void attrackDetPos(const SimpleGraph &graph, vector<Node> &detpos)
@@ -190,6 +203,14 @@ void attrackDetPos(const SimpleGraph &graph, vector<Node> &detpos)
 		detpos[start].y -= attrackForce * p1toP0.y;
 		detpos[end].x += attrackForce * p1toP0.x;
 		detpos[end].y -= attrackForce * p1toP0.y;
+
+		#if defined DEBUG
+		printf("node<%d, %d>, [%lf,  %lf] [%lf, %lf], distance = %lf, attrackForce = %lf\n"
+		       "\tdetForce=[%lf, %lf], \tdetpos=[%lf, %lf] [%lf, %lf]\n", 
+			start, end, x0, y0, x1, y1, len, attrackForce,
+			attrackForce * p1toP0.x, attrackForce * p1toP0.y,
+			detpos[start].x, detpos[start].y, detpos[end].x, detpos[end].y);
+		#endif
 	}
 }
 
@@ -200,13 +221,16 @@ void applyDetPos(SimpleGraph &graph, vector<Node> &detpos)
 	{
 		graph.nodes[i].x += detpos[i].x;
 		graph.nodes[i].y += detpos[i].y;
+		#if defined DEBUG
+		printf("node %d position [%lf, %lf]\n", i, graph.nodes[i].x, graph.nodes[i].y);
+		#endif
 	}
 }
 
 void forceDirectedAlgorithm(SimpleGraph &graph)
 {
 	int n = graph.nodes.size();
-	vector<Node> detPos(n); // check Node default constructor 
+	vector<Node> detPos(n, Node(0,0)); // check Node default constructor 
 	repelDetPos(graph, detPos);
 	attrackDetPos(graph, detPos);
 	applyDetPos(graph, detPos);
@@ -228,8 +252,8 @@ int main()
 		endTime = time(NULL);
 		if (endTime - startTime >= expectedTime)
 		{			
-			cout << "end running algorithm..." << endl; 
-			break;
+			//cout << "end running algorithm..." << endl; 
+			//break;
 		}
 	}
     	cout << "Type \"begin\" to load a graph or type ENTER to quit." << endl;
