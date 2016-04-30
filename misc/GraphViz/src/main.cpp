@@ -2,6 +2,8 @@
 #include <cstdio>
 #include <fstream>
 #include <cmath>
+#include <ctime>
+#include <sstream>
 #include "SimpleGraph.h"
 
 using namespace std;
@@ -26,6 +28,33 @@ string getInput()
 	string ret;
 	getline(cin, ret);
 	return ret;
+}
+
+int PromptAlgorithmTime()
+{
+	while (true)
+	{
+		cout << "Please Enter expected run time in seconds" << endl;
+		stringstream ss; 
+		ss << getInput();
+		int dTime;
+		if (ss >> dTime)
+		{
+			char c;
+			if (ss >> c)
+			{
+				cout << "Invalid input." << endl;
+			}
+			else
+			{
+				return dTime;
+			}
+		}
+		else
+		{
+			cout << "Input is not a nuber, try again." << endl;
+		}
+	}
 }
 
 /*************************************************
@@ -190,6 +219,19 @@ int main()
     do
     {
     	SimpleGraph graph = loadGraph();
+	int expectedTime = PromptAlgorithmTime();
+	time_t endTime, startTime = time(NULL);
+	cout << "begin running algorithm..." << endl;
+	while (true)	
+	{
+		forceDirectedAlgorithm(graph);
+		endTime = time(NULL);
+		if (endTime - startTime >= expectedTime)
+		{			
+			cout << "end running algorithm..." << endl; 
+			break;
+		}
+	}
     	cout << "Type \"begin\" to load a graph or type ENTER to quit." << endl;
     } while(getInput() == "begin");
     printf("Ready to quit.\n");
