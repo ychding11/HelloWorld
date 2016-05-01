@@ -441,13 +441,14 @@ const Elemtype& KDTree<N, Elemtype>::at(const Point<N>& pt) const {
 
 /*
  * kNNValue(pt, integer)
- * Given a point and integer, KNNValue finds the k points
- * in the KDTree nearest to v and returns the most common
+ * Given a point "pt" and integer "k", KNNValue finds the k points
+ * in the KDTree nearest to pt and returns the most common
  * value associated with those points. In a tie, one of the
  * most frequent will be chosen.
  */
 template<size_t N, typename ElemType>
-ElemType KDTree<N, ElemType>::kNNValue(const Point<N>& key, size_t k) const {
+ElemType KDTree<N, ElemType>::kNNValue(const Point<N>& key, size_t k) const
+{
     BoundedPQueue<Node*> nearestPQ(k);
     KNNValueRecurse(key, nearestPQ, root);
     
@@ -461,23 +462,29 @@ ElemType KDTree<N, ElemType>::kNNValue(const Point<N>& key, size_t k) const {
  * the KDTree
  */
 template<size_t N, typename ElemType>
-void KDTree<N, ElemType>::KNNValueRecurse(const Point<N>&key, BoundedPQueue<Node*>& nearestPQ, Node* currentNode) const{
+void KDTree<N, ElemType>::KNNValueRecurse(const Point<N>&key, BoundedPQueue<Node*>& nearestPQ, Node* currentNode) const
+{
     //Base case
     if (currentNode == NULL) return;
     //Execution
     nearestPQ.enqueue(currentNode, Distance(currentNode->key, key));
     //Recursion
     size_t keyIndex = currentNode->level % N;
-    if(key[keyIndex] < currentNode->key[keyIndex]) {
+    if(key[keyIndex] < currentNode->key[keyIndex])
+    {
         KNNValueRecurse(key, nearestPQ, currentNode->lNodePtr);
         //If the hypersphere crosses the splitting plane check the other subtree
-        if ( (nearestPQ.size() != nearestPQ.maxSize()) || fabs(currentNode->key[keyIndex] - key[keyIndex]) < nearestPQ.worst() ) {
+        if ( (nearestPQ.size() != nearestPQ.maxSize()) || fabs(currentNode->key[keyIndex] - key[keyIndex]) < nearestPQ.worst() )
+	{
             KNNValueRecurse(key, nearestPQ, currentNode->rNodePtr);
         }
-    } else {
+    }
+    else
+    {
         KNNValueRecurse(key, nearestPQ, currentNode->rNodePtr);
         //If the hypersphere crosses the splitting plane check the other subtree
-        if ( (nearestPQ.size() != nearestPQ.maxSize()) || fabs(currentNode->key[keyIndex] - key[keyIndex]) < nearestPQ.worst() ) {
+        if ( (nearestPQ.size() != nearestPQ.maxSize()) || fabs(currentNode->key[keyIndex] - key[keyIndex]) < nearestPQ.worst() )
+	{
             KNNValueRecurse(key, nearestPQ, currentNode->lNodePtr);
         }
     }
@@ -489,16 +496,21 @@ void KDTree<N, ElemType>::KNNValueRecurse(const Point<N>&key, BoundedPQueue<Node
  * returns the most common value stored in the nodes.
  */
 template<size_t N, typename ElemType>
-ElemType KDTree<N, ElemType>::FindMostCommonValueInPQ(BoundedPQueue<Node*> nearestPQ) const{
+ElemType KDTree<N, ElemType>::FindMostCommonValueInPQ(BoundedPQueue<Node*> nearestPQ) const
+{
     multiset<ElemType> values;
-    while(!nearestPQ.empty()) {
+    while(!nearestPQ.empty())
+    {
         values.insert((nearestPQ.dequeueMin())->value);
     }
     
     ElemType best;
     size_t bestFrequency = 0;
-    for(typename multiset<ElemType>::iterator it = values.begin(); it !=values.end(); ++it) {
-        if (values.count(*it) > bestFrequency) {
+    // How multiset data structure is organised? iterator will repeated for duplicates?
+    for(typename multiset<ElemType>::iterator it = values.begin(); it !=values.end(); ++it)
+    {
+        if (values.count(*it) > bestFrequency)
+	{
             best = *it;
             bestFrequency = values.count(*it);
         }
