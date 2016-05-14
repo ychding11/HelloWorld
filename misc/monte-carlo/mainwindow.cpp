@@ -82,9 +82,9 @@ void MacbethWidget::mouseReleaseEvent(QMouseEvent *event)
 
 PictureDisplay::PictureDisplay(const string& filename)
 {
- // setMinimumSize(1024, 513);
   if (!pict.load(filename.c_str()))
-  ;
+  	throw runtime_error("Couldn't load image file " + filename);
+  setMinimumSize(pict.width(), pict.height());
 }
 
 PictureDisplay::PictureDisplay()
