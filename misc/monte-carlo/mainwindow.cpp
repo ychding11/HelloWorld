@@ -3,6 +3,7 @@
 **
 ****************************************************************************/
 
+#include <Qt>
 #include <QPainter>
 #include <QKeyEvent>
 #include <QStatusBar>
@@ -41,12 +42,25 @@ void MacbethWidget::resizeEvent(QResizeEvent * /* event */)
 {
 }
 
+/*********************************************************
+ * Function:
+ *	
+ *
+ * Document Reference:
+ *	http://doc.qt.io/qt-5/qkeyevent.html
+ *
+ ********************************************************/
 void MacbethWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) {
-    case Qt::Key_Plus:
+    static bool paused = false;
+    switch (event->key())
+    {
+    case Qt::Key_Escape:
+    	close();
         break;
-    case Qt::Key_Minus:
+    case Qt::Key_Space:
+    	(paused = !paused)? thread.pause() : thread.resume();
+	printf("Press Space Key. paused = %d\n", paused);
         break;
     case Qt::Key_Left:
         break;

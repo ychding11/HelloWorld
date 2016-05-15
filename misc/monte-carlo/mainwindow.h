@@ -16,6 +16,7 @@ using namespace std;
 
 class PictureDisplay;
 
+//document http://doc.qt.io/qt-5/qmainwindow.html
 class MacbethWidget : public QMainWindow
 {
     Q_OBJECT

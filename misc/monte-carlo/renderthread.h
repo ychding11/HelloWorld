@@ -18,6 +18,8 @@ public:
     ~RenderThread();
 
     void render();
+    void pause();
+    void resume();
 
 signals:
     void renderedImage(const QImage &image, int nPass);
@@ -32,6 +34,7 @@ private:
 	int fNumPass = 0; // default initializer
 	const float fGamma = 1.0 / 2.2;
 	const int fSamples = 32;
+	bool fPause = false;
 	
 };
 

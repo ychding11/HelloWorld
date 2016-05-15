@@ -96,7 +96,7 @@ void saveToFile(float *pixels, int width, int height)
     std::ofstream ofs; 
     ofs.open("./mcbeth.ppm"); 
     ofs << "P6\n" << width << " " << height << "\n255\n"; 
-    for (uint32_t i = 0; i < width * height; ++i)
+    for (int i = 0; i < width * height; ++i)
     { 
         unsigned char r, g, b; 
         r = (unsigned char)(std::min(1.f, pixels[i * 3 + 0]) * 255);
@@ -147,8 +147,9 @@ int RenderThread::tester(void)
         } 
         printf("Pass %3d (total samples %5d), Preparing construct QImage object.\n", fNumPass, width * height * fNumPass * fSamples);
 	saveToFile(pixels, width, height);
-	image.loadFromData((const char*)pixels);
+	if (!image.loadFromData((const char*)pixels, "PPM")) printf ("Load from data error. line : %d\n", __LINE__);
 	emit renderedImage(image, fNumPass);
+	while (fPause); //yieldCurrentThread();
     } 
     delete [] pixels; 
     delete [] buffer;
@@ -167,16 +168,22 @@ RenderThread::~RenderThread()
 
 void RenderThread::render()
 {
-	tester();
+}
+
+void RenderThread::pause()
+{
+//	yieldCurrentThread();
+	fPause = true;
+}
+
+void RenderThread::resume()
+{
+	fPause = false;
 }
 
 void RenderThread::run()
 {
-	while (true)
-	{
 	printf("render threading is running..\n");
 	tester();
-	sleep(1);
-	}
 }
 
