@@ -72,17 +72,18 @@ char to_lowcase(char ch)
 
 /*************************************************
  *  count the lines of a text file. 
- *  return the lines in files. 
+ *  return line number of a file. 
  *   
  *  NOTE: fgets takes newline ('\n') as a valid 
  *        character. fgets is a good IO operation.
 *************************************************/
-static int count_line(char *filename)
+static int countLinesInFile(char *filename)
 {
     int lines = 0;
     char buf[BUFSIZE] = { 0 };  //1024 BUFSIZE
     FILE *fp = NULL;
-    fp = fopen(filename, "r");
+    // no need to check param filename, instead we check return value.
+    fp = fopen(filename, "r"); 
     if (NULL == fp)
     {
         printf("Open file error! [ %s ]\n", filename);
@@ -100,11 +101,13 @@ static int count_line(char *filename)
 }
 
 /*************************************************
- *  calculate  common part length of tow char* 
- *  string. 
+ *  calculate  common part length of tow string. 
  *  return the common length. 
  *   
- *  NOTE: the comparing method is tricky.
+ *  NOTE: 
+ *      1. the comparing method is tricky.
+ *      2. no need to take memory overlapping
+ *         into consideration.
 *************************************************/
 static int common_len(const char *p, const char *q)
 {
@@ -120,7 +123,7 @@ static int common_len(const char *p, const char *q)
 char c[MAX_CHAR], *suffix[MAX_CHAR];
 
 /*************************************************
- *  compare tow char* string. the function is passed
+ *  Compare two char* string. The function is passed
  *  to qsort() as an input parameter.  
  *   
  *  NOTE: How to inteprete the input parametes.
@@ -129,7 +132,7 @@ static int cmpstr(const void *a, const void *b)
 {
     assert(a != NULL && b != NULL);
     #if 1
-     char *c = *(char**)a;
+     char *c = *(char**)a; // NOTICE here.
      char *d = *(char**)b;
      
      // compare two char* string
@@ -142,17 +145,29 @@ static int cmpstr(const void *a, const void *b)
 }
 
 /*************************************************
- *  demostrate how to use suffix array to slove 
+ *  Demostrate how to use suffix array to slove 
  *  max len of repeated substring problem. 
  *  the idea is :
  *  1. read string from stdin && build string 
  *     suffix array.
- *  2. sort the suffix array by stdcall qsort();
+ *  2. sort the suffix array by qsort();
  *  3. after sorting, elements in string suffix
  *     array will be in an dictionary order. so
  *     apply common len of neighbouring elements
  *     calculation algorithms.
  *   
+ *  "abcd" max length of repeated substring = 0;
+ *  "aabc" max length of repeated substring = 1;
+ *  {a} {a} {b} {c}
+ *  {aa} {ab} {bc}
+ *  {aab} {abc}
+ *  {aabc}
+ *  After getting sorted string, the most common
+ *  lenght happens between i and i + 1.
+ *  For example: 
+ *      abc
+ *      bc
+ *      c
 *************************************************/
 static void demo_suffix_array()
 {
@@ -203,8 +218,8 @@ static void demo_suffix_array()
         int len = common_len(suffix[j], suffix[j + 1]); // just repeated once
         if (len > maxlen)
         { 
-         maxlen = len; 
-         maxlenIdx = j; 
+            maxlen = len; 
+            maxlenIdx = j; 
         }
         
     }
