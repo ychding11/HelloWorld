@@ -55,7 +55,7 @@ class Combination
 {
 public:
     /* 
-     * Given a set with n elements [1, n], print all
+     * Given a set of n elements [1, n], generate all
      * possible combinations of k elements from 
      * the set.
      */
@@ -69,7 +69,8 @@ public:
     
     void combineHelper(int begin, int end, int n, vector<int> &tmp, vector<vector<int> > &result)
     {
-        /* search termination condition */
+        /* search termination condition 
+         *  : we have picked n elements. */
         if (n == 0)
         {  result.push_back(tmp); return; }
         for (int i = begin; i <= end; i++)

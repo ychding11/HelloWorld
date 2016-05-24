@@ -141,9 +141,10 @@ int main(int argc, char** argv)
 { 
   ENTER_FUNCTION;
   DataType a;
-  if (argc != 1)
+  if (argc != 2)
   {
       printf("Usage Error! %s target\n", argv[0]);
+      return -1;
   }
   a = atoi(argv[1]);
   logger << "Search " << a << std::endl;

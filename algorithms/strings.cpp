@@ -43,35 +43,38 @@ using namespace std;
 /*************************************************
  * Function: 
  *   
- * Param[in]:   
- * Param[out]:   
+ * Param[in]:  strs, STL set, string set. 
+ * Param[in]:  prefix, string, the string prefix 
+ * need to search.
  *   
- * Retrun: 
+ * Retrun: void 
  * Ideas:  
-*  The idea behind this solution is that for a given prefix,
-   all words beginning with the prefix must come
-   lexicographically after the prefix and before the prefix
-   formed by increasing the last letter by one.  For example,
-   all words starting with "abd" come between "abd" and "abe."
-   Using this, we get this solution:
+ *  The idea behind this solution is that for a given prefix,
+    all words beginning with the prefix must come
+    lexicographically after the prefix and before the prefix
+    formed by increasing the last letter by one.
+    For example,
+    all words starting with "abd" come between "abd" and "abe."
  * Notice:  STL container set is a sorted container 
 *************************************************/
-void printStringsWithPrefix(set<string> strs, string prefix)
+void printStringsWithPrefix(const set<string> &strs, const string &prefix)
 {
-	if (prefix.empty())
-	{
+	if (prefix.empty()) // special case
+	{ 
+		// empty prefix matches all strings in the set
 		for (auto it = strs.begin(); it != strs.end(); ++it)
 			cout << *it << endl;
 	}
-	else
+	else // normal case
 	{
-		string stopPrefix = prefix;
-		++stopPrefix[stopPrefix.length() - 1];
+		string stopPrefix = prefix; // start bound
+		++stopPrefix[stopPrefix.length() - 1]; // ending bound
 		for (auto it = strs.lower_bound(prefix); it != strs.lower_bound(stopPrefix); ++it)
 			cout << *it << endl;
 	}
 }
 
+//This is just a test
 int main()
 {
 	set<string> strs;
@@ -83,3 +86,4 @@ int main()
 	strs.insert("bdfg");
 	printStringsWithPrefix(strs, "abc");
 }
+

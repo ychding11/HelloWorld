@@ -33,13 +33,15 @@ using std::cin;
 using std::endl;
 
 /*************************************************
- Write a program that prompts the user for an integer, then prints the numbers
- from 0 to that integer (inclusive).  You cannot use the following keywords:
- if  else  do  while  goto  for  break  
- continue  switch  default  try  throw  catch
+ Write a program that prompts the user for an integer,
+ then prints the numbers from 0 to that integer (inclusive).
+ You cannot use the following keywords:
+     if  else  do  while  goto  for  break  
+     continue  switch  default  try  throw  catch
  You also cannot use setjmp and longjmp (if you know what these are).
  You also cannot use the ?: operator (it's essentially an 'if-else' statement). 
- * Ideas:  
+
+ * Ideas: apply rational operator  
  * Notice:  initial call to the function should be
  * printNumber(0, maxNum); && maxNum >= 0
 *************************************************/
