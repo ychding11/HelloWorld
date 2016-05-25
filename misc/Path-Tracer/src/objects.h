@@ -16,9 +16,12 @@ struct ObjectIntersection
 	Vec n;		// Normal of intersected face
 	Material m;	// Material of intersected face
 
-	ObjectIntersection(bool hit_=false, double u_=0, Vec n_=Vec(), Material m_=Material());
+	ObjectIntersection(bool hit_ = false, double u_ = 0, Vec n_= Vec(), Material m_= Material())
+    : hit(hit_)
+    , u(u_)
+    , n(n_)
+    , m(m_) {}
 };
-
 
 class Object
 {
@@ -37,10 +40,15 @@ private:
 	Material m_m;	// Material
 
 public:
-	Sphere(Vec p_, double r_, Material m_);	
+	Sphere(Vec p, double r, Material m)	
+    : m_p(p)
+    , m_r(r)
+    , m_m(m) {}
 
-    virtual double get_radius();
-	virtual Material get_material();
+    virtual double get_radius()
+    { return m_r; }
+	virtual Material get_material()
+    { return m_m; }
 
 	virtual ObjectIntersection get_intersection(const Ray &r);
 };

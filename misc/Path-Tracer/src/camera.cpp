@@ -1,6 +1,7 @@
 #include "ray.h"
 #include "camera.h"
 
+//constructor
 Camera::Camera(Vec position, Vec target, int width, int height)
 {
     m_width = width;
@@ -19,9 +20,6 @@ Camera::Camera(Vec position, Vec target, int width, int height)
     m_x_spacing_half = m_x_spacing * 0.5;
     m_y_spacing_half = m_y_spacing * 0.5;
 }
-
-//int Camera::get_width() { return m_width; }
-//int Camera::get_height() { return m_height; }
 
 // Generate a ray from camera origin through pixel(x,y)
 Ray Camera::get_ray(int x, int y, bool jitter, unsigned short *Xi)

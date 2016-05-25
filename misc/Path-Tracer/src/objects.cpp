@@ -8,22 +8,9 @@
 #include "objects.h"
 //#include "../lib/fastbvh/BVH.h"
 
-
-ObjectIntersection::ObjectIntersection(bool hit_, double u_, Vec n_, Material m_)
-{
-	hit=hit_, u=u_, n=n_, m=m_;
-}
-
-
-Sphere::Sphere( Vec p_, double r_, Material m_ ) {
-	m_p=p_, m_r=r_, m_m=m_;
-}
-
-double Sphere::get_radius() { return m_r; }
-Material Sphere::get_material() { return m_m; }
-
 // Check if ray intersects with sphere. Returns ObjectIntersection data structure
-ObjectIntersection Sphere::get_intersection(const Ray &ray) {
+ObjectIntersection Sphere::get_intersection(const Ray &ray)
+{
 	// Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
 	bool hit = false;
 	double distance = 0;
@@ -40,25 +27,27 @@ ObjectIntersection Sphere::get_intersection(const Ray &ray) {
 	return ObjectIntersection(hit, distance, n, m_m);
 }
 
-
-Mesh::Mesh(Vec p_, const char* file_path, Material m_) {
+//constructor
+//https://syoyo.github.io/tinyobjloader/
+Mesh::Mesh(Vec p_, const char* file_path, Material m_)
+{
 
 	m_p=p_, m_m=m_;
 
-    std::string mtlbasepath;
     std::string inputfile = file_path;
-    unsigned long pos = inputfile.find_last_of("/");
-    mtlbasepath = inputfile.substr(0, pos+1);
+    unsigned long pos = inputfile.find_last_of("/"); //need to check pos
+    std::string mtlbasepath = inputfile.substr(0, pos+1);
 
-    printf("Loading %s...\n", file_path);
-    // Attempt to load mesh
+    printf("Loading Objects %s...\n", file_path);
+
 	std::string err = tinyobj::LoadObj(m_shapes, m_materials, inputfile.c_str(), mtlbasepath.c_str());
-
-	if (!err.empty()) {
+	if (!err.empty())
+    {
 		std::cerr << err << std::endl;
 		exit(1);
 	}
-	printf(" - Generating k-d tree...\n\n");
+
+	printf(" - Building triangle list...\n\n");
 
     long shapes_size, indices_size, materials_size;
     shapes_size = m_shapes.size();
@@ -66,67 +55,65 @@ Mesh::Mesh(Vec p_, const char* file_path, Material m_) {
 
     // Load materials/textures from obj
     // TODO: Only texture is loaded at the moment, need to implement material types and colours
-    for (int i=0; i<materials_size; i++) {
+    for (int i=0; i<materials_size; i++)
+    {
         std::string texture_path = "";
-
-        if (!m_materials[i].diffuse_texname.empty()){
+        if (!m_materials[i].diffuse_texname.empty())
+        {
             if (m_materials[i].diffuse_texname[0] == '/') texture_path = m_materials[i].diffuse_texname;
             texture_path = mtlbasepath + m_materials[i].diffuse_texname;
             materials.push_back( Material(DIFF, Vec(1,1,1), Vec(), texture_path.c_str()) );
         }
-        else {
+        else
+        {
             materials.push_back( Material(DIFF, Vec(1,1,1), Vec()) );
         }
-
     }
 
     // Load triangles from obj
-    for (int i = 0; i < shapes_size; i++) {
+    for (int i = 0; i < shapes_size; i++)
+    {
         indices_size = m_shapes[i].mesh.indices.size() / 3;
-        for (size_t f = 0; f < indices_size; f++) {
-
+        for (size_t f = 0; f < indices_size; f++)
+        {
             // Triangle vertex coordinates
             Vec v0_ = Vec(
                     m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f] * 3     ],
                     m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f] * 3 + 1 ],
-                    m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f] * 3 + 2 ]
-            ) + m_p;
+                    m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f] * 3 + 2 ]) + m_p;
 
             Vec v1_ = Vec(
                     m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f + 1] * 3     ],
                     m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f + 1] * 3 + 1 ],
-                    m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f + 1] * 3 + 2 ]
-            ) + m_p;
+                    m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f + 1] * 3 + 2 ]) + m_p;
 
             Vec v2_ = Vec(
                     m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f + 2] * 3     ],
                     m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f + 2] * 3 + 1 ],
-                    m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f + 2] * 3 + 2 ]
-            ) + m_p;
+                    m_shapes[i].mesh.positions[ m_shapes[i].mesh.indices[3*f + 2] * 3 + 2 ]) + m_p;
 
             Vec t0_, t1_, t2_;
 
             //Attempt to load triangle texture coordinates
-            if (m_shapes[i].mesh.indices[3 * f + 2] * 2 + 1 < m_shapes[i].mesh.texcoords.size()) {
+            if (m_shapes[i].mesh.indices[3 * f + 2] * 2 + 1 < m_shapes[i].mesh.texcoords.size())
+            {
                 t0_ = Vec(
                         m_shapes[i].mesh.texcoords[m_shapes[i].mesh.indices[3 * f] * 2],
                         m_shapes[i].mesh.texcoords[m_shapes[i].mesh.indices[3 * f] * 2 + 1],
-                        0
-                );
+                        0);
 
                 t1_ = Vec(
                         m_shapes[i].mesh.texcoords[m_shapes[i].mesh.indices[3 * f + 1] * 2],
                         m_shapes[i].mesh.texcoords[m_shapes[i].mesh.indices[3 * f + 1] * 2 + 1],
-                        0
-                );
+                        0);
 
                 t2_ = Vec(
                         m_shapes[i].mesh.texcoords[m_shapes[i].mesh.indices[3 * f + 2] * 2],
                         m_shapes[i].mesh.texcoords[m_shapes[i].mesh.indices[3 * f + 2] * 2 + 1],
-                        0
-                );
+                        0);
             }
-            else {
+            else
+            {
                 t0_=Vec();
                 t1_=Vec();
                 t2_=Vec();
@@ -142,13 +129,18 @@ Mesh::Mesh(Vec p_, const char* file_path, Material m_) {
     // Clean up
     m_shapes.clear();
     m_materials.clear();
+    
+	printf(" - Building k-d tree...\n\n");
+    // build these triangles in mesh into 
+    // a kdTree.
     node = KDNode().build(tris, 0);
     printf("\n");
 	//bvh = BVH(&tris);
 }
 
 // Check if ray intersects with mesh. Returns ObjectIntersection data structure
-ObjectIntersection Mesh::get_intersection(const Ray &ray) {
+ObjectIntersection Mesh::get_intersection(const Ray &ray)
+{
     double t=0, tmin=INFINITY;
     Vec normal = Vec();
     Vec colour = Vec();
