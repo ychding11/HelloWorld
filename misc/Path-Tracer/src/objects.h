@@ -41,9 +41,8 @@ private:
 
 public:
 	Sphere(Vec p, double r, Material m)	
-    : m_p(p)
-    , m_r(r)
-    , m_m(m) {}
+    : m_r(r)
+    , m_m(m) { m_p = p;}
 
     virtual double get_radius()
     { return m_r; }
