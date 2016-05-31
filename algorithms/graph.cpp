@@ -27,6 +27,7 @@
  */
 
 #include<cstdio>
+#include<cassert>
 #include<vector>
 #include<iostream>
 #include<stack>
@@ -35,46 +36,75 @@ using namespace std;
  
 class Graph
 {
-private:
-    int mVertexs;    
-    vector<int> *mAdjList;    // adjacency vectors
-
 public:
-    Graph(int vetexs);  // Constructor
-    void addEdge(int v, int w); // add an edge to graph
-    void DFS(int s);  // traversal graph by DFS from a given source s
+    Graph(int vetexs = 0);  // Constructor
+
+    void addEdge(int u, int v) // Add an edge to graph
+    {
+        mAdjList[u].push_back(v); 
+    }
+
+    void DFS(int s);  // Traversal graph by DFS from a given source s
+    bool isConnected(int s, int d);
+
+private:
+    int mVertex;    
+    vector<vector<int>> mAdjList;    // adjacency vectors
 };
  
-Graph::Graph(int vertex) : mVertexs(vertex)
-{
-    mAdjList = new vector<int>[mVertexs]; //check status needed
-}
+Graph::Graph(int vertex)
+: mVertex(vertex)
+, mAdjList(vertex, vector<int>())
+{ }
  
-void Graph::addEdge(int v, int w)
-{
-    mAdjList[v].push_back(w); 
-}
-
 void Graph::DFS(int s)
 {
-	vector<int> visited(mVertexs,false);
+    assert(s >=0 && s < mVertex);
+	vector<int> visited(mVertex,false);
 	stack<int> stack;
-	visited[s] = true; stack.push(s);
+    stack.push(s);
+	visited[s] = true; // mark 
 	while (!stack.empty())
 	{
-		int cur = stack.top();
-		stack.pop();
-		cout << cur << " ";
+		int cur = stack.top(); stack.pop();
+		cout << cur << " "; //visit vertice from stack top
  
-	    vector<int>::iterator i;
-        for (i = mAdjList[cur].begin(); i != mAdjList[cur].end(); ++i)
+	    //vector<int>::iterator i;
+        for (auto i = mAdjList[cur].begin(); i != mAdjList[cur].end(); ++i)
         {
             if (!visited[*i])
             {
-                visited[*i] = true; stack.push(*i);
+                stack.push(*i);
+                visited[*i] = true;
             }
         }
     }
+}
+
+bool Graph::isConnected(int s, int d)
+{
+    assert( s>=0 && s < mVertex && d >= 0 && d < mVertex);
+    if (s == d) return true;
+
+	vector<int> visited(mVertex,false);
+	stack<int> stack;
+    stack.push(s);
+	visited[s] = true; // mark 
+	while (!stack.empty())
+    {
+		int cur = stack.top(); stack.pop();
+        if (cur == d) return true; 
+	    //vector<int>::iterator i;
+        for (auto i = mAdjList[cur].begin(); i != mAdjList[cur].end(); ++i)
+        {
+            if (!visited[*i])
+            {
+                stack.push(*i);
+                visited[*i] = true;
+            }
+        }
+    }
+    return false;
 }
  
 /*************************************************
@@ -89,17 +119,33 @@ void Graph::DFS(int s)
 *************************************************/
 int main()
 {
-    Graph g(5);  //  5 vertices in graph
-    g.addEdge(1, 0);
+    Graph g(6);  //  6 vertices in graph
+    /*
+     *        0             5
+     *     1     2
+     *     3     4
+     */
+    g.addEdge(0, 1);
     g.addEdge(0, 2);
-    g.addEdge(2, 1);
-    g.addEdge(0, 3);
-    g.addEdge(3, 4);
-    g.addEdge(4, 0);
+    g.addEdge(1, 0);
+    g.addEdge(1, 3);
+    g.addEdge(3, 1);
+    g.addEdge(2, 0);
+    g.addEdge(2, 4);
+    g.addEdge(4, 2);
  
     cout << "Following is Depth First Traversal "
             "(starting from vertex 0) \n";
     g.DFS(0);
 	cout << std::endl;
+
+    for (int i = 0; i < 6; ++i)
+    {
+        for (int j = 0; j < 6; ++j)
+        {
+            printf("Node %d ---> Node %d conneted? %d\n", i, j, g.isConnected(i, j));
+        }
+    }
+
 	return 0;
 }
