@@ -126,3 +126,38 @@ int main(int argc, char** argv)
   return 0;
 }
 
+/*************************************************
+ * Function: 
+ *   
+ * Param[in]:   
+ *   
+ * Retrun: 
+ * Ideas:  
+ * Notice:   
+*************************************************/
+int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, int curIndex)
+{
+    // search end & calcuate two set's sum's difference absolute value
+    if (curIndex == nums.size()) 
+    {
+        return abs(sum - subSum - subSum);
+    }
+    return min(minSubsetDifferenceHelper(nums, sum, subSum + nums[curIndex], curIndex + 1),
+               minSubsetDifferenceHelper(nums, sum, subSum, curIndex + 1));
+}
+
+/*************************************************
+ * Function: 
+ *   
+ * Param[in]:   
+ *   
+ * Retrun: 
+ * Ideas:  
+ * Notice:   
+*************************************************/
+int minSubsetDifference(const vector<int> &nums)
+{
+   int sum = 0; //suppose int is enough for storing sum.
+   for (int i = 0; i < nums.size(); ++i) sum += nums[i];
+   return minSubsetDifferenceHelper(nums, sum, 0, 0);
+}
