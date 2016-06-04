@@ -147,8 +147,9 @@ int NumberOfStrictlyIncreasedSubarrays(const vector<int> &array)
 }
 
 /*************************************************
- * Function: Given two sorted integer array, calculate
- * the intersect elements.
+ * Function: Given two sorted integer array, find
+ * the intersecting elements. That is all elements 
+ * appears in both arrays.
  *   
  * Param[in]: array
  * Param[in]: array
@@ -173,6 +174,37 @@ vector<int> intersectOfSortedArray(const vector<int> &a, const vector<int> &b)
 		}
 	}
 	return ret;
+}
+
+/*************************************************
+ * Function: 
+ *   
+ * Param[in]:   
+ *   
+ * Retrun: 
+ * Ideas:  
+ * Notice:   
+ * How to test it?
+*************************************************/
+int longestIncreasingSubsequence(const vector<int> &nums)
+{
+    int n = nums.size();
+    if (n <= 0) return 0;
+    int ret = 1;
+    vector<int> subOpt(n, 1);
+
+    for (int i = 1; i < n; ++i)
+    {
+        for (int j = 0; j < i; ++j)
+        {
+            if (nums[i] > nums[j] && subOpt[j] + 1 > subOpt[i])
+            {    
+                subOpt[i] = subOpt[j] + 1; 
+                if (subOpt[i] > ret) ret = subOpt[i];
+            }
+        }
+    }
+    return ret;
 }
 
 int main()
