@@ -34,26 +34,103 @@
  
 using namespace std;
  
+// Define this structure
+// to implement Kruskal algorithms.
+struct Edge
+{
+    int u, v, w;
+    // Constructor
+    Edge(int uu = 0, int vv = 0, int ww = 0)
+    : u(uu), v(vv), w(ww)
+    { }
+};
+
+struct UnionFind
+{
+public:
+   struct SetElement
+   {
+        int rank, parent;
+
+        // Constructor
+        SetElement(int r = 0, int p = 0)
+        :rank(r), parent(p)
+        { }
+   };
+
+private:
+    vector<SetElement> sets;
+
+public:
+   // Constructor
+   UnionFind(int elements = 0) :sets(elements, SetElement())
+   { }
+
+    // Find element's root in a 
+    // tree structure.
+    int find(int index) const
+    {
+        int parentIndex = sets[index].parent;
+        if (sets[index].parent == index) return index;
+        else find(parentIndex);
+    }
+
+    bool Union(int x, int y)
+    {
+        int rootx = find(x);
+        int rooty = find(y);
+        if (rootx == rooty) return false;
+        if (sets[rootx].rank < sets[rooty].rank)
+        {
+            sets[rootx].parent = sets[rooty].parent;
+        }
+        else if (sets[rootx].rank > sets[rooty].rank)
+        {
+            sets[rooty].parent = sets[rootx].parent;
+        }
+        else
+        {
+            sets[rootx].parent = sets[rooty].parent;
+            sets[rooty].rank++;
+        }
+        return true;
+    }
+};
+
 class Graph
 {
 public:
     Graph(int vetexs = 0);  // Constructor
 
-    void addEdge(int u, int v) // Add an edge to graph
+    void addEdge(int u, int v, int w = 0) // Add an edge to graph
     {
         mAdjList[u].push_back(v); 
+        mEdgeSet.push_back(Edge(u, v, w));
+        ++mEdges;
     }
 
     void DFS(int s);  // Traversal graph by DFS from a given source s
-    bool isConnected(int s, int d);
+    bool isConnected(int s, int d) const;
+    
+    // this implementation is definition
+    // based. It's not an optimal one.
+    bool isStronglyConnected() const
+    {
+        for (int i = 0; i < mVertex; ++i)
+            for (int j = 0; j < mVertex; ++j)
+                    if (!isConnected(i,j)) return false;
+        return true;
+    }
 
 private:
-    int mVertex;    
+    int mVertex, mEdges;    
     vector<vector<int>> mAdjList;    // adjacency vectors
+    vector<Edge> mEdgeSet;
 };
  
 Graph::Graph(int vertex)
 : mVertex(vertex)
+, mEdges(0)
 , mAdjList(vertex, vector<int>())
 { }
  
@@ -67,7 +144,8 @@ void Graph::DFS(int s)
 	while (!stack.empty())
 	{
 		int cur = stack.top(); stack.pop();
-		cout << cur << " "; //visit vertice from stack top
+
+		cout << cur << " "; // ONLY access vertice from stack top
  
 	    //vector<int>::iterator i;
         for (auto i = mAdjList[cur].begin(); i != mAdjList[cur].end(); ++i)
@@ -81,10 +159,10 @@ void Graph::DFS(int s)
     }
 }
 
-bool Graph::isConnected(int s, int d)
+bool Graph::isConnected(int s, int d) const
 {
     assert( s>=0 && s < mVertex && d >= 0 && d < mVertex);
-    if (s == d) return true;
+    if (s == d) return true; // default: a node connected to itself
 
 	vector<int> visited(mVertex,false);
 	stack<int> stack;
