@@ -33,6 +33,8 @@
 #include<climits>
 #include<cfloat>
 #include<cmath>
+#include<cassert>
+#include<limits>
 
 using namespace std;
 
@@ -41,6 +43,61 @@ struct Point
 	int x;
 	int y;
 };
+
+static double dist(Point pt1, Point pt2)
+{
+	return sqrt((pt1.x - pt2.x) * (pt1.x - pt2.x) + (pt1.y - pt2.y) * (pt1.y - pt2.y));
+}
+
+float minDistanceHelper(const vector<Point> & points, int start, int end)
+{
+    assert(start <= end);
+    if (start == end) return numeric_limits<float>::max();
+    if (start + 1 == end)
+        return sqrt((points[start].x - points[end].x) * (points[start].x - points[end].x) +
+                    (points[start].y - points[end].y) * (points[start].y - points[end].y));
+
+    int mid = (start + end) / 2;
+    float d1 = minDistanceHelper(points, start, mid);
+    float d2 = minDistanceHelper(points, mid + 1, end);
+    float d = min(d1, d2);
+
+    vector<Point> temp;
+    for (int i = start; i <= mid; ++ i)
+            if (abs(points[mid].x - points[i].x) <= d)
+                temp.push_back(points[i]);
+    for (int i = mid + 1; i <= end; ++ i)
+            if (abs(points[mid].x - points[i].x) <= d)
+                temp.push_back(points[i]);
+    float minTemp = numeric_limits<float>::max();
+    for (int i = 0; i < temp.size(); ++i)
+    {
+        for (int j = 0; j < temp.size(); ++j)
+        {
+            if (j == i) continue;
+            float distij = dist(points[i], points[j]);
+            if ( distij < minTemp)
+                    minTemp = distij;
+        }
+    }
+    return min(minTemp, d);
+}
+
+// Should be a generic one
+float minDistance(const vector<Point> &points)
+{
+    assert(!points.empty() && points.size() > 1);
+    if (points.size() == 2)
+    {
+        return sqrt((points[0].x - points[1].x) * (points[0].x - points[1].x) +
+                    (points[0].y - points[1].y) * (points[0].y - points[1].y));
+    }
+
+    // Sort all points in X dimension.
+
+    // Recursivly solve subproblems
+    return minDistanceHelper(points, 0, points.size() - 1);
+}
 
 /*************************************************
  * Function: Given a two retangles on 2D plane, 
@@ -65,10 +122,6 @@ bool isTwoRectangleOverlapped(Point &lt1, Point &rb1, Point &lt2, Point &rb2)
 	return true;
 }
 
-static double dist(Point pt1, Point pt2)
-{
-	return sqrt((pt1.x - pt2.x) * (pt1.x - pt2.x) + (pt1.y - pt2.y) * (pt1.y - pt2.y));
-}
 
 static double triangleCost(vector<Point> &points, int i, int k, int j)
 {
