@@ -27,11 +27,14 @@
  */
 #include <iostream>
 #include <vector>
+#include <string>
 #include <cstdlib>
 
 //using namespace std;
 using std::vector;  //better 
+using std::string;  //better 
 using std::max;  //better 
+using std::min;  //better 
 
 
 /*************************************************
@@ -222,6 +225,27 @@ int longestConsecutiveSequenceOfGrid(const vector<vector<char>> &grid, char ch)
 		}
 	}
 	return ret;
+}
+
+//#define  min(a, b)  (a > b ? b : a)
+
+int editDistance(const string &str1, const string &str2)
+{
+    if (str1.empty()) return str2.length();
+    if (str2.empty()) return str1.length();
+    int m = str1.length();
+    int n = str2.length();
+    if (str1[m - 1] == str2[n - 1])
+    {
+        return editDistance(str1.substr(0, m - 1), str2.substr(0, n - 1));
+    }
+    else
+    {
+        int d1 = editDistance(str1.substr(0, m - 1), str2.substr(0, n - 1)); // modify
+        int d2 = editDistance(str1, str2.substr(0, n - 1)); // del
+        int d3 = editDistance(str1.substr(0, m - 1), str2); // add
+        return min(min(d1, d2), d3) + 1;
+    }
 }
 
 int main()
