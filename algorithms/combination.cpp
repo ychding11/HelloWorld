@@ -127,12 +127,14 @@ int main(int argc, char** argv)
 }
 
 /*************************************************
- * Function: 
+ * Function: This is a helper function. it's a 
+ * recursive search for all possilbe subset sum.
+ * And check whether requirements is meet.
  *   
  * Param[in]:   
  *   
- * Retrun: 
- * Ideas:  
+ * Retrun: min absolute value. 
+ * Ideas: traverse all possible subset recursively. 
  * Notice:   
 *************************************************/
 int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, int curIndex)
@@ -140,24 +142,59 @@ int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, int 
     // search end & calcuate two set's sum's difference absolute value
     if (curIndex == nums.size()) 
     {
-        return abs(sum - subSum - subSum);
+        return abs((sum - subSum) - subSum);
     }
     return min(minSubsetDifferenceHelper(nums, sum, subSum + nums[curIndex], curIndex + 1),
                minSubsetDifferenceHelper(nums, sum, subSum, curIndex + 1));
 }
 
 /*************************************************
- * Function: 
+ * Function: Subset sum Problem. 
  *   
  * Param[in]:   
  *   
  * Retrun: 
  * Ideas:  
- * Notice:   
+ * Notice:  It needs to calculate the sum. 
 *************************************************/
 int minSubsetDifference(const vector<int> &nums)
 {
    int sum = 0; //suppose int is enough for storing sum.
    for (int i = 0; i < nums.size(); ++i) sum += nums[i];
+   // do actual search work here.
    return minSubsetDifferenceHelper(nums, sum, 0, 0);
+}
+
+bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int index, int tempSum, bool &found);
+bool subsetExist(const vector<int> &nums, int targetSum)
+{
+    if (nums.empty()) return false; // empty set has no subset.
+    bool found = false;
+    return subsetExistHelper(nums, targetSum, 0, 0, found);
+}
+bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int index, int tempSum, bool &found)
+{
+    if (index >= nums.size() && tempSum == targetSum)
+    {
+       found = true; // How about static local varible?
+       return true;
+    }
+
+    return found || (subsetExistHelper(nums, targetSum, index + 1, tempSum + nums[index], found)) ||
+                    (subsetExistHelper(nums, targetSum, index + 1, tempSum, found));  
+}
+
+template<typename T>
+void allSubsetSumHelper(const vector<T> &nums, unsigned int index, int tempSum, vector<T> &sums)
+{
+    if (index == nums.size()) sums.push_back(tempSum);
+    allSubsetSumHelper(nums, index + 1, tempSum + nums[index], sums);
+    allSubsetSumHelper(nums, index + 1, tempSum, sums);
+}
+template<typename T>
+vector<T> allSubsetSum(const vector<T> &nums)
+{
+    vector<T> ret;
+    allSubsetSum(nums, 0, 0, ret);
+    return ret;
 }
