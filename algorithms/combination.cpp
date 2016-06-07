@@ -167,6 +167,7 @@ int minSubsetDifference(const vector<int> &nums)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Subset sum problem.  --Recursive solution. list all possible subset and check them one by one.
+//
 bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int index, int tempSum, bool &found);
 bool subsetExist(const vector<int> &nums, int targetSum)
 {
@@ -185,4 +186,23 @@ bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int inde
 
     return found || (subsetExistHelper(nums, targetSum, index + 1, tempSum + nums[index], found)) ||
                     (subsetExistHelper(nums, targetSum, index + 1, tempSum, found));  
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Coin Game. 
+//
+
+int coinGameHelper(const vector<int> &coins, int start, int end);
+int coinGame(const vector<int> &coins)
+{
+    int n = coins.size();
+    return (n > 0 && !(n & 0x1)) && coinGameHelper(coins, 0, n - 1);
+}
+
+int coinGameHelper(const vector<int> &coins, int start, int end)
+{
+    if (start == end) return coins[start];
+    if (start + 1 == end) return max(coins[start], coins[end]);
+    return max( coins[start] + min(coinGameHelper(coins, start + 1, end - 1), coinGameHelper(coins, start + 2, end)),
+                coins[end] + min(coinGameHelper(coins, start + 1, end - 1), coinGameHelper(coins, start, end - 2)));
 }
