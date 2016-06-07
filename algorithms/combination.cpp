@@ -99,7 +99,7 @@ void printResult(const vector<vector<int> > &ret)
 /*************************************************
  * just a simple tesing
 *************************************************/
-int test(int argc, char** argv)
+int main(int argc, char** argv)
 {
   logger.setLevel(DEBUG);
   logger.setLineLevel(DEBUG);
@@ -165,6 +165,8 @@ int minSubsetDifference(const vector<int> &nums)
    return minSubsetDifferenceHelper(nums, sum, 0, 0);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Subset sum problem.  --Recursive solution. list all possible subset and check them one by one.
 bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int index, int tempSum, bool &found);
 bool subsetExist(const vector<int> &nums, int targetSum)
 {
@@ -172,6 +174,7 @@ bool subsetExist(const vector<int> &nums, int targetSum)
     bool found = false;
     return subsetExistHelper(nums, targetSum, 0, 0, found);
 }
+
 bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int index, int tempSum, bool &found)
 {
     if (index >= nums.size() && tempSum == targetSum)
@@ -182,27 +185,4 @@ bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int inde
 
     return found || (subsetExistHelper(nums, targetSum, index + 1, tempSum + nums[index], found)) ||
                     (subsetExistHelper(nums, targetSum, index + 1, tempSum, found));  
-}
-
-template<typename T>
-void allSubsetSumHelper(const vector<T> &nums, unsigned int index, T tempSum, vector<T> &sums)
-{
-    if (index == nums.size()) { sums.push_back(tempSum); return; }
-    allSubsetSumHelper(nums, index + 1, tempSum + nums[index], sums);
-    allSubsetSumHelper(nums, index + 1, tempSum, sums);
-}
-template<typename T>
-vector<T> allSubsetSum(const vector<T> &nums)
-{
-    vector<T> ret;
-    allSubsetSumHelper(nums, 0, 0, ret);
-    return ret;
-}
-
-int main()
-{
-    vector<int> nums = {1, 2, 3};
-    vector<int> sums = allSubsetSum(nums);
-    for (auto a : sums) printf("%d ", a);
-    printf("\n");
 }
