@@ -99,7 +99,7 @@ void printResult(const vector<vector<int> > &ret)
 /*************************************************
  * just a simple tesing
 *************************************************/
-int main(int argc, char** argv)
+int test(int argc, char** argv)
 {
   logger.setLevel(DEBUG);
   logger.setLineLevel(DEBUG);
@@ -137,7 +137,7 @@ int main(int argc, char** argv)
  * Ideas: traverse all possible subset recursively. 
  * Notice:   
 *************************************************/
-int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, int curIndex)
+int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, unsigned int curIndex)
 {
     // search end & calcuate two set's sum's difference absolute value
     if (curIndex == nums.size()) 
@@ -160,7 +160,7 @@ int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, int 
 int minSubsetDifference(const vector<int> &nums)
 {
    int sum = 0; //suppose int is enough for storing sum.
-   for (int i = 0; i < nums.size(); ++i) sum += nums[i];
+   for (unsigned int i = 0; i < nums.size(); ++i) sum += nums[i];
    // do actual search work here.
    return minSubsetDifferenceHelper(nums, sum, 0, 0);
 }
@@ -185,9 +185,9 @@ bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int inde
 }
 
 template<typename T>
-void allSubsetSumHelper(const vector<T> &nums, unsigned int index, int tempSum, vector<T> &sums)
+void allSubsetSumHelper(const vector<T> &nums, unsigned int index, T tempSum, vector<T> &sums)
 {
-    if (index == nums.size()) sums.push_back(tempSum);
+    if (index == nums.size()) { sums.push_back(tempSum); return; }
     allSubsetSumHelper(nums, index + 1, tempSum + nums[index], sums);
     allSubsetSumHelper(nums, index + 1, tempSum, sums);
 }
@@ -195,6 +195,14 @@ template<typename T>
 vector<T> allSubsetSum(const vector<T> &nums)
 {
     vector<T> ret;
-    allSubsetSum(nums, 0, 0, ret);
+    allSubsetSumHelper(nums, 0, 0, ret);
     return ret;
+}
+
+int main()
+{
+    vector<int> nums = {1, 2, 3};
+    vector<int> sums = allSubsetSum(nums);
+    for (auto a : sums) printf("%d ", a);
+    printf("\n");
 }
