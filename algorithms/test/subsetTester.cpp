@@ -1,5 +1,5 @@
-#include "Logger.h"
 #include "utils.h"
+#include "algorithms.h"
 #include<set>
 
 using std::set;
@@ -15,9 +15,6 @@ do {   \
 
 int main()
 {
-	Logger log("./log.txt");
-	log << "Test log!" << std::endl;
-
     vector<int> nums = {1, 2, 3};
     vector<int> sums = allSubsetSum(nums);
     printContainer(sums);
