@@ -41,7 +41,10 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+
+#if !defined(BUILD_LIB)
 #include "Logger.h"
+#endif
 
 using namespace std;
 
@@ -96,6 +99,8 @@ void printResult(const vector<vector<int> > &ret)
         cout << "]" << std::endl;
     }
 }
+
+#if !defined(BUILD_LIB)
 /*************************************************
  * just a simple tesing
 *************************************************/
@@ -125,6 +130,7 @@ int main(int argc, char** argv)
   EXIT_FUNCTION;
   return 0;
 }
+#endif
 
 /*************************************************
  * Function: This is a helper function. it's a 
