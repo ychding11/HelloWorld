@@ -24,9 +24,13 @@ message ("-- Incude current directory into search path.")
 # Build Library
 add_library(algorithms 
 	combination.cpp
+    random.cpp
 )
 # target_link_libraries(inpaint ${OpenCV_LIBRARIES})
 	
 # Testes
 add_executable(subsetTester algorithms.h test/subsetTester.cpp)
 target_link_libraries(subsetTester algorithms)
+
+add_executable(dataSourceTester algorithms.h test/dataSourceTester.cpp)
+target_link_libraries(dataSourceTester algorithms)

@@ -30,6 +30,7 @@
 #define ALGORITHMS_H_
 
 #include <vector>
+#include "dataSource.h"
 
 using std::vector;
 
