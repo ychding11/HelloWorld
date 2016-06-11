@@ -143,7 +143,7 @@ int main(int argc, char** argv)
  * Ideas: traverse all possible subset recursively.
  * Notice:
 *************************************************/
-int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, unsigned int curIndex)
+static int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, unsigned int curIndex)
 {
     // search end & calcuate two set's sum's difference absolute value
     if (curIndex == nums.size())
@@ -155,7 +155,9 @@ int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, unsi
 }
 
 /*************************************************
- * Function: Subset sum Problem.
+ * Function: Subset sum Problem. There is a
+ * partition which make two subset difference's
+ * absolute value minized.
  *
  * Param[in]:
  *
