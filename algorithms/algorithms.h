@@ -34,6 +34,8 @@
 
 using std::vector;
 
+int sqrtOfPerfectSquare(int n);
+
 /* 
  * Given a set of n elements [1, n], generate all
  * possible combinations of k elements from 
