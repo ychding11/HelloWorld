@@ -12,19 +12,28 @@ do {   \
     std::cout << std::endl;   \
 } while(0)
 
-int main()
+int main(int argc, char* argv[])
 {
+    int maxElementValue = 10;
+    int maxElementNum = 3;
+    if (argc >= 2)
+        maxElementNum = atoi(argv[1]);
+    if (argc == 3)
+        maxElementValue = atoi(argv[2]);
+
     DataSource datasource;
-    vector<int> nums(4);
-    datasource.fillInData(nums, 100);
+    vector<int> nums(maxElementNum);
+    datasource.fillInData(nums, maxElementValue);
     printContainer(nums);
     vector<int> sums = allSubsetSum(nums);
     printContainer(sums);
     set<int> sets;
     for (auto a : sums) sets.insert(a);
     printContainer(sets);
-    vector<int> exludeDataset = datasource.dataSetExlude(sets, 100);
+    vector<int> exludeDataset = datasource.dataSetExlude(sets, maxElementValue);
     printContainer(exludeDataset);
+    
+    // Prepare test dataset ok, begin to test.
     int fail = 0, success = 0; 
     for (auto a : exludeDataset)
     {
