@@ -173,7 +173,8 @@ int minSubsetDifference(const vector<int> &nums)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Subset sum problem.  --Recursive solution. list all possible subset and check them one by one.
-//
+// NOTE: nums may contain both positive and nagetive numbers.
+// if only positive numbs contained, the seach can be optimized.
 bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int index, int tempSum, bool &found);
 bool subsetExist(const vector<int> &nums, int targetSum)
 {
@@ -187,7 +188,7 @@ bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int inde
     if (index >= nums.size())
     {
        if (tempSum == targetSum) found = true; // How about static local varible?
-       return true;
+       return found;
     }
 
     return found || (subsetExistHelper(nums, targetSum, index + 1, tempSum + nums[index], found)) ||
