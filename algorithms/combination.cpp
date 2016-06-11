@@ -6,32 +6,32 @@
  * Source File
  *
  * Copyright (C) 2014-2015  Yaochuang Ding - <ych_ding@163.com>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * 1. Redistributions of source code must retain the above copyright notice, 
+ * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions, and the following disclaimer.
  *
- * 2. Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
- *    and/or other materials provided with the distribution, and in the same 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution, and in the same
  *    place and form as other copyright, license and disclaimer information.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  *
  */
- 
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -51,28 +51,28 @@ using namespace std;
 #define PERFORMANCE_METER
 
 /*************************************************
- *  The class is to generate all possible 
+ *  The class is to generate all possible
  *  combinations.
 *************************************************/
-class Combination 
+class Combination
 {
 public:
-    /* 
+    /*
      * Given a set of n elements [1, n], generate all
-     * possible combinations of k elements from 
+     * possible combinations of k elements from
      * the set.
      */
-    vector<vector<int> > combine(int n, int k) 
+    vector<vector<int> > combine(int n, int k)
     {
         vector<vector<int> > result;
         vector<int> tmp;
         combineHelper(1, n, k, tmp, result);
         return result;  //call copy constrctor here.
     }
-    
+
     void combineHelper(int begin, int end, int n, vector<int> &tmp, vector<vector<int> > &result)
     {
-        /* search termination condition 
+        /* search termination condition
          *  : we have picked n elements. */
         if (n == 0)
         {  result.push_back(tmp); return; }
@@ -109,7 +109,7 @@ int main(int argc, char** argv)
   logger.setLevel(DEBUG);
   logger.setLineLevel(DEBUG);
   ENTER_FUNCTION;
-  
+
   int n, k;
   Combination cmb;
   while (true)
@@ -121,32 +121,32 @@ int main(int argc, char** argv)
         cout << "Game Over." << std::endl;
         return 0;
     }
-    
+
     vector<vector<int> > ret = cmb.combine(n, k);
-    cout << "All possible combinations:" << std::endl; 
+    cout << "All possible combinations:" << std::endl;
     printResult(ret);
   }
-  
+
   EXIT_FUNCTION;
   return 0;
 }
 #endif
 
 /*************************************************
- * Function: This is a helper function. it's a 
+ * Function: This is a helper function. it's a
  * recursive search for all possilbe subset sum.
  * And check whether requirements is meet.
- *   
- * Param[in]:   
- *   
- * Retrun: min absolute value. 
- * Ideas: traverse all possible subset recursively. 
- * Notice:   
+ *
+ * Param[in]:
+ *
+ * Retrun: min absolute value.
+ * Ideas: traverse all possible subset recursively.
+ * Notice:
 *************************************************/
 int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, unsigned int curIndex)
 {
     // search end & calcuate two set's sum's difference absolute value
-    if (curIndex == nums.size()) 
+    if (curIndex == nums.size())
     {
         return abs((sum - subSum) - subSum);
     }
@@ -155,13 +155,13 @@ int minSubsetDifferenceHelper(const vector<int> &nums, int sum, int subSum, unsi
 }
 
 /*************************************************
- * Function: Subset sum Problem. 
- *   
- * Param[in]:   
- *   
- * Retrun: 
- * Ideas:  
- * Notice:  It needs to calculate the sum. 
+ * Function: Subset sum Problem.
+ *
+ * Param[in]:
+ *
+ * Retrun:
+ * Ideas:
+ * Notice:  It needs to calculate the sum.
 *************************************************/
 int minSubsetDifference(const vector<int> &nums)
 {
@@ -184,18 +184,18 @@ bool subsetExist(const vector<int> &nums, int targetSum)
 
 bool subsetExistHelper(const vector<int> &nums, int targetSum, unsigned int index, int tempSum, bool &found)
 {
-    if (index >= nums.size() && tempSum == targetSum)
+    if (index >= nums.size())
     {
-       found = true; // How about static local varible?
+       if (tempSum == targetSum) found = true; // How about static local varible?
        return true;
     }
 
     return found || (subsetExistHelper(nums, targetSum, index + 1, tempSum + nums[index], found)) ||
-                    (subsetExistHelper(nums, targetSum, index + 1, tempSum, found));  
+                    (subsetExistHelper(nums, targetSum, index + 1, tempSum, found));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Coin Game. 
+// Coin Game.
 //
 
 int coinGameHelper(const vector<int> &coins, int start, int end);
