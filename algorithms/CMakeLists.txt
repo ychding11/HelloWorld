@@ -25,6 +25,7 @@ message ("-- Incude current directory into search path.")
 add_library(algorithms 
 	combination.cpp
     random.cpp
+    misc.cpp
 )
 # target_link_libraries(inpaint ${OpenCV_LIBRARIES})
 	
@@ -34,3 +35,6 @@ target_link_libraries(subsetTester algorithms)
 
 add_executable(dataSourceTester algorithms.h test/dataSourceTester.cpp)
 target_link_libraries(dataSourceTester algorithms)
+
+add_executable(miscTester algorithms.h test/miscTester.cpp)
+target_link_libraries(miscTester algorithms)
