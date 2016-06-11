@@ -4,17 +4,10 @@
 using std::set;
 using namespace test;
 
-#define printContainer(elements)   \
-do {   \
-    std::cout << "- " << #elements << " Elements:" << std::endl;   \
-    for (auto e : elements) std::cout << e << " ";  \
-    std::cout << std::endl;   \
-    std::cout << "- End Elements" << std::endl;   \
-} while(0)
-
 void testSqrtOfPerfectSquare(int n = 100)
 {
     int fail = 0, success = 0; 
+    printTestName(sqrtOfPerfectSquare);
     for (int i = 0; i < n; ++i)
     {
         int ret = sqrtOfPerfectSquare(i * i);
@@ -35,6 +28,27 @@ void testSqrtOfPerfectSquare(int n = 100)
             std::cout << "- -------------" << std::endl;
         }
     }
+    for (int i = n * n + 1; i < (n + 1) * (n + 1); ++i)
+    {
+        int ret = sqrtOfPerfectSquare(i);
+        if (-1 != ret)
+        {
+            ++fail;
+            std::cout << "- Test Failed."
+                      << " input:" << i
+                      << " output:" << ret << std ::endl;
+            std::cout << "- -------------" << std::endl;
+        }
+        else
+        {
+            ++success;
+            std::cout << "- Test Success."
+                      << " input:" << i
+                      << " output:" << ret << std ::endl;
+            std::cout << "- -------------" << std::endl;
+        }
+    }
+    printTestResult(success, fail);
 }
 
 int main()

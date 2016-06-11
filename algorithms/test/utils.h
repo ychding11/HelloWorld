@@ -36,6 +36,26 @@ namespace test
 
 using std::vector;
 
+#define printContainer(elements)   \
+do {   \
+    std::cout << "- " << #elements << " Elements: ";   \
+    for (auto e : elements) std::cout << e << " ";  \
+    std::cout << std::endl;   \
+} while(0)
+
+#define printTestName(name) \
+{ \
+    std::cout << "- Test " << #name << " Begins." << std::endl; \
+}
+
+#define printTestResult(success, fail) \
+{ \
+    std::cout << "- Test result : "    \
+              << success << " cases success," \
+              << fail << " cases fail." \
+              << std::endl; \
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // For subset problem test.
 //

@@ -7,26 +7,6 @@ using std::set;
 using std::numeric_limits;
 using namespace test;
 
-#define printContainer(elements)   \
-do {   \
-    std::cout << "- " << #elements << " Elements: ";   \
-    for (auto e : elements) std::cout << e << " ";  \
-    std::cout << std::endl;   \
-} while(0)
-
-#define printTestName(name) \
-{ \
-    std::cout << "- Test " << #name << " Begins." << std::endl; \
-}
-
-#define printTestResult(success, fail) \
-{ \
-    std::cout << "- Test result : "    \
-              << success << " cases success," \
-              << fail << " cases fail." \
-              << std::endl; \
-}
-
 void testMinSubsetDifference(int maxElementValue = 10, int maxElementNum = 3, int testcases = 3)
 {
     int fail = 0, success = 0; 

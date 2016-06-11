@@ -5,14 +5,6 @@
 using std::set;
 using namespace test;
 
-#define printContainer(elements)   \
-do {   \
-    std::cout << "- " << #elements << " Elements:" << std::endl;   \
-    for (auto e : elements) std::cout << e << " ";  \
-    std::cout << std::endl;   \
-    std::cout << "- End Elements" << std::endl;   \
-} while(0)
-
 template<typename T>
 bool isSame(const vector<T> &set1, const vector<T> &set2)
 {
