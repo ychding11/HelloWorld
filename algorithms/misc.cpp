@@ -2,6 +2,11 @@
 #include <cassert>
 #include <iostream>
 
+#if !defined(BUILD_LIB)
+#include<bitset>
+using std::bitset;
+#endif
+
 int sqrtOfPerfectSquare(int n)
 {
     assert(n >= 0); // perfect squre >= 0
@@ -16,7 +21,36 @@ int sqrtOfPerfectSquare(int n)
     return -1; // n is not a perfect squre.
 }
 
+unsigned int bitCount(unsigned int n)
+{
+    int c = 0;
+    while (n)
+    {
+        ++c; n = n & (n - 1);
+    }
+    return c;
+}
+
 #if !defined(BUILD_LIB)
+static void testbitCount()
+{
+    bitset<10> binNum;
+    unsigned long n = binNum.to_ulong();
+    for (unsigned int i = 0; i < 10; ++i)      
+    {
+        binNum[i] = 1;
+        n = binNum.to_ulong();
+        unsigned long ret = bitCount(n);
+        if (i + 1 != ret)
+        {
+            std::cout << "- Test Failed. Input:" << n << " Output:" << ret  << std ::endl;
+        }
+        else
+        {
+            std::cout << "- Test Success. Input:" << n << " Output:" << ret  << std ::endl;
+        }
+    }
+}
 static void test()
 {
     for (int i = 0; i < 20; ++i)
@@ -34,7 +68,8 @@ static void test()
 
 int main()
 {
-    test();
+//    test();
+    testbitCount();
     return 0;
 }
 #endif
