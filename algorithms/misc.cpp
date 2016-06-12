@@ -1,11 +1,16 @@
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
+#include <string>
+#include <set>
 
 #if !defined(BUILD_LIB)
 #include<bitset>
 using std::bitset;
 #endif
+
+using std::set;
+using std::string;
 
 int sqrtOfPerfectSquare(int n)
 {
@@ -29,6 +34,30 @@ unsigned int bitCount(unsigned int n)
         ++c; n = n & (n - 1);
     }
     return c;
+}
+
+static void swap(string & str, int i, int j)
+{
+    // inner function no need to check input parameter.
+    char temp = str[i];
+    str[i] = str[j];
+    str[j] = temp;
+}
+
+void permutation(string str, int i, int j, set<string> &ret)
+{
+    assert(!str.empty() && i <= j);
+    if (i == j)
+    {
+        ret.insert(str);
+        return;
+    }
+    for (int k = i; k <= j; ++k)
+    {
+        string temp = str;
+        if (k != i) swap(temp, i, k);
+        permutation(temp, i + 1, j, ret);
+    }
 }
 
 #if !defined(BUILD_LIB)
