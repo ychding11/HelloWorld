@@ -38,6 +38,31 @@ using std::vector;
 using std::set;
 using std::string;
 
+/*! \brief search a rotated sorted array, return index.
+ * 
+ */
+template<typename T>
+int searchRotatedSortedArray(const vector<T> & a, int low, int high, const T &target)
+{
+    if (low > high) return -1; // no such element.
+    int mid = (low + high) / 2;
+    if (a[mid] == target) return mid;
+    if (a[mid] > a[low]) // a[low, ..., mid] sorted
+    {
+        if (target >= a[low] && target <= a[mid]) // target in range.
+            return searchRotatedSortedArray(a, low, mid - 1, target);
+        else
+            return searchRotatedSortedArray(a, mid + 1, high, target);
+    }
+    else
+    {
+        if (target >= a[mid] && target <= a[high]) // target in range.
+            return searchRotatedSortedArray(a, mid + 1, high, target);
+        else
+            return searchRotatedSortedArray(a, low, mid - 1, target);
+    }
+}
+
 int sqrtOfPerfectSquare(int n);
 
 void permutation(string str, int i, int j, set<string> &ret);
