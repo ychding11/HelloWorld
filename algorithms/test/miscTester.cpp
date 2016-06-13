@@ -1,8 +1,18 @@
 #include "utils.h"
 #include "algorithms.h"
+#include <string>
 
 using std::set;
+using std::string;
 using namespace test;
+
+void testPermutation()
+{
+    string str = "abc";
+    set<string> ret;
+    permutation(str, 0, 2, ret);
+    printContainer(ret);
+}
 
 void testSqrtOfPerfectSquare(int n = 100)
 {
@@ -53,5 +63,6 @@ void testSqrtOfPerfectSquare(int n = 100)
 
 int main()
 {
-    testSqrtOfPerfectSquare();
+    //testSqrtOfPerfectSquare();
+    testPermutation();
 }

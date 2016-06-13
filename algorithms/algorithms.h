@@ -30,12 +30,17 @@
 #define ALGORITHMS_H_
 
 #include <vector>
+#include <set>
+#include <string>
 #include "dataSource.h"
 
 using std::vector;
+using std::set;
+using std::string;
 
 int sqrtOfPerfectSquare(int n);
 
+void permutation(string str, int i, int j, set<string> &ret);
 /* 
  * Given a set of n elements [1, n], generate all
  * possible combinations of k elements from 
