@@ -76,4 +76,29 @@ vector<T> allSubsetSum(const vector<T> &nums)
     return ret;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+template<typename T>
+void reverseVector(vector<T> &nums, int i, int j)
+{
+    while (i < j)
+    {
+        T temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+        ++i; --j;
+    }
+}
+
+template<typename T>
+void rotateRightByK(vector<T> &nums, int k)
+{
+    assert(k > 0);
+    int n = nums.size();
+    if (n <= 0 || k % n == 0) return;
+    reverseVector(nums, 0, k - 1);
+    reverseVector(nums, k, n - 1);
+    reverseVector(nums, 0, n - 1);
+}
+
 }
