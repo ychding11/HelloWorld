@@ -33,6 +33,7 @@
 #include <set>
 #include <string>
 #include "dataSource.h"
+#include "search.h"
 
 using std::vector;
 using std::set;
