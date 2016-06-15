@@ -1,9 +1,5 @@
 /*
- * search.cpp
- *
- * Source File
- *
- * Copyright (C) 2014-2015  Yaochuang Ding - <ych_ding@163.com>
+ * Copyright (C) 2014-2016  Yaochuang Ding - <ych_ding@163.com>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to 
@@ -37,6 +33,7 @@
 #include <ctime>
 #include <cassert>
 #include "Logger.h"
+#include "search.h"
 
 //using namespace std;
 
@@ -50,9 +47,9 @@ LOG_LEVLE_ALL,
 
 LogLevel gCurLoglevel = LOG_LEVEL_ERR; //set the current log level
 
-#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG ) fprintf(stdout,"[ DEBUG ] "fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR ) fprintf(stdout,"[ ERROR ] "fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout,"[ INFO ]  "fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG ) fprintf(stdout,"[ DEBUG ] " fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR ) fprintf(stdout,"[ ERROR ] " fmt,##__VA_ARGS__ ); } while(0)
+#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout,"[ INFO ]  " fmt,##__VA_ARGS__ ); } while(0)
 
 #ifdef PERFORMANCE_METER
     

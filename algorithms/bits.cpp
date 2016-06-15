@@ -7,6 +7,10 @@
 using std::bitset;
 #endif
 
+int addOne(int n)
+{
+    return -(~n);
+}
 
 bool isPowerOf4(unsigned int n)
 {

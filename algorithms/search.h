@@ -30,8 +30,10 @@
  #define SEARCH_H_
 
 #include <vector>
+#include <limits>
 
 using std::vector;
+using std::numeric_limits;
 
 /*! \brief sear an odd presented element in array by binary search.
  *  element appears in pairs. [1, 2, 2, 1, 1] 
@@ -65,4 +67,52 @@ int oddPresentedElement(const vector<T> &elems, int low, int high)
     }
 }
 
+/*! \brief find max pair sum in an array.
+ */
+template <typename T>
+T maxPairSum(const vector<T> &nums)
+{
+    int n = nums.size();
+    assert(n >= 2);
+    T a, b;
+    a = b = numeric_limits<T>::min();
+    for (int i = 0; i < n; ++i)
+    {
+        if (nums[i] > a)
+        {
+            if ( a > b) b = a;
+        }
+        else if (nums[i] > b)
+        {
+            b = nums[i];     
+        }
+    }
+    return a + b;
+}
+
+/*! \brief Is there a pair sum equal to K, array is sorted and rotated. */
+template<typename T>
+bool isTherePairSumEqualK(const vector<T> &nums, T k)
+{
+    int n = nums.size();
+    assert(n >= 2);
+    int maxIndex, minIndex;
+    T maxValue = numeric_limits<T>::min();
+    maxIndex = minIndex = -1;
+    for (int i = 0; i < n; ++i)
+    {
+        if (nums[i] > maxValue)
+        {
+            maxValue = nums[i];
+            maxIndex = i;
+        }
+    }
+    int j = maxIndex, i = (maxIndex + 1) % n;
+    while (i != j) // is this right?
+    {
+        if (nums[i] + nums[j] == k) return true;
+        else if (nums[i] + nums[j] > k) j = (j - 1 + n) % n;
+        else i = (i + 1) % n
+    }
+}
  #endif
