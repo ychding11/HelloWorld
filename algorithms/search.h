@@ -115,4 +115,30 @@ bool isTherePairSumEqualK(const vector<T> &nums, T k)
         else i = (i + 1) % n
     }
 }
+
+/*! \brief binary search with boundaries. */
+template <typename T>
+int binarySearch(const T *a, int low, int high, T target)
+{
+    assert(low <= high && low > 0); // only element contained is also valid.
+    while (low <= high)
+    {
+        int mid = (low + high) / 2;
+        if (a[mid] == target) return mid;
+        else if (a[mid] < target) low = mid + 1;
+        else high = mid - 1;
+    }
+    return -1;
+}
+
+template <typename T>
+int binarySearchWithoutBound(const T *a, T target)
+{
+    int low, high; // int type is not a goog choice, maybe big number
+    low = high = 1;
+    while (a[high] < target) high = high << 1;
+    if (a[high] == target) return high;
+    low = high >> 1;
+    return binarySearch(a, low, high, target);
+}
  #endif
