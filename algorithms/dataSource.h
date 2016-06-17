@@ -59,6 +59,9 @@ public:
     void fillInData(vector<T> &nums, int maxValue = RAND_MAX); //<cstdlib>
 
     template<typename T>
+    void fillInDistinctData(vector<T> &nums, int maxValue = RAND_MAX); //<cstdlib>
+
+    template<typename T>
     void fillInSortedData(vector<T> &nums, int maxValue = RAND_MAX);
 
     //
@@ -76,6 +79,25 @@ public:
        }
     }
     
+    template<typename T>
+    void DataSource::fillInDistinctData(vector<T> &nums, int maxValue)
+    {
+       assert(!nums.empty()); 
+       set<T> sets;
+       int i = 0, n = nums.size();
+       while (i < n)
+       {
+           int a = rand() % maxValue; // rand() return integer
+           auto ret = sets.insert(a);
+           if (ret.second == true) ++i;
+       }
+       i = 0;       
+       for (auto a : sets)
+       {
+           nums[i++] = a;
+       }
+    }
+
     template<typename T>
     void DataSource::fillInSortedData(vector<T> &nums, int maxValue)
     {
