@@ -96,8 +96,8 @@ bool isTherePairSumEqualK(const vector<T> &nums, T k)
 {
     int n = nums.size();
     assert(n >= 2);
-    int maxIndex, minIndex;
     T maxValue = numeric_limits<T>::min();
+    int maxIndex, minIndex;
     maxIndex = minIndex = -1;
     for (int i = 0; i < n; ++i)
     {
@@ -112,7 +112,7 @@ bool isTherePairSumEqualK(const vector<T> &nums, T k)
     {
         if (nums[i] + nums[j] == k) return true;
         else if (nums[i] + nums[j] > k) j = (j - 1 + n) % n;
-        else i = (i + 1) % n
+        else i = (i + 1) % n;
     }
 }
 
