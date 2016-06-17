@@ -26,6 +26,7 @@ add_library(algorithms
 	combination.cpp
     random.cpp
     misc.cpp
+    bits.cpp
 )
 # target_link_libraries(inpaint ${OpenCV_LIBRARIES})
 	

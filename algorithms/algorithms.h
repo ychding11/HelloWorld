@@ -34,6 +34,7 @@
 #include <string>
 #include "dataSource.h"
 #include "search.h"
+#include "bits.h"
 
 using std::vector;
 using std::set;
