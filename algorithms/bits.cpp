@@ -9,7 +9,7 @@
 using std::bitset;
 #endif
 
-using std::vector;
+//using std::vector;
 
 /*! \brief an array of number, all number occur twice except one, find that number. */
 int unpairNumber(const vector<int> &nums)
@@ -34,6 +34,7 @@ void unpairNumbers(const vector<int> &nums, int &x, int &y)
 }
 
 #if !defined(BUILD_LIB)
+
 int main()
 {
     return 0;
