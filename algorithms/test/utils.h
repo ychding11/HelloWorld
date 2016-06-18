@@ -36,6 +36,7 @@ namespace test
 {
 
 using std::vector;
+using std::ostream;
 
 #define printContainer(elements)   \
 do {   \
@@ -57,6 +58,16 @@ do {   \
               << std::endl; \
 }
 
+template <typename T>
+ostream & operator<<(ostream &os, vector<T> nums)
+{
+    os << "elements: ";
+    for (auto a : nums)
+    {
+        os << a << " ";
+    }
+    os << std::endl;
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // For subset problem test.
 //
