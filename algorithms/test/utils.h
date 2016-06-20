@@ -59,9 +59,24 @@ do {   \
 }
 
 template <typename T>
+void printParam(T param)
+{
+    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    std::cout << param << std::endl;
+}
+
+template <typename T, typename... Args>
+void printParam(T param, Args... args)
+{
+    //std::cout << __PRETTY_FUNCTION__ << std::endl;
+    std::cout << param << std::endl;
+    printParam(args...);
+}
+
+template <typename T>
 ostream & operator<<(ostream &os, vector<T> nums)
 {
-    os << "elements: ";
+    os << "vector elements: ";
     for (auto a : nums)
     {
         os << a << " ";
