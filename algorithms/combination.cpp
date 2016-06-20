@@ -215,3 +215,22 @@ int coinGameHelper(const vector<int> &coins, int start, int end)
     return max( coins[start] + min(coinGameHelper(coins, start + 1, end - 1), coinGameHelper(coins, start + 2, end)),
                 coins[end] + min(coinGameHelper(coins, start + 1, end - 1), coinGameHelper(coins, start, end - 2)));
 }
+
+/*! \brief how many binary trees are there for n nodes
+ *  C(n) = C(0)C(n-1) + C(1)C(n-2) + ... + C(n-1)C(0)
+ *  It's an Catalan number. see following link for details
+ *  http://www.geeksforgeeks.org/applications-of-catalan-numbers/
+ *  Cn = combine(2n, n) / (n + 1);
+ *  Cn = (n + 2) / 2  * (n + 3) / 3 ... * (n + k) / k
+ *  C0 = 1， C1 = 1;
+ */
+uint64_t catalanNumber(uint32_t n)
+{
+    if (n == 0 || n == 1) return 1;
+    uint64_t a = 1, b = 1;
+    for (uint32_t k = 2; k <= n; ++k)
+    {
+        a *= n + k; b *= k;
+    }
+    return a / b;
+}
