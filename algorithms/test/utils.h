@@ -58,18 +58,33 @@ do {   \
               << std::endl; \
 }
 
+#define printTestcaseResult(result, in, out, expect) \
+{ \
+    if (result) \
+        std::cout << "- Testcase success.\n"; \
+    else \
+        std::cout << "- Testcase failed.\n"; \
+    std::cout << "  input:\n  "; \
+    in; \
+    std::cout << "  output:\n  "; \
+    out; \
+    std::cout << "  expected:\n  "; \
+    expect; \
+    std::cout << "---------------\n"; \
+}
+
 template <typename T>
 void printParam(T param)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    std::cout << param << std::endl;
+    std::cout << param << "\n";
 }
 
 template <typename T, typename... Args>
 void printParam(T param, Args... args)
 {
     //std::cout << __PRETTY_FUNCTION__ << std::endl;
-    std::cout << param << std::endl;
+    std::cout << param << " ";
     printParam(args...);
 }
 

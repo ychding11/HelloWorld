@@ -79,17 +79,12 @@ void testUnpairNumber(int testcases = 10, int numElements = 10)
         if (100 + i != temp)
         {
             // test failed
-            std::cout << "- Test Failed."
-                      << " Output:" << temp 
-                      << " Expect:" << 100 + i << std ::endl;
-            std::cout << "- -------------" << std::endl;
+            printTestcaseResult(0, printParam(nums), printParam(temp), printParam(100 + i));
         }
         else
         {
             // test success
-            std::cout << "- Test Success."
-                      << " Output:" << temp << std ::endl;
-            std::cout << "- -------------" << std::endl;
+            printTestcaseResult(1, printParam(nums), printParam(temp), printParam(100 + i));
         }
         nums.pop_back();
     }
@@ -102,17 +97,12 @@ void testUnpairNumber(int testcases = 10, int numElements = 10)
         if (x != 100 + i && x != 100 + i + 1)
         {
             // test failed
-            std::cout << "- Test Failed."
-                      << " Output:" << x << " " << y 
-                      << " Expect:" << 100 + i << " " << 100 + i + 1<< std ::endl;
-            std::cout << "- -------------" << std::endl;
+            printTestcaseResult(0, printParam(nums), printParam(x, y), printParam(100 + i, 100 + i + 1));
         }
         else
         {
             // test success
-            std::cout << "- Test Success."
-                      << " Output:" << 100 + i << " " << 100 + i + 1<< std ::endl;
-            std::cout << "- -------------" << std::endl;
+            printTestcaseResult(1, printParam(nums), printParam(x, y), printParam(100 + i, 100 + i + 1));
         }
         nums.pop_back();
         nums.pop_back();
