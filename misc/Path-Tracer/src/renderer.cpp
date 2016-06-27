@@ -11,10 +11,16 @@ inline double clamp(double x){ return x<0 ? 0 : x>1 ? 1 : x; }
 inline int toInt(double x){ return int(clamp(x)*255+.5); }
 
 Renderer::Renderer(Scene *scene, Camera *camera)
+: m_scene(scene), m_camera(camera)
 {
-    m_scene = scene;
-    m_camera = camera;
-    m_pixel_buffer = new Vec[m_camera->get_width()*m_camera->get_height()];
+    try
+    {
+        m_pixel_buffer = new Vec[m_camera->get_width()*m_camera->get_height()];
+    } catch(...)
+    {
+        // no need to delete.
+        throw;
+    }
 }
 
 void Renderer::render(int samples)
@@ -25,19 +31,19 @@ void Renderer::render(int samples)
 
     // Main Loop
     #pragma omp parallel for schedule(dynamic, 1)       // OpenMP
-    for (int y=0; y<height; y++)
+    for (int y = 0; y < height; y++)
     {
-        unsigned short Xi[3]={0,0,y*y*y};               // Stores seed for erand48
+        unsigned short Xi[3] = {0, 0, y*y*y};   // Stores seed for erand48
 
         fprintf(stderr, "\rRendering (%i samples): %.2f%% ",      // Prints
                 samples, (double)y/height*100);                   // progress
 
-        for (int x=0; x<width; x++)
+        for (int x = 0; x < width; x++)
         {
             Vec col = Vec();
-            for (int a=0; a<samples; a++)
+            for (int a = 0; a < samples; a++)
             {
-                Ray ray = m_camera->get_ray(x, y, a>0, Xi);
+                Ray ray = m_camera->get_ray(x, y, a > 0, Xi);
                 col = col + m_scene->trace_ray(ray,0,Xi);
             }
             m_pixel_buffer[(y)*width + x] = col * samples_recp;

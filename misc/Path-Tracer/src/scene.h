@@ -13,6 +13,7 @@ private:
 public:
     Scene(){};
 
+    /*! \brief add an object into scene */
     void add(Object *object);
     ObjectIntersection intersect(const Ray &ray);
     Vec trace_ray(const Ray &ray, int depth, unsigned short*Xi);

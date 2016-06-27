@@ -9,9 +9,9 @@ class Renderer
 {
 
 private:
-    Scene *m_scene;
+    Scene  *m_scene;
     Camera *m_camera;
-    Vec *m_pixel_buffer;
+    Vec    *m_pixel_buffer;
 
 public:
     Renderer(Scene *scene, Camera *camera);
