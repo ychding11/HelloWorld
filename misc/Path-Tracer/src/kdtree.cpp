@@ -6,7 +6,8 @@
 #include "kdtree.h"
 
 // Build KD tree for tris
-KDNode* KDNode::build(std::vector<Triangle*> &tris, int depth){
+KDNode* KDNode::build(std::vector<Triangle*> &tris, int depth)
+{
     KDNode* node = new KDNode();
     node->leaf = false;
     node->triangles = std::vector<Triangle*>();
@@ -16,12 +17,14 @@ KDNode* KDNode::build(std::vector<Triangle*> &tris, int depth){
 
     if (tris.size() == 0) return node;
 
-    if (depth > 25 || tris.size() <= 6) {
+    if (depth > 25 || tris.size() <= 6)
+    {
         node->triangles = tris;
         node->leaf = true;
         node->box = tris[0]->get_bounding_box();
 
-        for (long i=1; i<tris.size(); i++) {
+        for (long i=1; i<tris.size(); i++)
+        {
             node->box.expand(tris[i]->get_bounding_box());
         }
 
@@ -46,8 +49,10 @@ KDNode* KDNode::build(std::vector<Triangle*> &tris, int depth){
     std::vector<Triangle*> right_tris;
     int axis = node->box.get_longest_axis();
 
-    for (long i=0; i<tris.size(); i++) {
-        switch (axis) {
+    for (long i=0; i<tris.size(); i++)
+    {
+        switch (axis)
+        {
             case 0:
                 midpt.x >= tris[i]->get_midpoint().x ? right_tris.push_back(tris[i]) : left_tris.push_back(tris[i]);
                 break;
@@ -60,12 +65,14 @@ KDNode* KDNode::build(std::vector<Triangle*> &tris, int depth){
         }
     }
 
-    if (tris.size() == left_tris.size() || tris.size() == right_tris.size()) {
+    if (tris.size() == left_tris.size() || tris.size() == right_tris.size())
+    {
         node->triangles = tris;
         node->leaf = true;
         node->box = tris[0]->get_bounding_box();
 
-        for (long i=1; i<tris.size(); i++) {
+        for (long i=1; i<tris.size(); i++)
+        {
             node->box.expand(tris[i]->get_bounding_box());
         }
 
@@ -84,9 +91,11 @@ KDNode* KDNode::build(std::vector<Triangle*> &tris, int depth){
 }
 
 // Finds nearest triangle in kd tree that intersects with ray.
-bool KDNode::hit(KDNode *node, const Ray &ray, double &t, double &tmin, Vec &normal, Vec &c) {
+bool KDNode::hit(KDNode *node, const Ray &ray, double &t, double &tmin, Vec &normal, Vec &c)
+{
     double dist;
-    if (node->box.intersection(ray, dist)){
+    if (node->box.intersection(ray, dist))
+    {
         if (dist > tmin) return false;
 
         bool hit_tri = false;
@@ -94,7 +103,8 @@ bool KDNode::hit(KDNode *node, const Ray &ray, double &t, double &tmin, Vec &nor
         bool hit_right = false;
         long tri_idx;
 
-        if (!node->leaf) {
+        if (!node->leaf)
+        {
             //if ( node->left->triangles.size() > 0 )
                 hit_left = hit(node->left, ray, t, tmin, normal, c);
 
@@ -103,16 +113,20 @@ bool KDNode::hit(KDNode *node, const Ray &ray, double &t, double &tmin, Vec &nor
 
             return hit_left || hit_right;
         }
-        else {
+        else
+        {
             long triangles_size = node->triangles.size();
-            for (long i=0; i<triangles_size; i++) {
-                if (node->triangles[i]->intersect(ray, t, tmin, normal)){
+            for (long i=0; i<triangles_size; i++)
+            {
+                if (node->triangles[i]->intersect(ray, t, tmin, normal))
+                {
                     hit_tri = true;
                     tmin = t;
                     tri_idx = i;
                 }
             }
-            if (hit_tri) {
+            if (hit_tri)
+            {
                 Vec p = ray.origin + ray.direction * tmin;
                 c = node->triangles[tri_idx]->get_colour_at(p);
                 return true;
