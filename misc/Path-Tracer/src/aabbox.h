@@ -8,11 +8,13 @@
 #include "ray.h"
 
 // Axis-aligned bounding box
-struct AABBox {
+struct AABBox
+{
     Vec bl;     // Bottom left (min)
     Vec tr;     // Top right   (max)
 
-    AABBox (Vec bl_=Vec(), Vec tr_=Vec()){
+    AABBox (Vec bl_=Vec(), Vec tr_=Vec())
+    {
         bl=bl_, tr=tr_;
     }
 

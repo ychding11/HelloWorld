@@ -6,21 +6,27 @@
 #include "texture.h"
 #include "../lib/lodepng/lodepng.h"
 
-Texture::Texture(const char *filename) {
+// constructor
+Texture::Texture(const char *filename)
+{
     image = std::vector<unsigned char>();
+    // try catch to ceck input.
     unsigned error = lodepng::decode(image, width, height, filename);
     //if there's an error, display it
     printf("Loading texture: %s\n", filename);
-    if(error) { std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl << std::endl; return; }
+    if(error)
+    {
+        std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl << std::endl;
+        return;
+    }
     loaded = true;
-
 }
 
 // Get pixel at texture coordinates x,y
-Vec Texture::get_pixel(unsigned x, unsigned y) const {
+Vec Texture::get_pixel(unsigned x, unsigned y) const
+{
 
-    if (!loaded)
-        return (Vec(1,0,1));
+    if (!loaded) return (Vec(1,0,1));
 
     double r, g, b;
     r = (double)image.at(y*width*4 + x    )/255.;
@@ -30,8 +36,8 @@ Vec Texture::get_pixel(unsigned x, unsigned y) const {
 }
 
 // Get pixel at normalised texture coordinates u,v
-Vec Texture::get_pixel(double u, double v) const {
-
+Vec Texture::get_pixel(double u, double v) const
+{
     if (!loaded)
         return (Vec(1,0,1));
 
@@ -52,6 +58,7 @@ Vec Texture::get_pixel(double u, double v) const {
 }
 
 // Check if texture is loaded
-bool Texture::is_loaded() const {
+bool Texture::is_loaded() const
+{
     return loaded;
 }
