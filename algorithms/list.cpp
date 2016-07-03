@@ -1,10 +1,5 @@
 /*
- * list.cpp
- * demostrate single linked list algorithms.
- *
- * Source File
- *
- * Copyright (C) 2014-2015  Yaochuang Ding - <ych_ding@163.com>
+ * Copyright (C) 2014-2016  Yaochuang Ding - <ych_ding@163.com>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to 
@@ -39,31 +34,22 @@
 #include <map>
 #include <vector>
 #include <iostream>
-#include "Logger.h"
+#include "list.h"
 
-using namespace std;
+#if !defined(BUILD_LIBRARY)
+#include "Logger.h"
+#endif
+
+using std::cin;
+using std::cout;
 
 #define PERFORMANCE_METER
-
-/*************************************************
- *  ListNode struct.
- *  NOTE: member variable is public.
-*************************************************/
-struct ListNode 
-{
-    int val;
-    ListNode *next;
-    ListNode(int x) : val(x), next(NULL) { }
-};
 
 /*************************************************
  *  ListAlgorithms class -- a collection of classic
  *  list algorithms.
  *  NOTE: .
 *************************************************/
-class ListAlgorithms
-{
-public:
     ListNode* reverseList(ListNode* head)
     {
         if (!head || !head->next) //check param
@@ -151,13 +137,10 @@ public:
             return head;
         }
     }
-};
 
-/*************************************************
- *  Helper function
- *  contruct a linked list from a vector.
- *  NOTE: list order is reversed.
-*************************************************/
+/*! \brief  Helper function contruct a linked list from a vector.
+ *  Constructed list order is reversed.
+ */
 ListNode* constructList(const vector<int> &nums)
 {
     ListNode tempHead(0), *head = &tempHead;
@@ -182,6 +165,7 @@ ListNode* constructList(const vector<int> &nums)
  *  Helper function
  *  destruct a linked list from a vector.
  *  NOTE: list order is reversed.
+ *  SUPPOSE all list Node is allocated by new operator.
 *************************************************/
 void destructList(ListNode *head)
 {
@@ -200,7 +184,7 @@ void destructList(ListNode *head)
 *************************************************/
 void reverseListTester(int n)
 {
-    assert(n >= 0);
+    assert(n >= 0); // element number check
     vector<int> nums(n, 0);
     srand(time(NULL)); //rand seed
     for (int i = 0; i < n; i++)
@@ -208,9 +192,10 @@ void reverseListTester(int n)
         nums[i] =  rand() % n;
     }
     ListNode *head = constructList(nums);
+
     int c = n - 1;
     ListNode *tempHead = head;
-    while (tempHead)
+    while (tempHead) // check test data.
     {
         if (tempHead->val != nums[c])
         {
@@ -221,8 +206,7 @@ void reverseListTester(int n)
         --c;
     }
     
-    ListAlgorithms la;
-    ListNode *result = la.reverseList(head); 
+    ListNode *result = reverseList(head); 
     c = 0; tempHead = result;
     while (tempHead)
     {
@@ -238,6 +222,7 @@ void reverseListTester(int n)
     cout << "Algorithm is correct." << std::endl;
 }
 
+#if !defined(BUILD_LIBRARY)
 /*************************************************
  * list algorithm tester.
 *************************************************/
@@ -261,4 +246,4 @@ int main(int argc, char** argv)
   EXIT_FUNCTION;
   return 0;
 }
-
+#endif
