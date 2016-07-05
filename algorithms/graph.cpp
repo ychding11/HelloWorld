@@ -30,6 +30,7 @@
 #include<cassert>
 #include<vector>
 #include<iostream>
+#include<fstream>
 #include<stack>
  
 using namespace std;
@@ -41,8 +42,7 @@ struct Edge
     int u, v, w;
     // Constructor
     Edge(int uu = 0, int vv = 0, int ww = 0)
-    : u(uu), v(vv), w(ww)
-    { }
+    : u(uu), v(vv), w(ww) { }
 };
 
 struct UnionFind
@@ -54,8 +54,7 @@ public:
 
         // Constructor
         SetElement(int r = 0, int p = 0)
-        :rank(r), parent(p)
-        { }
+        :rank(r), parent(p) { }
    };
 
 private:
@@ -63,8 +62,7 @@ private:
 
 public:
    // Constructor
-   UnionFind(int elements = 0) :sets(elements, SetElement())
-   { }
+   UnionFind(int elements = 0) :sets(elements, SetElement()) { }
 
     // Find element's root in a 
     // tree structure.
@@ -102,11 +100,12 @@ class Graph
 public:
     Graph(int vetexs = 0);  // Constructor
 
-    void addEdge(int u, int v, int w = 0) // Add an edge to graph
+    void addEdge(int u, int v, int w = 1) // Add an edge to graph
     {
         mAdjList[u].push_back(v); 
         mEdgeSet.push_back(Edge(u, v, w));
         ++mEdges;
+        // when constructing graph must specify vertex number.
     }
 
     void DFS(int s);  // Traversal graph by DFS from a given source s
@@ -122,18 +121,88 @@ public:
         return true;
     }
 
+    /*! \brief M-Colouring problem.Return value indicate whether
+        there is a feasible solution.If so, Store it in colours.
+    */
+    bool mColour(int m, vector<int> &colours);
+    friend ostream& operator<<(ostream& os, const Graph &graph);
+    friend istream& operator>>(istream& is, Graph &graph);
+private:
+    bool mColourHelper(int v, int m, vector<int> &colours);
+    /*! \brief test colour is ok for vertex v */
+    bool isColourOK(int v, int colour, const vector<int> &colours);
+
 private:
     int mVertex, mEdges;    
     vector<vector<int>> mAdjList;    // adjacency vectors
     vector<Edge> mEdgeSet;
 };
  
+ostream& operator<<(ostream& os, const Graph &graph)
+{
+   os << "- Graph Info:" << std::endl;
+   os << "- Vertex Number: " << graph.mVertex << std::endl;
+   os << "- Edge Number: "   << graph.mEdges << std::endl;
+   for (auto a : graph.mEdgeSet)
+   {
+        os << "- " << a.u << " " << a.v << " " << a.w << std::endl;
+   }
+   os << std::endl;
+}
+
+istream& operator>>(istream& is, Graph &graph)
+{
+    int edges;
+    is >> graph.mVertex;
+    is >> edges;
+    vector<vector<int>> temp(graph.mVertex, vector<int>());    // adjacency vectors
+    graph.mAdjList = temp;
+    while (edges > 0)
+    {
+        int u, v, w;
+        is >> u >> v >> w;
+        graph.addEdge(u, v, w);
+        --edges;
+    }
+}
+
+
 Graph::Graph(int vertex)
 : mVertex(vertex)
 , mEdges(0)
 , mAdjList(vertex, vector<int>())
+, mEdgeSet()
 { }
  
+bool Graph::isColourOK(int v, int colour, const vector<int> &colours)
+{
+    for (auto a : mAdjList[v])
+    {
+        if (colours[a] == colour) return false;
+    }
+    return true;
+}
+
+bool Graph::mColourHelper(int v, int m, vector<int> &colours)
+{
+    if (v == mVertex) return true; // all vertex coloured.
+    for (int i = 0; i < m; ++i)
+    {
+        if (isColourOK(v, i, colours))
+        {
+            colours[i] = i;
+            if (mColourHelper(v + 1, m, colours)) return false;
+            colours[i] = -1; // not needed.
+        }
+    }
+    return false;
+}
+
+bool Graph::mColour(int m, vector<int> &colours)
+{
+    return mColourHelper(0, m, colours);
+}
+
 void Graph::DFS(int s)
 {
     assert(s >=0 && s < mVertex);
@@ -212,6 +281,8 @@ int main()
     g.addEdge(2, 4);
     g.addEdge(4, 2);
  
+    cout << g;
+
     cout << "Following is Depth First Traversal "
             "(starting from vertex 0) \n";
     g.DFS(0);
@@ -224,6 +295,11 @@ int main()
             printf("Node %d ---> Node %d conneted? %d\n", i, j, g.isConnected(i, j));
         }
     }
+
+    fstream test("graph.txt");
+    Graph graph;
+    test >> graph;
+    cout << graph;
 
 	return 0;
 }
