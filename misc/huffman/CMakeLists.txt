@@ -13,29 +13,27 @@ if (WIN32)
 endif()
 
 if(UNIX)
-  message ("-- Linux platform")
+  message ("-- OS: Linux platform")
     # Should add c++11 support check here.
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   message ("-- Enable c++11")
 endif(UNIX)
  
-include_directories("./")
-message ("-- Incude current directory into header file search path.")
+include_directories("./include")
+message ("-- Incude include directory into header file search path.")
+
+file( GLOB LIB_SOURCE_FILES  *.cpp )
+message("-- Library source files: " ${LIB_SOURCE_FILES}) 
 
 # Build Library
-add_library( huffman  
-	combination.cpp
-    random.cpp
-    misc.cpp
-    bits.cpp
-)
-	
+add_library( huffman  ${LIB_SOURCE_FILES}) 
+
+set ( ENABLE_TEST YES)
 # Testes
-add_executable(subsetTester algorithms.h test/subsetTester.cpp)
-target_link_libraries(subsetTester algorithms)
+if ( ENABLE_TEST )
+add_executable( compress test/compress.cpp )
+target_link_libraries( compress huffman )
 
-add_executable(dataSourceTester algorithms.h test/dataSourceTester.cpp)
-target_link_libraries(dataSourceTester algorithms)
-
-add_executable(miscTester algorithms.h test/miscTester.cpp)
-target_link_libraries(miscTester algorithms)
+add_executable( uncompress test/uncompress.cpp )
+target_link_libraries( uncompress huffman )
+endif ( ENABLE_TEST )

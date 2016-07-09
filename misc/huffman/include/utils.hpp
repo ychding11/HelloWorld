@@ -1,6 +1,6 @@
 /*
- * uncompress.cpp
- * demostrate how to use huffman decode.
+ * compress.cpp
+ * Demo how to use Huffman encode interface.
  *
  * Source File
  *
@@ -30,22 +30,6 @@
  * THE SOFTWARE.
  *
  */
-#include "utils.hpp"
-#include <iostream>
 
-
-
-/*************************************************
- *  tester
-*************************************************/
-int main(int argc, char** argv) 
-{
-  if(argc != 3) 
-  {
-    std::cerr << "ERROR: Incorrect number of arguments" << std::endl;
-    return 0;
-  }
-  decode(argv[1], argv[2]);
-  return 0;
-}
-
+int encode(const char *rawFile, const char *enFile);
+int decode(const char* enFile, const char *deFile);
