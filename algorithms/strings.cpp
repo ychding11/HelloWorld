@@ -31,15 +31,18 @@
 #include<string>
 #include<set>
 
-using namespace std;
+using std::string;
+using std::set;
+using std::cout;
+using std::endl;
 
-//You are given a set<string> containing all of the words in the English
-//language, all in lowercase.  Write a function that takes in a string prefix,
-//then prints out all of the words in the set that have that string as
-//a prefix.  However, if you iterate over an element of the set, you must
-//print it out (that is, you can't just iterate over the set and print out
-//words with the right prefixes.  You need to find a way to iterate over
-//just those words with the right prefix)
+// You are given a set<string> containing all of the words in the English
+// language, all in lowercase.  Write a function that takes in a string prefix,
+// then prints out all of the words in the set that have that string as
+// a prefix.  However, if you iterate over an element of the set, you must
+// print it out (that is, you can't just iterate over the set and print out
+// words with the right prefixes.  You need to find a way to iterate over
+// just those words with the right prefix)
 /*************************************************
  * Function: 
  *   
@@ -74,6 +77,34 @@ void printStringsWithPrefix(const set<string> &strs, const string &prefix)
 	}
 }
 
+/*! \brief find longest palindrome substring. */
+string longestPalindromeSubstr(const string &str)
+{
+    if (str.empty()) return "";
+    int n = str.size();
+    int start = 0, end = 0;
+    for (int i = 1; i < n; ++i)
+    {
+        int left = i - 1, right = i;
+        while (left >= 0 && right < n && str[left] == str[right])
+        {
+            if (right - left > end - start)
+            { start = left; end = right; }
+            --left, ++right;
+        }
+
+        left = i - 1, right = i + 1;
+        while (left >= 0 && right < n && str[left] == str[right])
+        {
+            if (right - left > end - start)
+            { start = left; end = right; }
+            --left, ++right;
+        }
+    }
+    return str.substr(start, end - start + 1);
+}
+
+#if !defined(BUILD_LIB)
 //This is just a test
 int main()
 {
@@ -85,5 +116,7 @@ int main()
 	strs.insert("bcdfg");
 	strs.insert("bdfg");
 	printStringsWithPrefix(strs, "abc");
+    string str = "aaabaaa";
+    std::cout << longestPalindromeSubstr(str) << std::endl;
 }
-
+#endif
