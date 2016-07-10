@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     usage(argv[0]);
     return 0;
   }
-  printf("Encode:<%s>---><%s>\n", argv[1], argv[2]);
+  printf("- Encode:<%s> ---> <%s>\n", argv[1], argv[2]);
   encode(argv[1], argv[2]);
   return 0;
 }

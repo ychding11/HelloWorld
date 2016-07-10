@@ -33,11 +33,6 @@
 #include "utils.hpp"
 #include <iostream>
 
-
-
-/*************************************************
- *  tester
-*************************************************/
 int main(int argc, char** argv) 
 {
   if(argc != 3) 
@@ -45,6 +40,7 @@ int main(int argc, char** argv)
     std::cerr << "ERROR: Incorrect number of arguments" << std::endl;
     return 0;
   }
+  printf("- Decode:<%s> ---> <%s>\n", argv[1], argv[2]);
   decode(argv[1], argv[2]);
   return 0;
 }

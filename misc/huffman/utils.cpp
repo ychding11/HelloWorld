@@ -37,8 +37,18 @@
 #include <fstream>
 #include <cstdio>
 #include <cassert>
+#include <ctime>
 
 using namespace std;
+
+void printDuration(time_t start, time_t stop)
+{
+    double diff = difftime(stop, start);
+    int hrs = (int)diff/3600;
+    int mins = ((int)diff/60)-(hrs*60);
+    int secs = (int)diff-(hrs*3600)-(mins*60);
+    printf("- Complete!\tTime Taken: %i hrs, %i mins, %i secs.\n", hrs, mins, secs);
+}
 
 int encode(const char *rawFile, const char *enFile)
 {
@@ -47,6 +57,8 @@ int encode(const char *rawFile, const char *enFile)
         printf("ERROR, invalide params. line: %d\n", __LINE__);
         return -1;
     }   
+    time_t start, stop;
+    time(&start);
     HuffmanTree tree; // Huffman tree   
     ifstream infile(rawFile, ios::binary);  //input file
     ofstream outfile(enFile, ios::binary);  //output file
@@ -89,7 +101,9 @@ int encode(const char *rawFile, const char *enFile)
         bits += tree.encode(nextChar, out);
     }
     out.flush();
+    time(&stop);
     printf("Original size = %d, Encoded size = %d, %lf\n", total, bits >> 3, (double)(bits) / (total << 3));
+    printDuration(start, stop);
     return 0;
 }
 
@@ -105,6 +119,8 @@ int decode(const char* enFile, const char *deFile)
         printf("ERROR, invalide params. line: %d\n", __LINE__);
         return -1;
     }
+    time_t start, stop;
+    time(&start);
     HuffmanTree tree;             // Huffman tree
     vector<int> counts(256, 0);   // Keeps track of each character's frequency.
     ifstream infile(enFile, ios::binary); //how to check?     
@@ -125,5 +141,7 @@ int decode(const char* enFile, const char *deFile)
     {
         out.writeByte(tree.decode(in));
     }
+    time(&stop);
+    printDuration(start, stop);
     return 0;
 }
