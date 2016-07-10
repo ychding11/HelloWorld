@@ -35,6 +35,8 @@
 
 #include <queue>
 #include <vector>
+#include <map>
+#include <stack>
 #include <fstream>
 #include "HuffmanNode.hpp"
 #include "BitInputStream.hpp"
@@ -66,6 +68,7 @@ class HuffmanTree
   private:
     HuffmanNode* mpRoot;
     vector<HuffmanNode*> mLeaves;
+    map<byte, stack<int> > mDictionary; 
 
     /*
      * This function is used to post-order traverse the tree and
@@ -93,6 +96,7 @@ class HuffmanTree
     explicit HuffmanTree() 
             : mpRoot(0)
             , mLeaves(256, (HuffmanNode*) 0) 
+            , mDictionary()
     {
       //mLeaves = vector<HuffmanNode*>(256, (HuffmanNode*) 0);
     }
@@ -141,6 +145,9 @@ class HuffmanTree
     
     friend ostream& operator<<(ostream &os, HuffmanTree &root);
 
+private:
+    /*! \brief convert huffman tree into code dictionary */
+    map<byte, stack<int> >  generateDictionary(void);
 };
 
 #endif // HCTREE_HPP

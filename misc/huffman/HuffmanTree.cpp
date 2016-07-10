@@ -66,8 +66,29 @@ void HuffmanTree::build(const vector<int>& freqs)
 
   // Last node in the pq is the mpRoot node.
   mpRoot = pq.top();
+  mDictionary = generateDictionary();
 }
 
+/*! \brief convert huffman tree into code dictionary */
+map<byte, stack<int> >  HuffmanTree::generateDictionary(void)
+{
+  map<byte, stack<int> > ret; 
+  for(unsigned int i = 0; i < mLeaves.size(); i++) 
+  {
+      HuffmanNode *node = mLeaves[i];
+      byte symbol = mLeaves[i]->symbol; 
+      stack<int> code;    // To implement the LIFO order of the traversal path
+
+      // Loop until the Root node is reached
+      while(node->p != 0)
+      {
+        (node == node->p->c0) ? code.push(0) : code.push(1);
+        node = node->p;   
+      }
+      ret.insert(std::pair<byte, stack<int> >(symbol, code));
+  }
+  return ret;
+}
 
 /*************************************************
  *  Encodes a symbol using the Huffman tree 
@@ -77,10 +98,10 @@ void HuffmanTree::build(const vector<int>& freqs)
 *************************************************/
 int HuffmanTree::encode(byte symbol, BitOutputStream& out) const 
 {
-  HuffmanNode* node(0);    // Placeholder used to traverse the tree
   stack<int> code;    // To implement the LIFO order of the traversal path
   int bits = 0;
-  
+  #if 0 
+  HuffmanNode* node(0);    // Placeholder used to traverse the tree
   // Finds the leaf node matches the symbol
   for(unsigned long i = 0; i < mLeaves.size(); i++) 
   {
@@ -97,7 +118,10 @@ int HuffmanTree::encode(byte symbol, BitOutputStream& out) const
     (node == node->p->c0) ? code.push(0) : code.push(1);
      node = node->p;   
   }
-
+  #else
+  const byte& key = symbol;
+  code = mDictionary.at(symbol);
+  #endif
   // Write all the bits in the stack in FILO order.
   while(!code.empty()) 
   {
