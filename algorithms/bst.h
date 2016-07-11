@@ -27,8 +27,10 @@
  */
  
 #include <vector>
+#include <iostream>
 
 using std::vector;
+using std::cout;
 
 #define PERFORMANCE_METER
 
@@ -47,22 +49,48 @@ private:
 BstNode<T>* _root;
 
 public:
-BstTree(BstNode<T> *root = NULL) :_root(root) {}
-BstTree(const BstTree &rhs); // copy constructor
-~BstTree();
+BstTree(BstNode<T> *root = NULL) :_root(root) { }
+BstTree(const BstTree<T> &rhs){ }
+~BstTree() { }
 
-BstTree* copy(const BstTree &rhs); // copy constructor
-BstTree& operator=(const BstTree &rhs);
+BstTree* copy(const BstTree<T> &rhs); // copy constructor
+BstTree& operator=(const BstTree<T> &rhs);
 bool insert(T elem);
 bool remove(T elem);
 bool remove(BstNode<T> *node);
 BstNode<T>* find(T elem);
+friend ostream& operator<<(ostream &os, const BstTree<T> &tree);
 
 private:
 BstNode<T>* insert(T elem, BstNode<T> *root);
+void printTree(BstNode<T> *root, ostream &os);
 };
 
-BstNode<T>* BstTree::insert(T elem, BstNode<T> *root)
+template <typename T>
+ostream& operator<<(ostream &os, const BstTree<T> &tree)
+{
+    printTree(tree._root, os);
+    return os;
+}
+
+template <typename T>
+void BstTree<T>::printTree(BstNode<T> *root, ostream &os)
+{
+    if (!root) return;
+    printTree(root->left, os);
+    os << root->val << std::endl;
+    printTree(root->right, os);
+}
+
+template <typename T>
+bool BstTree<T>::insert(T elem)
+{
+    _root = insert(elem, _root);
+    return _root != NULL;
+}
+
+template <typename T>
+BstNode<T>* BstTree<T>::insert(T elem, BstNode<T> *root)
 {
     if (!root) return new BstNode<T>(elem);
     if (elem < _root->val)
