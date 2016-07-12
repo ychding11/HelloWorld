@@ -64,7 +64,23 @@ friend ostream& operator<<(ostream &os, const BstTree<T> &tree);
 private:
 BstNode<T>* insert(T elem, BstNode<T> *root);
 void printTree(BstNode<T> *root, ostream &os);
+BstNode<T>* find(T elem, BstNode<T> *root);
 };
+
+template <typename T>
+BstNode<T>* BstTree<T>::find(T elem)
+{
+    return find(elem, _root);
+}
+
+template <typename T>
+BstNode<T>* BstTree<T>::find(T elem, BstNode<T> *root)
+{
+    if (!root) return NULL;
+    if (root->val == elem) return root;
+    else if (root->val < elem) return find(elem, root->right);
+    else return find(elem, root->left);
+}
 
 template <typename T>
 ostream& operator<<(ostream &os, const BstTree<T> &tree)
