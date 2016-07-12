@@ -50,31 +50,47 @@ BstNode<T>* _root;
 
 public:
 BstTree(BstNode<T> *root = NULL) :_root(root) { }
-BstTree(const BstTree<T> &rhs){ }
+BstTree(const BstTree<T> &rhs);
 ~BstTree() { }
 
-BstTree* copy(const BstTree<T> &rhs); // copy constructor
+BstTree* copy() const; // copy constructor
 BstTree& operator=(const BstTree<T> &rhs);
 bool insert(T elem);
 bool remove(T elem);
 bool remove(BstNode<T> *node);
-BstNode<T>* find(T elem);
+BstNode<T>* find(T elem) const;
 friend ostream& operator<<(ostream &os, const BstTree<T> &tree);
 
 private:
 BstNode<T>* insert(T elem, BstNode<T> *root);
 void printTree(BstNode<T> *root, ostream &os);
-BstNode<T>* find(T elem, BstNode<T> *root);
+BstNode<T>* find(T elem, BstNode<T> *root) const;
+BstNode<T>* preOderCopy(const BstNode<T> *root) const;
 };
 
 template <typename T>
-BstNode<T>* BstTree<T>::find(T elem)
+BstTree<T>::BstTree(const BstTree<T> &rhs)
+{
+    _root = preOderCopy(rhs._root);
+}
+template <typename T>
+BstNode<T>* BstTree<T>::preOderCopy(const BstNode<T> *root) const
+{
+   if (!root) return NULL;
+   BstNode<T> *temp = new BstNode<T>(root->val);
+   temp->left = preOderCopy(root->left);
+   temp->right = preOderCopy(root->right);
+   return temp;
+}
+
+template <typename T>
+BstNode<T>* BstTree<T>::find(T elem) const
 {
     return find(elem, _root);
 }
 
 template <typename T>
-BstNode<T>* BstTree<T>::find(T elem, BstNode<T> *root)
+BstNode<T>* BstTree<T>::find(T elem, BstNode<T> *root) const
 {
     if (!root) return NULL;
     if (root->val == elem) return root;
