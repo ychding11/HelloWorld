@@ -147,7 +147,7 @@ class HuffmanTree
 
 private:
     /*! \brief convert huffman tree into code dictionary */
-    map<byte, stack<int> >  generateDictionary(void);
+    map<byte, stack<int> >  generateDictionary(int numSymbols);
 };
 
 #endif // HCTREE_HPP

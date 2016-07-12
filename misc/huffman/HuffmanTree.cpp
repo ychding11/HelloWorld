@@ -66,14 +66,14 @@ void HuffmanTree::build(const vector<int>& freqs)
 
   // Last node in the pq is the mpRoot node.
   mpRoot = pq.top();
-  mDictionary = generateDictionary();
+  mDictionary = generateDictionary(index);
 }
 
 /*! \brief convert huffman tree into code dictionary */
-map<byte, stack<int> >  HuffmanTree::generateDictionary(void)
+map<byte, stack<int> >  HuffmanTree::generateDictionary(int numSymbols)
 {
   map<byte, stack<int> > ret; 
-  for(unsigned int i = 0; i < mLeaves.size(); i++) 
+  for(unsigned int i = 0; i < numSymbols; i++) 
   {
       HuffmanNode *node = mLeaves[i];
       byte symbol = mLeaves[i]->symbol; 
