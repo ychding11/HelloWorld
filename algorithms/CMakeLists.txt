@@ -23,6 +23,7 @@ message ("-- Incude current directory into search path.")
 
 # Build Library
 add_library(algorithms 
+	strings.cpp
 	combination.cpp
     random.cpp
     misc.cpp
