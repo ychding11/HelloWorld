@@ -64,7 +64,7 @@ int pathNumberWithK(const vector<vector<int>> &a, int m, int n, int c, const int
 	    else return 0;
 	}
 	return pathNumberWithK(a, m -1, n, c + a[m][n], K) +
-	    	pathNumberWithK(a, m, n - 1, c + a[m][n], K);
+	    pathNumberWithK(a, m, n - 1, c + a[m][n], K);
 }
 
 
