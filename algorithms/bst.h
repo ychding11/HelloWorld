@@ -59,14 +59,32 @@ bool insert(T elem);
 bool remove(T elem);
 bool remove(BstNode<T> *node);
 BstNode<T>* find(T elem) const;
+bool isIdentical(const BstTree<T> &rhs) const;
+
 friend ostream& operator<<(ostream &os, const BstTree<T> &tree);
 
 private:
+bool isIdentical(const BstNode<T> *tree1, const BstNode<T> *tree2) const;
 BstNode<T>* insert(T elem, BstNode<T> *root);
 void printTree(BstNode<T> *root, ostream &os);
 BstNode<T>* find(T elem, BstNode<T> *root) const;
 BstNode<T>* preOderCopy(const BstNode<T> *root) const;
 };
+
+template <typename T>
+bool BstTree<T>::isIdentical(const BstTree<T> &rhs) const
+{
+    return isIdentical(_root, rhs._root);
+}
+
+template <typename T>
+bool BstTree<T>::isIdentical(const BstNode<T> *tree1, const BstNode<T> *tree2) const
+{
+    if (!tree1 && !tree2) return true;
+    if ( (!tree1 && tree2) || (tree1 && !tree2) ) return false;
+    if (isIdentical(tree1->left, tree2->left) && isIdentical(tree1->right, tree2->right))
+        return tree1->val == tree2->val;
+}
 
 template <typename T>
 BstTree<T>::BstTree(const BstTree<T> &rhs)
