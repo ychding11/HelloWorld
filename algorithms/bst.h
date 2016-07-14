@@ -60,6 +60,7 @@ bool remove(T elem);
 bool remove(BstNode<T> *node);
 BstNode<T>* find(T elem) const;
 bool isIdentical(const BstTree<T> &rhs) const;
+BstNode<T>* root() const { return _root; }
 
 friend ostream& operator<<(ostream &os, const BstTree<T> &tree);
 
