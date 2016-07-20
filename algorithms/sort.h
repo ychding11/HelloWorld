@@ -74,5 +74,13 @@ void merge(vector<T> &a, int start, int mid, int end, map<T, int> *numGreater = 
     }
 }
 
-
-
+/*! \brief merge sort by recursivly */
+template<typename T>
+void mergeSort(vector<T> &a, int start, int end)
+{
+     if (start >= end) return;
+     int mid = (start + end) / 2;
+     mergeSort(a, start, mid);
+     mergeSort(a, mid + 1, end);
+     merge(a, start, mid, end);
+}
