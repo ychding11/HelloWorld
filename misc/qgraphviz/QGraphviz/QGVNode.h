@@ -73,7 +73,7 @@ private:
 
     void updateLayout();
 	QGVNode(Agnode_t *node, QGVScene *scene);
-	QGVNode(char *name, QGVScene *scene);
+	QGVNode(const QString &name, QGVScene *scene);
 
 		// Not implemented in QGVNode.cpp
 //		QPainterPath makeShape(Agnode_t* node) const;
@@ -88,6 +88,5 @@ private:
     QGVScene *_scene;
 	Agnode_t *_node;
 };
-
 
 #endif // QGVNODE_H

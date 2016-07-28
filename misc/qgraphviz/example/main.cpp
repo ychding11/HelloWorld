@@ -23,29 +23,28 @@ License along with this library.
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QGVScene *scene = NULL;
 
-    scene = new QGVScene("DEMO", NULL);
+    QGVScene scene("DEMO", NULL);
 
-    scene->setGraphAttribute("label", "DEMO");
-    scene->setGraphAttribute("splines", "ortho");
-    scene->setGraphAttribute("rankdir", "LR");
-    scene->setGraphAttribute("nodesep", "0.4");
+    scene.setGraphAttribute("label", "DEMO");
+    scene.setGraphAttribute("splines", "ortho");
+    scene.setGraphAttribute("rankdir", "LR");
+    scene.setGraphAttribute("nodesep", "0.4");
 
-    scene->setNodeAttribute("shape", "circle");
-    scene->setNodeAttribute("style", "filled");
-    scene->setNodeAttribute("fillcolor", "white");
-    scene->setNodeAttribute("height", "1.2");
+    scene.setNodeAttribute("shape", "circle");
+    scene.setNodeAttribute("style", "filled");
+    scene.setNodeAttribute("fillcolor", "white");
+    scene.setNodeAttribute("height", "1.2");
    
-    scene->setEdgeAttribute("minlen", "3");
+    scene.setEdgeAttribute("minlen", "3");
 
-    QGVNode *src =  scene->addNode("src");
-    QGVNode *dst =  scene->addNode("dst");
-    QGVEdge *edge = scene->addEdge(src, dst, "test");
+    QGVNode *src =  scene.addNode("src");
+    QGVNode *dst =  scene.addNode("dst");
+    QGVEdge *edge = scene.addEdge(src, dst, "dge");
 
-    scene->applyLayout();
+    scene.applyLayout();
 
-    QGraphicsViewEc view(scene);
+    QGraphicsViewEc view(&scene);
     view.resize(560, 720);
     view.show(); 
     return a.exec();

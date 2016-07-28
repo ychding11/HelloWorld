@@ -29,7 +29,7 @@
 #include "QGVScene.h"
 // The following include allows the automoc to detect, that it must moc this class
 #include "moc_QGVScene.cpp"
-#include <QDebug>
+#include <QtDebug>
 #include <QGVNode.h>
 #include <QGVEdge.h>
 #include <QGVSubGraph.h>
@@ -110,25 +110,25 @@ QGVNode* QGVScene::addNode(const QString &label)
     //char *name = label.toLocal8Bit().data();
     char *name = const_cast<char*>(label.toStdString().c_str());
     cout << "- Add Node into scene. Node name: " << name << std::endl;
-	QGVNode *item = new QGVNode(name, this);
+	QGVNode *item = new QGVNode(label, this);
     _nodes.push_back(item);
     addItem(item);
     return item;
 }
 
-QGVEdge *QGVScene::addEdge(QGVNode *source, QGVNode *target, const string &label)
+QGVEdge *QGVScene::addEdge(QGVNode *source, QGVNode *target, const QString &label)
 {
 #if 1
-    cout << "- Add an edge into scene." << std::endl;
+    qDebug() << "- Add an edge into QGVScene: " << this; 
 	Agedge_t* edge = agedge(_graph, source->_node, target->_node, NULL, TRUE);
     if(edge == NULL)
     {
-        cout << "- Create egde failed:" << label;
+        qCritical() << "- Create egde failed:" << label;
         return 0;
     }
 
 	QGVEdge *item = new QGVEdge(edge, this);
-    item->setLabel(label.c_str());
+    item->setLabel(label);
     addItem(item);
     _edges.push_back(item);
     return item;

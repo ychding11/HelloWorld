@@ -43,7 +43,8 @@ ostream& operator<<(ostream &os, const QGVEdge &edge)
 
 QGVEdge::QGVEdge(Agedge_t *edge, QGVScene *scene) :  _scene(scene), _edge(edge)
 {
-    cout << "- Construct an QGVEdge object. Agedge_t address:"  << _edge << std::endl;
+    qDebug() << "- Construct an QGVEdge:" << this;
+    qDebug() << "  Agedge_t address:"  << _edge;
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
 
@@ -56,7 +57,12 @@ QGVEdge::~QGVEdge()
 
 QString QGVEdge::label() const { return getAttribute("xlabel"); }
 
-void QGVEdge::setLabel(const QString &label) { setAttribute("xlabel", label);  _label = label; }
+void QGVEdge::setLabel(const QString &label)
+{
+     qDebug() << "- Set QGVEdge " << this << " Label:" << label;
+     setAttribute("xlabel", label); 
+     _label = label;
+}
 
 QRectF QGVEdge::boundingRect() const
 {
@@ -101,8 +107,7 @@ void QGVEdge::paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidge
     }
     else
     */
-    cout << "- Edge Label:" << _label.toStdString() << std::endl;
-    qDebug() << _label_rect;
+    qDebug() << "- Prepare drawing edge label:" << _label << " Edge bounding box:" << _label_rect;
     painter->drawText(_label_rect, Qt::AlignCenter, _label);
 
     painter->setBrush(QBrush(_pen.color(), Qt::SolidPattern));
@@ -113,6 +118,7 @@ void QGVEdge::paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidge
 
 void QGVEdge::setAttribute(const QString &name, const QString &value)
 {
+    qDebug() << "- Set edge attribute: " << name.toLocal8Bit().data() <<" " << value.toLocal8Bit().data();
     char empty[] = "";
 	agsafeset(_edge, name.toLocal8Bit().data(), value.toLocal8Bit().data(), empty);
 }
@@ -126,14 +132,16 @@ QString QGVEdge::getAttribute(const QString &name) const
 
 void QGVEdge::updateLayout()
 {
-    cout << "QGVEdge::updateLayout()" << std::endl;
+    qDebug() << "- QGVEdge::updateLayout()";
     prepareGeometryChange();
+    
+    // Convert graphviz concept into Qt
 	qreal gheight = QGVCore::graphHeight(_scene->_graph);
 	const splines* spl = ED_spl(_edge);
     _path = QGVCore::toPath(spl, gheight);
 
     //Edge arrows
-    if((spl->list != 0) && (spl->list->size%3 == 1))
+    if((spl->list != 0) && (spl->list->size % 3 == 1))
     {
         if(spl->list->sflag)
         {

@@ -47,18 +47,20 @@ QGVNode::QGVNode(Agnode_t *node, QGVScene *scene): _scene(scene), _node(node)
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
 
-QGVNode::QGVNode(char *name, QGVScene *scene) : _scene(scene), _label("QGVNode")
+QGVNode::QGVNode(const QString &name, QGVScene *scene) :  _label(name), _scene(scene)
 {
-	_node = agnode(_scene->_graph, name, TRUE);
+	char *nodeName = name.toLocal8Bit().data();
+    //char *nodeName = const_cast<char*>(name.toStdString().c_str());
+	_node = agnode(_scene->_graph, nodeName, TRUE);
     if(_node == NULL)
     {
-        cout << "- Create agnode failed.";
+        qCritical() << "- Create agnode failed.";
     }
-    _label = const_cast<const char*>(name);
-    qDebug() << _label;
-    cout << "- Construct QGNode:" << name 
-         << "  Address: " << this 
-         << "  Agnode_t address: " << _node << std::endl;
+    qDebug() << "- Construct QGNode:" << name;
+    qDebug() << "  QGVNode Address: " << this; 
+    qDebug() << "  Agnode_t address: " << _node;
+    qDebug() << "  Agnode_t label: " << nodeName;
+    qDebug() << "  QString label: " << _label;
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
 
@@ -106,7 +108,7 @@ void QGVNode::paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidge
     const QRectF rect = boundingRect().adjusted(2,2,-2,-2); //Margin
     if(_icon.isNull())
     {
-        qDebug() << "QGVNode Label:" << _label; 
+        qDebug() << "- Prepare drawing QGVNode Label:" << _label; 
         painter->drawText(rect, Qt::AlignCenter, _label);
     }
     else
