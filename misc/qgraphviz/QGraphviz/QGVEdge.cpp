@@ -136,11 +136,12 @@ void QGVEdge::updateLayout()
     prepareGeometryChange();
     
     // Convert graphviz concept into Qt
-	qreal gheight = QGVCore::graphHeight(_scene->_graph);
+	//qreal gheight = QGVCore::graphHeight(_scene->_graph);
+    qreal gheight  = GD_bb(_scene->_graph).UR.y;
 	const splines* spl = ED_spl(_edge);
     _path = QGVCore::toPath(spl, gheight);
 
-    //Edge arrows
+    // Control points number is always 3 * n + 1
     if((spl->list != 0) && (spl->list->size % 3 == 1))
     {
         if(spl->list->sflag)
@@ -164,7 +165,7 @@ void QGVEdge::updateLayout()
     {
         _label = xlabel->text;
         _label_rect.setSize(QSize(xlabel->dimen.x, xlabel->dimen.y));
-		_label_rect.moveCenter(QGVCore::toPoint(xlabel->pos, QGVCore::graphHeight(_scene->_graph)));
+		_label_rect.moveCenter(QGVCore::toPoint(xlabel->pos, gheight));
     }
 
     setToolTip(getAttribute("tooltip"));

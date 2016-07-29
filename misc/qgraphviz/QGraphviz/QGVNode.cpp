@@ -152,24 +152,22 @@ void QGVNode::setIcon(const QImage &icon) { _icon = icon; }
 
 void QGVNode::updateLayout()
 {
-    cout << "QGVNode::updateLayout()" << std::endl;
+    cout << "- QGVNode::updateLayout()" << std::endl;
     prepareGeometryChange();
-	qreal width  = ND_width(_node) * DotDefaultDPI;
+	qreal width  = ND_width(_node) *  DotDefaultDPI;
 	qreal height = ND_height(_node) * DotDefaultDPI;
 
-    //Node Position (center)
-
-    qreal gheight  = GD_bb(_scene->_graph).UR.y;
     //ND_coord gives the position of the center of the node, in points
     pointf nodePos = ND_coord(_node);
     printf("- Agnode_t 0x%p, x = %lf, y = %lf, w = %lf, h = %lf\n", _node, nodePos.x, nodePos.y, width, height);
-	//qreal gheight = QGVCore::graphHeight(_scene->_graph);
-	QPointF pos = QGVCore::centerToOrigin(QGVCore::toPoint(ND_coord(_node), gheight), width, height);
+    qreal gheight  = GD_bb(_scene->_graph).UR.y;
+    QPointF centerPoint(nodePos.x, gheight - nodePos.y);
+    QPointF cornerPoint(centerPoint.x() - width / 2.0, centerPoint.y() - height / 2.0);
 
     //Node path
 	_path = QGVCore::toPath(ND_shape(_node)->name, (polygon_t*)ND_shape_info(_node), width, height);
 
-	setPos(pos);
+	setPos(centerPoint);
     setZValue(1);
 
     _brush.setStyle(QGVCore::toBrushStyle(getAttribute("style")));

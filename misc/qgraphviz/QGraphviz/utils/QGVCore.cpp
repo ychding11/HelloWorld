@@ -31,25 +31,21 @@
 
 qreal QGVCore::graphHeight(Agraph_t *graph)
 {
-    //Hauteur totale du graphique (permet d'effectuer le calcul inverse des coordonnées)
     return GD_bb(graph).UR.y;
 }
 
 QPointF QGVCore::toPoint(pointf p, qreal gheight)
 {
-    //Le repere Y commence du bas dans graphViz et du haut pour Qt !
     return QPointF(p.x, gheight - p.y);
 }
 
 QPointF QGVCore::toPoint(point p, qreal gheight)
 {
-    //Le repere Y commence du bas dans graphViz et du haut pour Qt !
     return QPointF(p.x, gheight - p.y);
 }
 
 QPointF QGVCore::centerToOrigin(const QPointF &p, qreal width, qreal height)
 {
-    //L'origine d'un objet est le centre dans graphViz et du haut gauche pour Qt !
     return QPointF(p.x() - width/2, p.y() - height/2);
 }
 
@@ -71,9 +67,9 @@ QPainterPath QGVCore::toPath(const char *type, const polygon_t *poly, qreal widt
 {
     QPainterPath path;
     if ((strcmp(type, "rectangle") == 0) ||
-        (strcmp(type, "box") == 0) ||
-        (strcmp(type, "hexagon") == 0) ||
-        (strcmp(type, "polygon") == 0) ||
+        (strcmp(type, "box") == 0)       ||
+        (strcmp(type, "hexagon") == 0)   ||
+        (strcmp(type, "polygon") == 0)   ||
         (strcmp(type, "diamond") == 0))
     {
         QPolygonF polygon = toPolygon(poly, width, height);
@@ -81,7 +77,7 @@ QPainterPath QGVCore::toPath(const char *type, const polygon_t *poly, qreal widt
         path.addPolygon(polygon);
     }
     else if ((strcmp(type, "ellipse") == 0) ||
-            (strcmp(type, "circle") == 0))
+             (strcmp(type, "circle") == 0))
     {
         QPolygonF polygon = toPolygon(poly, width, height);
         path.addEllipse(QRectF(polygon[0], polygon[1]));
@@ -96,25 +92,31 @@ QPainterPath QGVCore::toPath(const char *type, const polygon_t *poly, qreal widt
 QPainterPath QGVCore::toPath(const splines *spl, qreal gheight)
 {
     QPainterPath path;
-    if((spl->list != 0) && (spl->list->size%3 == 1))
+    if((spl->list != 0) && (spl->list->size % 3 == 1))
     {
         bezier bez = spl->list[0];
         //If there is a starting point, draw a line from it to the first curve point
         if(bez.sflag)
         {
+            // moveTo() implicitly add a new subpath and close the previous one.
             path.moveTo(toPoint(bez.sp, gheight));
+            // add a line from current point to param point.
             path.lineTo(toPoint(bez.list[0], gheight));
         }
         else
+        {
             path.moveTo(toPoint(bez.list[0], gheight));
+        }
 
-        //Loop over the curve points
-        for(int i=1; i<bez.size; i+=3)
+        for(int i = 1; i < bez.size; i += 3)
+        {
+            // add a cubic Bezier curve between current position and end position(3rd param)
+            // control points are specified by 1st param and 2rd param.
             path.cubicTo(toPoint(bez.list[i], gheight), toPoint(bez.list[i+1], gheight), toPoint(bez.list[i+2], gheight));
+        }
 
         //If there is an ending point, draw a line to it
-        if(bez.eflag)
-            path.lineTo(toPoint(bez.ep, gheight));
+        if(bez.eflag) path.lineTo(toPoint(bez.ep, gheight));
     }
     return path;
 }
