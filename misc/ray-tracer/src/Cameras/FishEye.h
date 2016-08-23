@@ -54,7 +54,7 @@ FishEye::set_psi_max(float _m) {
 //-------------------------------------------------------------------------- set_fov
 inline void
 FishEye::set_fov(float _f) {
-	psi_max = 2 * _f; // this right? check page 187 later
+	psi_max =  _f / 2.0; // this right? check page 187 later
 }
 
 #endif

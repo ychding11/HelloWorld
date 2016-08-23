@@ -11,7 +11,7 @@
 
 FishEye::FishEye(void)
 	:	Camera(),
-		psi_max(180.0) // is this a good default value?
+		psi_max(90.0) // is this a good default value?
 {}
 
 
@@ -32,12 +32,11 @@ FishEye::clone(void) const {
 
 
 // ----------------------------------------------------------------------------- assignment operator
-
 FishEye&
-FishEye::operator=(const FishEye& rhs) {
+FishEye::operator=(const FishEye& rhs)
+{
 
-	if (this == &rhs)
-		return (*this);
+	if (this == &rhs) return (*this);
 
 	Camera::operator=(rhs);
 
@@ -48,7 +47,6 @@ FishEye::operator=(const FishEye& rhs) {
 
 
 // ----------------------------------------------------------------------------- destructor
-
 FishEye::~FishEye(void) {}
 
 
