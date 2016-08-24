@@ -4,6 +4,7 @@
 #include "Sampler.h"
 #include "RGBColor.h"
 #include <vector> 
+#include <string> 
 
 using namespace std;
 
@@ -64,7 +65,7 @@ class ViewPlane
         write_to_buffer(int row, int col, RGBColor c);
 
         void
-        save_to_ppm(void);
+        save_to_ppm(string filename = "");
 
 private:
 

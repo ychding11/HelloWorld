@@ -154,6 +154,6 @@ ThinLens::render_scene(const World& w) {
             vp.write_to_buffer(vp.vres - r - 1, c, L);
 		//	w.display_pixel(r, c, L);
 		}
-        vp.save_to_ppm();
+        vp.save_to_ppm("thin-len.ppm");
     }
 }

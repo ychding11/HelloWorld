@@ -114,10 +114,12 @@ ViewPlane:: write_to_buffer(int row, int col, RGBColor c)
 }
 
 void
-ViewPlane::save_to_ppm(void)
+ViewPlane::save_to_ppm(string filename)
 {
  int w = hres, h = vres;
- FILE *f = fopen("image.ppm", "w");         // Write image to PPM file.                                                                                                                                       
+ FILE *f = NULL;
+ if (filename.empty()) f = fopen("image.ppm", "w");
+ else f = fopen(filename.c_str(), "w");
  fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
  for (int i=0; i < h; i++)
     for (int j=0; j < w; j++)
