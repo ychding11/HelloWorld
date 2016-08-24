@@ -70,11 +70,18 @@ World::~World(void)
 
 
 //------------------------------------------------------------------ render_scene
-
-// This uses orthographic viewing along the zw axis
-
 void 												
 World::render_scene(void) const
+{
+    if (camera_ptr)
+        camera_ptr->render_scene(*this);
+}
+
+
+//------------------------------------------------------------------ render_scene
+// This uses orthographic viewing along the zw axis
+void 												
+World::render_orthographic(void) const
 {
 
 	RGBColor	pixel_color;	 	
@@ -273,20 +280,6 @@ World::build(void)
 	light_ptr->scale_radiance(6.0);	
 	add_light(light_ptr);
 
-	Pinhole* pinhole_ptr = new Pinhole;
-	pinhole_ptr->set_eye(0, 2, 5);
-	pinhole_ptr->set_lookat(0, -2, -2);
-	pinhole_ptr->set_view_distance(75);
-	pinhole_ptr->compute_uvw(); 
-	set_camera(pinhole_ptr);
-
-	FishEye* fisheye_ptr = new FishEye;
-	fisheye_ptr->set_eye(7.5, 4, 10); 
-	fisheye_ptr->set_lookat(-1, 3.7, 0);  
-	//fisheye_ptr->set_view_distance(340);		
-	fisheye_ptr->compute_uvw(); 
-	//set_camera(fisheye_ptr);
-		
 	Matte* matte_ptr1 = new Matte;			
 	matte_ptr1->set_ka(0.25);
 	matte_ptr1->set_kd(0.75);
@@ -312,8 +305,21 @@ World::build(void)
 	matte_ptr5->set_kd(0.97);	
 	matte_ptr5->set_cd(white);  
 	
+	Pinhole* pinhole_ptr = new Pinhole;
+	pinhole_ptr->set_eye(0, 0, 5);
+	pinhole_ptr->set_lookat(0, 0, -2);
+	pinhole_ptr->set_view_distance(100);
+	pinhole_ptr->compute_uvw(); 
+	set_camera(pinhole_ptr);
+
+	FishEye* fisheye_ptr = new FishEye;
+	fisheye_ptr->set_eye(0, 0, 5); 
+	fisheye_ptr->set_lookat(0, 0, -2);  
+	fisheye_ptr->compute_uvw(); 
+	set_camera(fisheye_ptr);
+		
 	// spheres
-	Sphere* sphere_ptr1 = new Sphere(Point3D(0, 0, 0), 1);
+	Sphere* sphere_ptr1 = new Sphere(Point3D(0, 0, 0), 2.5);
 	sphere_ptr1->set_material(matte_ptr1);
 	add_object(sphere_ptr1);
 	
