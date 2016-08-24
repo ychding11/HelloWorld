@@ -4,6 +4,7 @@
 #include "Point3D.h"
 #include "Vector3D.h"
 #include "ThinLens.h"
+#include <cstdio>
 
 // ----------------------------------------------------------------------------- default constructor
 
@@ -128,10 +129,14 @@ ThinLens::render_scene(const World& w) {
 	vp.s /= zoom;
 
 	for (int r = 0; r < vp.vres; r++)			// up
-		for (int c = 0; c < vp.hres; c++) {		// across
+    {
+        fprintf(stderr, "\r - Thin Len Camera Rendering... %f%%.", 100.0 * float(r) / float(vp.vres - 1));
+		for (int c = 0; c < vp.hres; c++)
+        {
 
 			L = black;
-			for (int n = 0; n < vp.num_samples; n++) {
+			for (int n = 0; n < vp.num_samples; n++)
+            {
 				sp = vp.sampler_ptr->sample_unit_square();
 				pp.x = vp.s * (c - vp.hres / 2.0 + sp.x);
 				pp.y = vp.s * (r - vp.vres / 2.0 + sp.y);
@@ -146,6 +151,9 @@ ThinLens::render_scene(const World& w) {
 
 			L /= vp.num_samples;
 			L *= exposure_time;
-			w.display_pixel(r, c, L);
+            vp.write_to_buffer(vp.vres - r - 1, c, L);
+		//	w.display_pixel(r, c, L);
 		}
+        vp.save_to_ppm();
+    }
 }
