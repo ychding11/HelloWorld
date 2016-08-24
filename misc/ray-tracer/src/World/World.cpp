@@ -15,6 +15,9 @@
 // cameras
 #include "Pinhole.h"
 #include "FishEye.h"
+#include "ThinLens.h"
+
+#include "MultiJittered.h"
 
 // lights
 #include "Directional.h"
@@ -266,6 +269,7 @@ World::build(void)
 {
 	int num_samples = 16;
 	vp.set_samples(num_samples);
+	vp.set_pixel_size(0.1);
 	
 	tracer_ptr = new RayCast(this);
 	float a = 0.75;
@@ -306,9 +310,9 @@ World::build(void)
 	matte_ptr5->set_cd(white);  
 	
 	Pinhole* pinhole_ptr = new Pinhole;
-	pinhole_ptr->set_eye(0, 0, 5);
-	pinhole_ptr->set_lookat(0, 0, -2);
-	pinhole_ptr->set_view_distance(100);
+	pinhole_ptr->set_eye(0, 0, 10);
+	pinhole_ptr->set_lookat(0, 0, -10);
+	pinhole_ptr->set_view_distance(5);
 	pinhole_ptr->compute_uvw(); 
 	set_camera(pinhole_ptr);
 
@@ -316,10 +320,20 @@ World::build(void)
 	fisheye_ptr->set_eye(0, 0, 5); 
 	fisheye_ptr->set_lookat(0, 0, -2);  
 	fisheye_ptr->compute_uvw(); 
-	set_camera(fisheye_ptr);
+	//set_camera(fisheye_ptr);
 		
+    ThinLens *thin_len_ptr = new ThinLens;
+    thin_len_ptr->set_sampler(new MultiJittered(num_samples));
+    thin_len_ptr->set_eye(0, 0, 10);
+    thin_len_ptr->set_lookat(0, 0, -10);
+	thin_len_ptr->set_view_distance(5);
+	thin_len_ptr->set_focal_distance(20);
+	thin_len_ptr->set_lens_radius(1);
+	thin_len_ptr->compute_uvw(); 
+	set_camera(thin_len_ptr);
+
 	// spheres
-	Sphere* sphere_ptr1 = new Sphere(Point3D(0, 0, 0), 2.5);
+	Sphere* sphere_ptr1 = new Sphere(Point3D(0, 0, -12), 10);
 	sphere_ptr1->set_material(matte_ptr1);
 	add_object(sphere_ptr1);
 	
