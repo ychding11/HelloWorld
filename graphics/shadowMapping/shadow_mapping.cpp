@@ -1,4 +1,5 @@
 #define GLEW_STATIC
+
 #include <GL/glew.h>
 
 #include <GLFW/glfw3.h>
@@ -59,10 +60,12 @@ int main()
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Shadow Map Demo", nullptr, nullptr);
     glfwMakeContextCurrent(window);
+
     // Set callback functions
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+
     // glfw Options
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -97,6 +100,7 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices),
 			     &planeVertices, GL_STATIC_DRAW);
+
 	// need unbind buffer here?
 	
     glGenVertexArrays(1, &planeVAO);
@@ -136,6 +140,7 @@ int main()
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
     while (!glfwWindowShouldClose(window))
     {
         // Set frame time
@@ -167,7 +172,7 @@ int main()
         glClear(GL_DEPTH_BUFFER_BIT);
         RenderScene(simpleDepthShader);
 
-        // 2. Render scene as normal
+        // 2. Render scene
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -278,6 +283,7 @@ void RenderQuad()
 // RenderCube() Renders a 1x1 3D cube in NDC.
 GLuint cubeVAO = 0;
 GLuint cubeVBO = 0;
+
 void RenderCube()
 {
     // Initialize (if necessary)
@@ -328,6 +334,7 @@ void RenderCube()
             -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// top-left
             -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f // bottom-left
         };
+
         glGenVertexArrays(1, &cubeVAO);
         glGenBuffers(1, &cubeVBO);
 
@@ -378,7 +385,7 @@ GLuint loadTexture(GLchar const * path)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, 0); // Question
     SOIL_free_image_data(image);
     return textureID;
 }
@@ -437,6 +444,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
+
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     if (firstMouse)

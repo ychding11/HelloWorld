@@ -65,12 +65,12 @@ public:
             std::cout << fragmentPath << std::endl;
         }
 
-        const GLchar* vShaderCode = vertexCode.c_str();
-        const GLchar * fShaderCode = fragmentCode.c_str();
+        const GLchar *vShaderCode = vertexCode.c_str();
+        const GLchar *fShaderCode = fragmentCode.c_str();
 
         // 2. Compile shaders
         GLuint vertex, fragment;
-        GLint success;
+        GLint  success;
         GLchar infoLog[512];
 
         // Vertex Shader
