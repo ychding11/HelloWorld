@@ -74,7 +74,7 @@ class World {
 		render_scene(void) const;
 						
 		void 												
-		render_orthographic(void) const;
+		render_orthographic(void);
 
 		RGBColor
 		max_to_one(const RGBColor& c) const;

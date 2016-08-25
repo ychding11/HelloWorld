@@ -40,9 +40,9 @@ RGBColor::~RGBColor(void)
 // --------------------------------------------------------assignment operator
 
 RGBColor&
-RGBColor::operator= (const RGBColor& rhs) {
-	if (this == &rhs)
-		return (*this);
+RGBColor::operator= (const RGBColor& rhs)
+{
+	if (this == &rhs) return (*this);
 
 	r = rhs.r; g = rhs.g; b = rhs.b;
 
