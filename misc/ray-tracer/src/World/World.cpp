@@ -32,9 +32,10 @@
 #include "ShadeRec.h"
 #include "Maths.h"
 
-// build functions
 
-//#include "BuildShadedObjects.cpp"
+#include <cstdio> 
+
+
 
 
 // -------------------------------------------------------------------- default constructor
@@ -84,7 +85,7 @@ World::render_scene(void) const
 //------------------------------------------------------------------ render_scene
 // This uses orthographic viewing along the zw axis
 void 												
-World::render_orthographic(void) const
+World::render_orthographic(void)
 {
 
 	RGBColor	pixel_color;	 	
@@ -96,12 +97,18 @@ World::render_orthographic(void) const
 
 	ray.d = Vector3D(0, 0, -1);
 	
-	for (int r = 0; r < vres; r++)			// up
-		for (int c = 0; c <= hres; c++) {	// across 					
+	for (int r = 0; r < vres; r++)
+    {
+        fprintf(stderr, "\r - Orthographic Camera Rendering... %f%%.", 100. * float(r) / float(vres - 1));
+		for (int c = 0; c <= hres; c++)
+        {
 			ray.o = Point3D(s * (c - hres / 2.0 + 0.5), s * (r - vres / 2.0 + 0.5), zw);
 			pixel_color = tracer_ptr->trace_ray(ray);
-			display_pixel(r, c, pixel_color);
+            vp.write_to_buffer(vres - r - 1, c, pixel_color);
 		}	
+    }
+    fprintf(stderr, "\r - Orthographic Camera Rendering... OK.\n");
+    vp.save_to_ppm("orthographic.ppm");
 }  
 
 
@@ -307,7 +314,7 @@ World::build(void)
 	Matte* matte_ptr5 = new Matte;			
 	matte_ptr5->set_ka(0.20); 
 	matte_ptr5->set_kd(0.97);	
-	matte_ptr5->set_cd(white);  
+	matte_ptr5->set_cd(0.25, 0.25, 1.0);  
 	
 	Pinhole* pinhole_ptr = new Pinhole;
 	pinhole_ptr->set_eye(0, 0, 10);
@@ -333,13 +340,13 @@ World::build(void)
 	set_camera(thin_len_ptr);
 
 	// spheres
-	Sphere* sphere_ptr1 = new Sphere(Point3D(0, 0, -12), 10);
+	Sphere* sphere_ptr1 = new Sphere(Point3D(10, 10, -15), 7);
 	sphere_ptr1->set_material(matte_ptr1);
 	add_object(sphere_ptr1);
 	
-	Sphere* sphere_ptr2 = new Sphere(Point3D(-1, 0, 0), 1);
+	Sphere* sphere_ptr2 = new Sphere(Point3D(-10, 10, -20), 10);
 	sphere_ptr2->set_material(matte_ptr2);     
-	//add_object(sphere_ptr2);
+	add_object(sphere_ptr2);
 
 #if 0
 	// cylinder

@@ -1,7 +1,6 @@
 #include "Matte.h"
 
 // ---------------------------------------------------------------- default constructor
-
 Matte::Matte (void)
 	:	Material(),
 		ambient_brdf(new Lambertian),
@@ -11,7 +10,6 @@ Matte::Matte (void)
 
 
 // ---------------------------------------------------------------- copy constructor
-
 Matte::Matte(const Matte& m)
 	: 	Material(m)
 {
@@ -26,17 +24,17 @@ Matte::Matte(const Matte& m)
 
 
 // ---------------------------------------------------------------- clone
-
 Material*										
-Matte::clone(void) const {
+Matte::clone(void) const
+{
 	return (new Matte(*this));
 }	
 
 
 // ---------------------------------------------------------------- assignment operator
-
 Matte& 
-Matte::operator= (const Matte& rhs) {
+Matte::operator= (const Matte& rhs)
+{
 	if (this == &rhs)
 		return (*this);
 		
@@ -64,14 +62,16 @@ Matte::operator= (const Matte& rhs) {
 
 // ---------------------------------------------------------------- destructor
 
-Matte::~Matte(void) {
-
-	if (ambient_brdf) {
+Matte::~Matte(void)
+{
+	if (ambient_brdf)
+    {
 		delete ambient_brdf;
 		ambient_brdf = NULL;
 	}
 	
-	if (diffuse_brdf) {
+	if (diffuse_brdf)
+    {
 		delete diffuse_brdf;
 		diffuse_brdf = NULL;
 	}
@@ -81,12 +81,14 @@ Matte::~Matte(void) {
 // ---------------------------------------------------------------- shade
 
 RGBColor
-Matte::shade(ShadeRec& sr) {
+Matte::shade(ShadeRec& sr)
+{
 	Vector3D 	wo 			= -sr.ray.d;
 	RGBColor 	L 			= ambient_brdf->rho(sr, wo) * sr.w.ambient_ptr->L(sr);
 	int 		num_lights	= sr.w.lights.size();
 	
-	for (int j = 0; j < num_lights; j++) {
+	for (int j = 0; j < num_lights; j++)
+    {
 		Vector3D wi = sr.w.lights[j]->get_direction(sr);    
 		float ndotwi = sr.normal * wi;
 	
