@@ -48,18 +48,28 @@ AAScene::render_orthographic(void)
 	float		zw		= 200.0;
 
 	ray.d = Vector3D(0, 0, -1);
-    fprintf(stdout, "- Render parameter. w=%d h=%d samples=%d.\n", vp.hres, vp.vres, 1);	
+    fprintf(stdout, "- Render parameter. w=%d h=%d samples=%d.\n", vp.hres, vp.vres, vp.num_samples);	
 	for (int r = 0; r < vres; r++)
     {
         fprintf(stdout, "\r - Orthographic Camera Rendering... %.2f%%.", 100. * float(r) / float(vres - 1));
 		for (int c = 0; c < hres; c++)
         {
-			ray.o = Point3D(s * (c - hres / 2.0 + 0.5), s * (r - vres / 2.0 + 0.5), zw);
-			pixel_color = tracer_ptr->trace_ray(ray);
-            vp.write_to_buffer(vres - r - 1, c, pixel_color);
-		}	
+			RGBColor L = black;
+			for (int j = 0; j < vp.num_samples; j++)
+            {
+				Point2D pp, sp = vp.sampler_ptr->sample_unit_square();
+				pp.x = s * (c - 0.5 * hres + sp.x);
+				pp.y = s * (r - 0.5 * vres + sp.y);
+			    ray.o = Point3D(pp.x, pp.y, zw);
+
+				L += tracer_ptr->trace_ray(ray);
+			}
+
+			L /= vp.num_samples;
+            vp.write_to_buffer(vres - r - 1, c, L);
+		}
     }
-    fprintf(stdout, "\n- Orthographic Camera Rendering... OK.\n");
+    fprintf(stdout, "\n- Orthographic Camera Rendering OK.\n");
     vp.save_to_ppm("orthographic.ppm");
 }  
 

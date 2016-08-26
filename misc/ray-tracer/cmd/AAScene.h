@@ -33,7 +33,7 @@ class AAScene : public World
 		build(void) override;
 
         void 												
-        render_orthographic(void);
+        render_orthographic(void) override;
 
         void
         set_pixel_samples(int num);
