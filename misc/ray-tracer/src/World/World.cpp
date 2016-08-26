@@ -93,21 +93,21 @@ World::render_orthographic(void)
 	int 		hres 	= vp.hres;
 	int 		vres 	= vp.vres;
 	float		s		= vp.s;
-	float		zw		= 100.0;				// hardwired in
+	float		zw		= 200.0;				// hardwired in
 
 	ray.d = Vector3D(0, 0, -1);
-	
+    fprintf(stdout, "- Render parameter. w=%d h=%d samples=%d.\n", vp.hres, vp.vres, 1);	
 	for (int r = 0; r < vres; r++)
     {
-        fprintf(stderr, "\r - Orthographic Camera Rendering... %f%%.", 100. * float(r) / float(vres - 1));
-		for (int c = 0; c <= hres; c++)
+        fprintf(stdout, "\r - Orthographic Camera Rendering... %.2f%%.", 100. * float(r) / float(vres - 1));
+		for (int c = 0; c < hres; c++)
         {
 			ray.o = Point3D(s * (c - hres / 2.0 + 0.5), s * (r - vres / 2.0 + 0.5), zw);
 			pixel_color = tracer_ptr->trace_ray(ray);
             vp.write_to_buffer(vres - r - 1, c, pixel_color);
 		}	
     }
-    fprintf(stderr, "\r - Orthographic Camera Rendering... OK.\n");
+    fprintf(stdout, "\n- Orthographic Camera Rendering... OK.\n");
     vp.save_to_ppm("orthographic.ppm");
 }  
 
@@ -276,7 +276,7 @@ World::build(void)
 {
 	int num_samples = 16;
 	vp.set_samples(num_samples);
-	vp.set_pixel_size(0.1);
+	vp.set_pixel_size(.5);
 	
 	tracer_ptr = new RayCast(this);
 	float a = 0.75;

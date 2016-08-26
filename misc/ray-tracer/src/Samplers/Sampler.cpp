@@ -8,6 +8,10 @@
 #include "Constants.h"
 #include "Sampler.h"
 
+
+int Sampler::max_sample_num = 256;
+int Sampler::min_sample_num = 1;
+
 // ------------------------------------------------------------------ default constructor
 	
 Sampler::Sampler(void)						

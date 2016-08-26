@@ -1,15 +1,11 @@
-#include "Pinhole.h"
-#include "FishEye.h"
-#include "Camera.h"
 #include "World.h"
+#include "AAScene.h"
 
 int main()
 {
-    World world;
+    AAScene scene;
+    World &world = scene; 
     world.build();
-    world.render_scene();
-    //Pinhole camera;
-    //FishEye camera;
-    //Camera *camera_ptr = world.get_camera();
-    //camera_ptr->render_scene(world);
+    //world.render_scene();
+    world.render_orthographic();
 }
