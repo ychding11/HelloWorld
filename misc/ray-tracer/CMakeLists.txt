@@ -18,13 +18,15 @@ if(UNIX)
 endif(UNIX)
  
 include_directories("${SOURCE_CODE_DIR}/include")
+include_directories("./")
 message ("-- Add ./include directory into header file search path.")
 
 # Build Library
 add_subdirectory( src  lib) 
 message("-- Add src directory. " ) 
 
-add_executable( render cmd/render.cpp )
+# Add executable
+add_executable( render cmd/render.cpp cmd/AAScene.cpp )
 target_link_libraries( render raytracer )
 
 set ( ENABLE_TEST NO )

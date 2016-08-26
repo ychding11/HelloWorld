@@ -1,9 +1,10 @@
-#include "Camera.h"
 #include "World.h"
+#include "AAScene.h"
 
 int main()
 {
-    World world;
+    AAScene scene;
+    World &world = scene; 
     world.build();
     //world.render_scene();
     world.render_orthographic();
