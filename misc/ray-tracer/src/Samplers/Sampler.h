@@ -19,6 +19,9 @@ using std::vector;
 
 class Sampler {	
 	public:	
+
+        static int              max_sample_num;
+        static int              min_sample_num;
 		
 		Sampler(void);								
 		
