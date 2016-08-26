@@ -78,11 +78,8 @@ ViewPlane::set_samples(const int n)
 {
 	num_samples = n;
 
-	if (sampler_ptr)
-    {
-		delete sampler_ptr;
-		sampler_ptr = NULL;
-	}
+    delete sampler_ptr;
+	sampler_ptr = NULL;
 
 	if (num_samples > 1)
 		sampler_ptr = new MultiJittered(num_samples);
@@ -95,12 +92,13 @@ ViewPlane::set_samples(const int n)
 void
 ViewPlane::set_sampler(Sampler* sp)
 {
-
-	if (sampler_ptr)
+    if (!sp)
     {
-		delete sampler_ptr;
-		sampler_ptr = NULL;
-	}
+        fprintf(stderr, "- ERROR Samper pointer is NULL.\n" );
+        return;
+    }
+	delete sampler_ptr;
+	sampler_ptr = NULL;
 
 	num_samples = sp->get_num_samples();
 	sampler_ptr = sp;
@@ -111,7 +109,8 @@ ViewPlane:: write_to_buffer(int row, int col, RGBColor c)
 {
     if (row > vres || row < 0 || col > hres || col < 0)
     {
-        fprintf(stdout, "- ERROR Write color to buffer. [%d, %d]\n", row, col);
+        fprintf(stderr, "- ERROR Write color to buffer. [%d, %d]\n", row, col);
+        return;
     }
     RGBColor color = convert_color(c);
     image_buffer[row][col] = color;

@@ -29,7 +29,7 @@
 
 using namespace std;
 
-//class RenderThread; 	//part of skeleton - wxRaytracer.h
+//class RenderThread;
 
 
 class World {	
@@ -44,7 +44,7 @@ class World {
 		vector<GeometricObject*>	objects;		
 		vector<Light*> 				lights;
 		
-//		RenderThread* 				paintArea; 	//connection to skeleton - wxRaytracer.h
+//		RenderThread* 				paintArea;
 
 	public:
 	
@@ -67,7 +67,7 @@ class World {
 		Camera* 
 		get_camera();	 
 
-		void 					
+		virtual void 					
 		build(void);
 
 		void 												

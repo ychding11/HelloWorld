@@ -93,7 +93,7 @@ World::render_orthographic(void)
 	int 		hres 	= vp.hres;
 	int 		vres 	= vp.vres;
 	float		s		= vp.s;
-	float		zw		= 100.0;				// hardwired in
+	float		zw		= 200.0;				// hardwired in
 
 	ray.d = Vector3D(0, 0, -1);
     fprintf(stdout, "- Render parameter. w=%d h=%d samples=%d.\n", vp.hres, vp.vres, 1);	
@@ -276,7 +276,7 @@ World::build(void)
 {
 	int num_samples = 16;
 	vp.set_samples(num_samples);
-	vp.set_pixel_size(0.1);
+	vp.set_pixel_size(.5);
 	
 	tracer_ptr = new RayCast(this);
 	float a = 0.75;
