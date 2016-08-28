@@ -70,6 +70,7 @@ World::~World(void)
 	
 	delete_objects();	
 	delete_lights();				
+    delete_cameras();
 }
 
 
@@ -237,6 +238,19 @@ World::hit_objects(const Ray& ray)
 }
 
 
+void
+World::delete_cameras(void)
+{
+	int num_cameras = cameras.size();
+	
+	for (int j = 0; j < num_cameras; j++)
+	{
+		delete cameras[j];
+		cameras[j] = NULL;
+	}	
+	cameras.erase (cameras.begin(), cameras.end());
+}
+
 //------------------------------------------------------------------ delete_objects
 
 // Deletes the objects in the objects array, and erases the array.
@@ -273,9 +287,6 @@ World::delete_lights(void)
 	lights.erase (lights.begin(), lights.end());
 }
 
-
-
-// This builds the scene for Figure 14.7
 
 void 												
 World::build(void)
@@ -327,13 +338,13 @@ World::build(void)
 	pinhole_ptr->set_lookat(0, 0, -10);
 	pinhole_ptr->set_view_distance(5);
 	pinhole_ptr->compute_uvw(); 
-	set_camera(pinhole_ptr);
+	add_camera(pinhole_ptr);
 
 	FishEye* fisheye_ptr = new FishEye;
 	fisheye_ptr->set_eye(0, 0, 5); 
 	fisheye_ptr->set_lookat(0, 0, -2);  
 	fisheye_ptr->compute_uvw(); 
-	//set_camera(fisheye_ptr);
+	add_camera(fisheye_ptr);
 		
     ThinLens *thin_len_ptr = new ThinLens;
     thin_len_ptr->set_sampler(new MultiJittered(num_samples));
@@ -343,7 +354,9 @@ World::build(void)
 	thin_len_ptr->set_focal_distance(20);
 	thin_len_ptr->set_lens_radius(1);
 	thin_len_ptr->compute_uvw(); 
-	set_camera(thin_len_ptr);
+	add_camera(thin_len_ptr);
+
+	set_camera(fisheye_ptr);
 
 	// spheres
 	Sphere* sphere_ptr1 = new Sphere(Point3D(10, 10, -15), 7);

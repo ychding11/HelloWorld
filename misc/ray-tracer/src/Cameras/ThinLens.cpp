@@ -28,16 +28,17 @@ ThinLens::ThinLens(const ThinLens& c)
 		zoom(c.zoom)
 {
 	// need to do a deep copy of the sampler
-	if(c.sampler_ptr != NULL) {
+	if(c.sampler_ptr != NULL)
+    {
 		sampler_ptr = c.sampler_ptr->clone();
 	}
 }
 
 
 // ----------------------------------------------------------------------------- clone
-
 Camera*
-ThinLens::clone(void) const {
+ThinLens::clone(void) const
+{
 	return (new ThinLens(*this));
 }
 
@@ -130,7 +131,7 @@ ThinLens::render_scene(const World& w) {
 
 	for (int r = 0; r < vp.vres; r++)			// up
     {
-        fprintf(stderr, "\r - Thin Len Camera Rendering... %f%%.", 100.0 * float(r) / float(vp.vres - 1));
+        fprintf(stderr, "\r- Thin Len Camera Rendering... %f%%.", 100.0 * float(r) / float(vp.vres - 1));
 		for (int c = 0; c < vp.hres; c++)
         {
 
@@ -154,6 +155,6 @@ ThinLens::render_scene(const World& w) {
             vp.write_to_buffer(vp.vres - r - 1, c, L);
 		//	w.display_pixel(r, c, L);
 		}
-        vp.save_to_ppm("thin-len.ppm");
     }
+    vp.save_to_ppm("thin-len.ppm");
 }

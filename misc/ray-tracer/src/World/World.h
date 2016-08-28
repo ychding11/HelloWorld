@@ -53,6 +53,9 @@ class World {
 		~World();
 								
 		void 
+		add_camera(Camera *camera_ptr);
+
+		void 
 		add_object(GeometricObject* object_ptr);
 		
 		void 
@@ -97,6 +100,11 @@ class World {
 						
 	private:
 		
+        vector<Camera*> cameras;
+
+		void 
+		delete_cameras(void);
+
 		void 
 		delete_objects(void);
 		
@@ -104,6 +112,12 @@ class World {
 		delete_lights(void);
 };
 
+
+inline void 
+World::add_camera(Camera *camera_ptr)
+{
+    if (camera_ptr) cameras.push_back(camera_ptr);
+}
 
 // ------------------------------------------------------------------ add_object
 
