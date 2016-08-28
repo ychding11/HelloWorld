@@ -1,0 +1,14 @@
+*.o
+*.out
+*.log
+*.jpg
+*.jpeg
+*.avi
+*.a
+*.so
+/CMakeFiles
+/build
+/include
+.*
+*.cmake
+*~
