@@ -1,7 +1,6 @@
 *.o
 *.out
 *.log
-*.txt
 *.jpg
 *.jpeg
 *.avi
