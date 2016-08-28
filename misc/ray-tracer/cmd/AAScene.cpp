@@ -51,7 +51,7 @@ AAScene::render_orthographic(void)
     fprintf(stdout, "- Render parameter. w=%d h=%d samples=%d.\n", vp.hres, vp.vres, vp.num_samples);	
 	for (int r = 0; r < vres; r++)
     {
-        fprintf(stdout, "\r - Orthographic Camera Rendering... %.2f%%.", 100. * float(r) / float(vres - 1));
+        fprintf(stdout, "\r- Orthographic Camera Rendering... %.2f%%.", 100. * float(r) / float(vres - 1));
 		for (int c = 0; c < hres; c++)
         {
 			RGBColor L = black;
@@ -73,11 +73,6 @@ AAScene::render_orthographic(void)
     vp.save_to_ppm("orthographic.ppm");
 }  
 
-void
-AAScene::set_pixel_samples(int num)
-{
-    vp.set_samples(num);
-}
 
 void 												
 AAScene::build(void)

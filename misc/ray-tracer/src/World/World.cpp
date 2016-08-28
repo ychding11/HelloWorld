@@ -73,6 +73,12 @@ World::~World(void)
 }
 
 
+void
+World::set_pixel_samples(int num)
+{
+    vp.set_samples(num);
+}
+
 //------------------------------------------------------------------ render_scene
 void 												
 World::render_scene(void) const

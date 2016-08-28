@@ -67,13 +67,16 @@ class World {
 		Camera* 
 		get_camera();	 
 
+        void
+        set_pixel_samples(int num);
+
 		virtual void 					
 		build(void);
 
 		void 												
 		render_scene(void) const;
 						
-		void 												
+		virtual void 												
 		render_orthographic(void);
 
 		RGBColor
