@@ -65,12 +65,10 @@ World::~World(void)
 	delete ambient_ptr;
 	ambient_ptr = NULL;
 		
-	delete camera_ptr;
-	camera_ptr = NULL;
-	
 	delete_objects();	
 	delete_lights();				
     delete_cameras();
+	camera_ptr = NULL;
 }
 
 
