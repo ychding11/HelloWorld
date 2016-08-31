@@ -32,10 +32,7 @@
 #include "ShadeRec.h"
 #include "Maths.h"
 
-
 #include <cstdio> 
-
-
 
 
 // -------------------------------------------------------------------- default constructor
@@ -354,14 +351,15 @@ World::build(void)
 	thin_len_ptr->compute_uvw(); 
 	add_camera(thin_len_ptr);
 
-	set_camera(fisheye_ptr);
+	//set_camera(fisheye_ptr);
+	set_camera(pinhole_ptr);
 
 	// spheres
-	Sphere* sphere_ptr1 = new Sphere(Point3D(10, 10, -15), 7);
+	Sphere* sphere_ptr1 = new Sphere(Point3D(20, 10, -15), 20);
 	sphere_ptr1->set_material(matte_ptr1);
 	add_object(sphere_ptr1);
 	
-	Sphere* sphere_ptr2 = new Sphere(Point3D(-10, 10, -20), 10);
+	Sphere* sphere_ptr2 = new Sphere(Point3D(-20, 10, -20), 25);
 	sphere_ptr2->set_material(matte_ptr2);     
 	add_object(sphere_ptr2);
 

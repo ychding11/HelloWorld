@@ -23,7 +23,8 @@ Pinhole::Pinhole(const Pinhole& c)
 
 // ----------------------------------------------------------------------------- clone
 Camera* 
-Pinhole::clone(void) const {
+Pinhole::clone(void) const
+{
 	return (new Pinhole(*this));
 }
 
@@ -31,8 +32,7 @@ Pinhole::clone(void) const {
 Pinhole& 
 Pinhole::operator= (const Pinhole& rhs)
 {
-	if (this == &rhs)
-		return (*this);
+	if (this == &rhs) return (*this);
 		
 	Camera::operator= (rhs);
 
@@ -68,8 +68,6 @@ Pinhole::render_scene(const World& w)
 		
 	vp.s /= zoom;
 	ray.o = eye;
-	RGBColor *buf = new RGBColor[vp.vres * vp.hres];			
-    int i = 0;
     
     fprintf(stderr, "\r- Pinhole Camera. w=%d, h=%d, n=%d\n", vp.hres, vp.vres, vp.num_samples);
 	for (int r = 0; r < vp.vres; r++)
@@ -78,8 +76,6 @@ Pinhole::render_scene(const World& w)
 		for (int c = 0; c < vp.hres; c++)
         {
 			L = black; 
-			
-            i = (vp.vres - r - 1) * vp.hres + c;
 			for (int p = 0; p < n; p++)
             {
 				for (int q = 0; q < n; q++)
@@ -92,18 +88,9 @@ Pinhole::render_scene(const World& w)
 			}								
 			L /= vp.num_samples;
 			L *= exposure_time;
-
-            buf[i] = w.convert_color(L);
-			//w.display_pixel(r, c, L);
             vp.write_to_buffer(vp.vres - r - 1, c, L);
-            vp.save_to_ppm();
 		} 
     }
-
- int width = vp.hres, h = vp.vres;
- FILE *f = fopen("pinhole.ppm", "w");
- fprintf(f, "P3\n%d %d\n%d\n", width, h, 255);
- for (int i=0; i < width * h; i++)
-    fprintf(f,"%d %d %d ", int(buf[i].r), int(buf[i].g), int(buf[i].b));
- fclose(f);
+	fprintf(stderr, "\n- Rendering OK.\n");
+    vp.save_to_ppm("pinhole.ppm");
 }

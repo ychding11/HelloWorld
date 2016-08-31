@@ -130,7 +130,7 @@ ViewPlane::save_to_ppm(string filename)
     if (f)
     {        
         fclose(f);
-        fprintf(stdout, "- Saved buffer to image file.\n");
+        fprintf(stdout, "- Saved Buffer into File: %s.\n", filename.empty() ? "image.ppm" : filename.c_str());
     }
 }
 
