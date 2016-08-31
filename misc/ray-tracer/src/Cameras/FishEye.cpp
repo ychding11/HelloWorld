@@ -130,8 +130,8 @@ FishEye::render_scene(const World& wr)
 			L /= vp.num_samples;
 			L *= exposure_time;
             vp.write_to_buffer(vres - r - 1, c, L);
-            vp.save_to_ppm();
-			//wr.display_pixel(r, c, L);
 		}
     }
+	fprintf(stderr, "\n- Rendering OK.\n");
+    vp.save_to_ppm("fisheye.ppm");
 }
