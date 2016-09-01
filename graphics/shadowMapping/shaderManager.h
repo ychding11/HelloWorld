@@ -20,6 +20,11 @@ class ShaderManager
 
 public:
 
+    static string vertexShaderType;
+    static string FragmentShaderType;
+    static string GeometryShaderType;
+    static string ShaderProgramType;
+
     GLuint Program;
     map<string, GLuint> mVertexShaders; 
     map<string, GLuint> mFragmentShaders; 
@@ -131,32 +136,68 @@ public:
     // Uses the current shader
     void Use() { glUseProgram(this->Program); }
 
+    int attachProgram(string shaderName, string programName);
+    int buildProgram(string programName); 
+    int useProgram(string programeName);
+
 private:
-    void checkCompileErrors(GLuint shader, std::string type)
-	{
+    void checkState(GLuint objectId, std::string type);
+};
+
+string ShaderManager::vertexShaderType      = "Vertex";
+string ShaderManager::FragmentShaderType    = "Fragment";
+string ShaderManager::GeometryShaderType    = "Geometry";
+string ShaderManager::ShaderProgramType     = "Program";
+
+int ShaderManager::attachProgram(string shaderName, string programName)
+{
+}
+
+int ShaderManager::buildProgram(string programName) 
+{
+
+}
+
+int ShaderManager::useProgram(string programeName)
+{
+
+}
+
+void ShaderManager::checkState(GLuint objectId, std::string type)
+{
 		GLint success;
-		GLchar infoLog[1024];
-		if(type != "PROGRAM")
+		GLchar infoLog[1024] = { 0 };
+		if(type == ShaderManager::ShaderProgramType)
 		{
-			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+			glGetProgramiv(objectId, GL_LINK_STATUS, &success);
 			if(!success)
 			{
-				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "| ERROR::::SHADER-COMPILATION-ERROR of type: " << type << "|\n" << infoLog << "\n| -- --------------------------------------------------- -- |" << std::endl;
+				glGetProgramInfoLog(objectId, 1024, NULL, infoLog);
+                stringstream logStream;
+                logStream << "- ERROR: Shader Link Error." << "\n"
+                          << "- Detail Info";
+                          << "\n -- --------------------------------------------------- --\n";
+                          << infoLog
+                          << "\n -- --------------------------------------------------- --\n";
+                std::cout << logStream.str();
 			}
 		}
 		else
 		{
-			glGetProgramiv(shader, GL_LINK_STATUS, &success);
+			glGetShaderiv(objectId, GL_COMPILE_STATUS, &success);
 			if(!success)
 			{
-				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "| ERROR::::PROGRAM-LINKING-ERROR of type: " << type << "|\n" << infoLog << "\n| -- --------------------------------------------------- -- |" << std::endl;
+				glGetShaderInfoLog(ObjectId, 1024, NULL, infoLog);
+                stringstream logStream;
+                logStream << "- ERROR: Shader Compile Error. Shader Type: " << type << "\n"
+                          << "- Detail Info";
+                          << "\n -- --------------------------------------------------- --\n";
+                          << infoLog
+                          << "\n -- --------------------------------------------------- --\n";
+                std::cout << logStream.str();
 			}
 		}
-	}
-};
-
+}
 
 int ShaderManager::compileShader(string shaderPath, int type)
 {
@@ -177,7 +218,7 @@ int ShaderManager::compileShader(string shaderPath, int type)
         catch (std::ifstream::failure e)
         {
             stringstream errorStream;
-            errorStream << "- ERROR: Read shader file error. file path: "
+            errorStream << "- ERROR: Read shader File error. file path: "
                         << shaderPath << std::endl;
             std::cout << errorStream.str();
         }
@@ -186,7 +227,8 @@ int ShaderManager::compileShader(string shaderPath, int type)
         GLuint shaderName = glCreateShader(type);
         glShaderSource(shaderName, 1, &srcCode, NULL);
         glCompileShader(shaderName);
-        checkCompileErrors(shaderName, "VERTEX");
+        // need translate GL type into string here.
+        checkState(shaderName, "Vertex");
 
         return shaderName; 
 }
