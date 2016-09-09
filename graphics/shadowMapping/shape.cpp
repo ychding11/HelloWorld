@@ -54,11 +54,20 @@ int myvsnprintf(char* s, size_t n, const char* format, ...)
 class PlaneShape
 {
 public:
+
     PlaneShape();
+
     ~PlaneShape();
 
-    GLuint planeVBO; // vbo name
+    void addNode(PlaneNode *node)
+    {
+        if (node) mNodes.push_back(node);
+    }
     
+private:
+
+    GLuint planeVBO; // vbo name
+    vector<PlaneNode*>  mNodes;   
     //default vertex attribute
     GLfloat planeVertices[] =
     {
@@ -80,7 +89,6 @@ PlaneShape::PlaneShape()
     glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
 }
 
-
 PlaneShape::~PlaneShape()
 {
 }
@@ -88,18 +96,21 @@ PlaneShape::~PlaneShape()
 class PlaneNode
 {
 public:
+
     PlaneNode(const PlaneShape &shape);
     ~PlaneNode();
 
 private:
-    glm::mat4 mWorldMatrix;
+
     PlaneShape &mShape;
+    glm::mat4 mWorldMatrix;
 };
 
 PlaneNode::PlaneNode(const PlaneNode &shape)
     : mShape(shape)
     , mWorldMatrix()
 {
+    shape.addNode(this);
 }
 
 int main()
