@@ -15,25 +15,25 @@ img_width  = 200
 sample_width  = img_sample.shape[1]
 sample_height = img_sample.shape[0]
 img = np.zeros((img_height,img_width,3), np.uint8)
-PatchSize = int(sys.argv[2])
+PatchSize    = int(sys.argv[2])
 OverlapWidth = int(sys.argv[3])
 InitialThresConstant = float(sys.argv[4])
 
 #Picking random patch to begin
 randomPatchHeight = randint(0, sample_height - PatchSize)
-randomPatchWidth = randint(0, sample_width - PatchSize)
+randomPatchWidth  = randint(0, sample_width  - PatchSize)
 for i in range(PatchSize):
     for j in range(PatchSize):
         img[i, j] = img_sample[randomPatchHeight + i, randomPatchWidth + j]
 #initializating next 
 GrowPatchLocation = (0,PatchSize)
-print "- Next Location: ", GrowPatchLocation 
+print "- Init Location: ", GrowPatchLocation 
 #exit()
 #---------------------------------------------------------------------------------------#
 #|                      Best Fit Patch and related functions                           |#
 #---------------------------------------------------------------------------------------#
 def OverlapErrorVertical( imgPx, samplePx ):
-    iLeft,jLeft = imgPx
+    iLeft,jLeft   = imgPx
     iRight,jRight = samplePx
     OverlapErr = 0
     diff = np.zeros((3))
@@ -65,6 +65,7 @@ def GetBestPatches( px ):#Will get called in GrowImage
         for i in range(sample_height - PatchSize):
             for j in range(OverlapWidth, sample_width - PatchSize ):
                 error = OverlapErrorVertical( (px[0], px[1] - OverlapWidth), (i, j - OverlapWidth)  )
+                #print "- Test Patch (%d, %d), Vertical overlap error=%f" %(i, j,error)
                 if error  < ThresholdOverlapError:
                     PixelList.append((i,j))
                 elif error < ThresholdOverlapError/2:
@@ -74,6 +75,7 @@ def GetBestPatches( px ):#Will get called in GrowImage
         for i in range(OverlapWidth, sample_height - PatchSize ):
             for j in range(sample_width - PatchSize):
                 error = OverlapErrorHorizntl( (px[0] - OverlapWidth, px[1]), (i - OverlapWidth, j)  )
+                #print "- Test Patch (%d, %d), Horizntl overlap error=%f" %(i, j,error)
                 if error  < ThresholdOverlapError:
                     PixelList.append((i,j))
                 elif error < ThresholdOverlapError/2:
@@ -84,6 +86,7 @@ def GetBestPatches( px ):#Will get called in GrowImage
             for j in range(OverlapWidth, sample_width - PatchSize):
                 error_Vertical   = OverlapErrorVertical( (px[0], px[1] - OverlapWidth), (i,j - OverlapWidth)  )
                 error_Horizntl   = OverlapErrorHorizntl( (px[0] - OverlapWidth, px[1]), (i - OverlapWidth,j) )
+                #print "- Test Patch (%d, %d), Vertical error=%f, Horizntl error=%f" %(i, j,error_Vertical, error_Horizntl)
                 if error_Vertical  < ThresholdOverlapError and error_Horizntl < ThresholdOverlapError:
                     PixelList.append((i,j))
                 elif error_Vertical < ThresholdOverlapError/2 and error_Horizntl < ThresholdOverlapError/2:
@@ -95,10 +98,10 @@ def GetBestPatches( px ):#Will get called in GrowImage
 #-----------------------------------------------------------------------------------------------#
 
 def SSD_Error( offset, imgPx, samplePx ):
-    err_r = int(img[imgPx[0] + offset[0], imgPx[1] + offset[1]][0]) -int(img_sample[samplePx[0] + offset[0], samplePx[1] + offset[1]][0])
+    err_r = int(img[imgPx[0] + offset[0], imgPx[1] + offset[1]][0]) - int(img_sample[samplePx[0] + offset[0], samplePx[1] + offset[1]][0])
     err_g = int(img[imgPx[0] + offset[0], imgPx[1] + offset[1]][1]) - int(img_sample[samplePx[0] + offset[0], samplePx[1] + offset[1]][1])
     err_b = int(img[imgPx[0] + offset[0], imgPx[1] + offset[1]][2]) - int(img_sample[samplePx[0] + offset[0], samplePx[1] + offset[1]][2])
-    return (err_r**2 + err_g**2 + err_b**2)/3.0
+    return (err_r**2 + err_g**2 + err_b**2) / 3.0
 
 #---------------------------------------------------------------#
 #|                  Calculating Cost                           |#
@@ -196,6 +199,8 @@ def QuiltPatches( imgPx, samplePx ):
     #check for top layer
     if imgPx[0] == 0:
         Cost = GetCostVertical(imgPx, samplePx)
+        #print "- Patches ", imgPx, samplePx
+        #print "-   Quilting Cost ", Cost
         # Getting boundary to stitch
         Boundary = FindMinCostPathVertical(Cost)
         #Quilting Patches
@@ -234,14 +239,13 @@ while GrowPatchLocation[0] + PatchSize < img_height:
     ThresholdConstant = InitialThresConstant
 
     print "- Current Location: ", GrowPatchLocation 
-    cv2.imshow('Textured Image',img)
-    time.sleep(0.1)
-    #cv2.waitKey(0)
-    #set progress to zer0
+    #cv2.imshow('Textured Image',img)
+    #cv2.waitKey(25)
     progress = 0 
     while progress == 0:
         ThresholdOverlapError = ThresholdConstant * PatchSize * OverlapWidth
         #Get Best matches for current pixel
+        print "- Iterate all possible Patches in sample."
         List = GetBestPatches(GrowPatchLocation)
         if len(List) > 0:
             progress = 1
@@ -254,13 +258,14 @@ while GrowPatchLocation[0] + PatchSize < img_height:
             tempPt2 = (sampleMatch[0] + PatchSize, sampleMatch[1] + PatchSize)
             print "- Selected Patch Location: ", tempPt1, tempPt2
             cv2.rectangle(tempImage, tempPt1, tempPt2, (255, 0, 0))
-            cv2.imshow('Selected Patch',tempImage)
-            time.sleep(0.1)
-            #cv2.waitKey(0)
+            #cv2.imshow('Selected Patch',tempImage)
+            #cv2.waitKey(25)
 
             FillImage( GrowPatchLocation, sampleMatch )
+
             #Quilt this with in curr location
             QuiltPatches( GrowPatchLocation, sampleMatch )
+            print "- Quit patches ", GrowPatchLocation, sampleMatch   
 
             #upadate cur pixel location
             GrowPatchLocation = (GrowPatchLocation[0], GrowPatchLocation[1] + PatchSize)
@@ -275,6 +280,7 @@ while GrowPatchLocation[0] + PatchSize < img_height:
     sys.stdout.flush()
     
 # Displaying Images
+sys.stdout.write('- Done.')
 cv2.imshow('Textured Image',img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
