@@ -6,29 +6,16 @@ import time
 import numpy as np
 from random import randint
 
-#Image Loading and initializations
-InputName = str(sys.argv[1])
-img_sample = cv2.imread(InputName)
-print  "- img_sample type: ",type(img_sample).__module__,type(img_sample).__name__
+img_sample = np.zeros((100,100,3), np.uint8);
+img  = np.zeros((100,100,3), np.uint8);
+PatchSize    = 0
+OverlapWidth = 0
+InitialThresConstant = 0.0
+sample_width  = 0
+sample_height = 0
 img_height = 250
 img_width  = 200
-sample_width  = img_sample.shape[1]
-sample_height = img_sample.shape[0]
-img = np.zeros((img_height,img_width,3), np.uint8)
-PatchSize    = int(sys.argv[2])
-OverlapWidth = int(sys.argv[3])
-InitialThresConstant = float(sys.argv[4])
 
-#Picking random patch to begin
-randomPatchHeight = randint(0, sample_height - PatchSize)
-randomPatchWidth  = randint(0, sample_width  - PatchSize)
-for i in range(PatchSize):
-    for j in range(PatchSize):
-        img[i, j] = img_sample[randomPatchHeight + i, randomPatchWidth + j]
-#initializating next 
-GrowPatchLocation = (0,PatchSize)
-print "- Init Location: ", GrowPatchLocation 
-#exit()
 #---------------------------------------------------------------------------------------#
 #|                      Best Fit Patch and related functions                           |#
 #---------------------------------------------------------------------------------------#
@@ -58,7 +45,7 @@ def OverlapErrorHorizntl( leftPx, rightPx ):
             OverlapErr += (diff[0]**2 + diff[1]**2 + diff[2]**2)**0.5
     return OverlapErr
 
-def GetBestPatches( px ):#Will get called in GrowImage
+def GetBestPatches( px, ThresholdOverlapError ):#Will get called in GrowImage
     PixelList = []
     #check for top layer
     if px[0] == 0:
@@ -230,57 +217,102 @@ def FillImage( imgPx, samplePx ):
         for j in range(PatchSize):
             img[ imgPx[0] + i, imgPx[1] + j ] = img_sample[ samplePx[0] + i, samplePx[1] + j ]
 
-pixelsCompleted = 0
-TotalPatches = ( (img_height - 1 )/ PatchSize )*((img_width)/ PatchSize) - 1
-#sys.stdout.write("Progress : [%-20s] %d%% | PixelsCompleted: %d | ThresholdConstant: --.------" % ('='*(pixelsCompleted*20/TotalPatches), (100*pixelsCompleted)/TotalPatches, pixelsCompleted))
-sys.stdout.flush()
-while GrowPatchLocation[0] + PatchSize < img_height:
-    pixelsCompleted += 1
-    ThresholdConstant = InitialThresConstant
 
-    print "- Current Location: ", GrowPatchLocation 
-    #cv2.imshow('Textured Image',img)
-    #cv2.waitKey(25)
-    progress = 0 
-    while progress == 0:
-        ThresholdOverlapError = ThresholdConstant * PatchSize * OverlapWidth
-        #Get Best matches for current pixel
-        print "- Iterate all possible Patches in sample."
-        List = GetBestPatches(GrowPatchLocation)
-        if len(List) > 0:
-            progress = 1
-            #Make A random selection from best fit pxls
-            sampleMatch = List[ randint(0, len(List) - 1) ]
 
-            #deep copy
-            tempImage = img_sample.copy();
-            tempPt1 = sampleMatch
-            tempPt2 = (sampleMatch[0] + PatchSize, sampleMatch[1] + PatchSize)
-            print "- Selected Patch Location: ", tempPt1, tempPt2
-            cv2.rectangle(tempImage, tempPt1, tempPt2, (255, 0, 0))
-            #cv2.imshow('Selected Patch',tempImage)
-            #cv2.waitKey(25)
 
-            FillImage( GrowPatchLocation, sampleMatch )
+def synthesisTexture(InputName, patchLen, overlapSize, InitialThresConstant, verbose):
+    global img_sample
+    global img
+    global sample_width
+    global sample_height
+    global OverlapWidth
+    global PatchSize
 
-            #Quilt this with in curr location
-            QuiltPatches( GrowPatchLocation, sampleMatch )
-            print "- Quit patches ", GrowPatchLocation, sampleMatch   
-
-            #upadate cur pixel location
-            GrowPatchLocation = (GrowPatchLocation[0], GrowPatchLocation[1] + PatchSize)
-            if GrowPatchLocation[1] + PatchSize > img_width:
-                GrowPatchLocation = (GrowPatchLocation[0] + PatchSize, 0)
-        #if not progressed, increse threshold
-        else:
-            ThresholdConstant *= 1.1
-    # print pixelsCompleted, ThresholdConstant
-    sys.stdout.write('\r')
-#   sys.stdout.write("Progress : [%-20s] %d%% | PixelsCompleted: %d | ThresholdConstant: %f" % ('='*(pixelsCompleted*20/TotalPatches), (100*pixelsCompleted)/TotalPatches, pixelsCompleted, ThresholdConstant))
-    sys.stdout.flush()
+    OverlapWidth = overlapSize
+    PatchSize = patchLen
+    img_sample = cv2.imread(InputName)
+    if verbose == True:
+        print  "- img_sample type: ",type(img_sample).__module__,type(img_sample).__name__
     
-# Displaying Images
-sys.stdout.write('- Done.')
-cv2.imshow('Textured Image',img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    sample_width  = img_sample.shape[1]
+    sample_height = img_sample.shape[0]
+    img = np.zeros((img_height,img_width,3), np.uint8)
+    if verbose == True:
+        print  "- Sample Image: %dX%d." % (sample_width, sample_height)
+        print  "- Overlap width=%d, InitialThreadConst=%d." % (OverlapWidth, InitialThresConstant)
+        print  "- Systhesised Image: %dX%d" % (img_width, img_height)
+
+    #randomly pick a patch to begin
+    randomPatchHeight = randint(0, sample_height - PatchSize)
+    randomPatchWidth  = randint(0, sample_width  - PatchSize)
+    for i in range(PatchSize):
+        for j in range(PatchSize):
+            img[i, j] = img_sample[randomPatchHeight + i, randomPatchWidth + j]
+
+    #initializating next 
+    GrowPatchLocation = (0,PatchSize)
+    if verbose == True:
+        print "- Init Location: ", GrowPatchLocation
+         
+    pixelsCompleted = 0
+    TotalPatches = ( (img_height - 1 )/ PatchSize )*((img_width)/ PatchSize) - 1
+
+    #Iterate 
+    while GrowPatchLocation[0] + PatchSize < img_height:
+        pixelsCompleted += 1
+        ThresholdConstant = InitialThresConstant
+
+        print "- Current Location: ", GrowPatchLocation 
+        cv2.imshow('Textured Image',img)
+        cv2.waitKey(1)
+        progress = 0 
+        while progress == 0:
+            ThresholdOverlapError = ThresholdConstant * PatchSize * OverlapWidth
+            #Get Best matches for current pixel
+            print "- Iterate all possible Patches, ThresholdOverlapError = %f." % ThresholdOverlapError
+            List = GetBestPatches(GrowPatchLocation, ThresholdOverlapError)
+            #Found matched candidates, do quilting
+            if len(List) > 0:
+                progress = 1
+                #Randomly pick a patch from best fit patches
+                sampleMatch = List[ randint(0, len(List) - 1) ]
+
+                #deep copy
+                tempImage = img_sample.copy();
+                tempPt1   = sampleMatch
+                tempPt2   = (sampleMatch[0] + PatchSize, sampleMatch[1] + PatchSize)
+                print "- Selected Patch Location: ", tempPt1, tempPt2
+                cv2.rectangle(tempImage, tempPt1, tempPt2, (255, 0, 0)) #draw selected patch
+                cv2.imshow('Selected Patch',tempImage)
+                cv2.waitKey(1)
+
+                FillImage( GrowPatchLocation, sampleMatch )
+
+               
+                QuiltPatches( GrowPatchLocation, sampleMatch ) #Quilt Patches
+                print "- Quit patches ", GrowPatchLocation, sampleMatch   
+
+                #Upadate next patch location
+                GrowPatchLocation = (GrowPatchLocation[0], GrowPatchLocation[1] + PatchSize)
+                if GrowPatchLocation[1] + PatchSize > img_width:
+                    GrowPatchLocation = (GrowPatchLocation[0] + PatchSize, 0)
+            
+            # no candidate patches found, adjust threshold, search again
+            else: 
+                ThresholdConstant *= 1.1
+        # print pixelsCompleted, ThresholdConstant
+    
+    # Displaying Result
+    sys.stdout.write('- Done.')
+    cv2.imshow('Textured Image',img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    print "- Unit test."
+    InputName = '.\\dat\\pattern.jpg'
+    PatchSize = 30
+    OverlapWidth = 5
+    InitialThresConstant = 75.0
+    verbose = True
+    synthesisTexture(InputName, PatchSize, OverlapWidth, InitialThresConstant, verbose)
