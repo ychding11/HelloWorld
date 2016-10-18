@@ -122,7 +122,7 @@ if __name__ == '__main__':
     #img_path = sys.argv[1]
     #pencil_texture = sys.argv[2]
 
-    img_path   = 'input.png'
+    img_path   = 'logo.png'
     img_stroke = 'output-stroke.jpg'
     print "- Unit test for stroke generation. image file=%s" %(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
