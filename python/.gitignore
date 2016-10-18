@@ -3,6 +3,7 @@
 *.log
 *.jpg
 *.avi
+*.pyproj
 *.a
 *.so
 /CMakeFiles
