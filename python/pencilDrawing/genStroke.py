@@ -126,10 +126,11 @@ if __name__ == '__main__':
     img_stroke = 'output-stroke.jpg'
     print "- Unit test for stroke generation. image file=%s" %(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-    stroke = genStroke(img,10, False)
+    stroke = genStroke(img,12, False)
     cv2.imshow('stroke', stroke)
     cv2.waitKey(0)
-    stroke = np.int8(stroke)
-    #cv2.imwrite(img_stroke, stroke)
+    result = np.uint8(stroke * 255)
+    #imwrite always write integer value[0,255]
+    cv2.imwrite(img_stroke, result)
     print "- Write stroke into file. image file=%s" %(img_stroke)
     
