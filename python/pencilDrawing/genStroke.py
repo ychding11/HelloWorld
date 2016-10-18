@@ -43,15 +43,16 @@ def genDirectionLines(halfkernel, verbose = False):
 def genStroke(img, dirNum, verbose = False):
     height , width = img.shape[0], img.shape[1]
     img = np.float32(img) / 255.0
+    print "- Images, size %dx%d"%(width, height)
     print "- PreProcessing Images, denoising ..."
-    #img = cv2.medianBlur(img, 3)
+    img = cv2.medianBlur(img, 3)
     if verbose == True:
         cv2.imshow('blurred image', img)
         cv2.waitKey(1)
 
     print "- Generating Gradient Images ..."
     imX = np.append(np.absolute(img[:, 0 : width - 1] - img[:, 1 : width]), np.zeros((height, 1)), axis = 1)
-    imY = np.append(np.absolute(img[0 : width - 1, :] - img[1 : width, :]), np.zeros((1, width)), axis = 0)
+    imY = np.append(np.absolute(img[0 : height - 1, :] - img[1 : height, :]), np.zeros((1, width)), axis = 0)
     #img_gredient = np.sqrt((imX ** 2 + imY ** 2))
     img_gredient = imX + imY
     if verbose == True:
@@ -121,14 +122,14 @@ if __name__ == '__main__':
     #img_path = sys.argv[1]
     #pencil_texture = sys.argv[2]
 
-    img_path   = 'lena-denoised.png'
-    img_stroke = 'stroke.jpg'
+    img_path   = 'input.png'
+    img_stroke = 'output-stroke.jpg'
     print "- Unit test for stroke generation. image file=%s" %(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     stroke = genStroke(img,10, False)
     cv2.imshow('stroke', stroke)
     cv2.waitKey(0)
     stroke = np.int8(stroke)
-    cv2.imwrite(img_stroke, stroke)
+    #cv2.imwrite(img_stroke, stroke)
     print "- Write stroke into file. image file=%s" %(img_stroke)
     
