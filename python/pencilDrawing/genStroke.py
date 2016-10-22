@@ -45,7 +45,7 @@ def genStroke(img, dirNum, verbose = False):
     img = np.float32(img) / 255.0
     print "- Images, size %dx%d"%(width, height)
     print "- PreProcessing Images, denoising ..."
-    img = cv2.medianBlur(img, 3)
+    img = cv2.medianBlur(img, 5)
     if verbose == True:
         cv2.imshow('blurred image', img)
         cv2.waitKey(1)
@@ -67,7 +67,12 @@ def genStroke(img, dirNum, verbose = False):
         tempsize = height
     tempsize /= 32
     halfKsize = tempsize / 2
+    if halfKsize < 1:
+        halfKsize = 1
+    if halfKsize > 9:
+        halfKsize = 9
     len = halfKsize * 2 + 1
+    print "- Kernel Line Size=%s" %(len)
     kernel = np.zeros((dirNum, len, len))
     kernel [0,halfKsize,:] = 1.0
     #kernel = genDirectionLines(halfKsize, False);
@@ -110,8 +115,8 @@ def genStroke(img, dirNum, verbose = False):
     if verbose == True:
         cv2.imshow('raw stroke', sp)
         cv2.waitKey(1)
-        cv2.imshow('invert', S)
-        cv2.waitKey(0)
+        cv2.imshow('stroke', S)
+        cv2.waitKey(1)
 
     return S
 
@@ -122,15 +127,33 @@ if __name__ == '__main__':
     #img_path = sys.argv[1]
     #pencil_texture = sys.argv[2]
 
-    img_path   = 'logo.png'
+    img_path   = 'temp.jpeg'
     img_stroke = 'output-stroke.jpg'
     print "- Unit test for stroke generation. image file=%s" %(img_path)
+    
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     stroke = genStroke(img,12, False)
     cv2.imshow('stroke', stroke)
     cv2.waitKey(0)
-    result = np.uint8(stroke * 255)
+    #result = np.uint8(stroke * 255)
     #imwrite always write integer value[0,255]
-    cv2.imwrite(img_stroke, result)
-    print "- Write stroke into file. image file=%s" %(img_stroke)
-    
+    #cv2.imwrite(img_stroke, result)
+    #print "- Write stroke into file. image file=%s" %(img_stroke)
+    exit()
+    img_rgb = cv2.imread(img_path)
+    r = img_rgb[:,:,0]
+    g = img_rgb[:,:,1]
+    b = img_rgb[:,:,2]
+    cv2.imshow('r', r)
+    cv2.imshow('g', g)
+    cv2.imshow('b', b)
+    cv2.waitKey(0)
+    img_rgb = np.float32(img_rgb) / 255.0
+    img_hls = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2HLS)
+    l = img_hls[:,:,1]
+    cv2.imshow('l', l)
+    cv2.imshow('hls', img_hls)
+    img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_HLS2BGR)
+    cv2.imshow('bgr', img_bgr)
+    cv2.waitKey(0)
+    exit() 
