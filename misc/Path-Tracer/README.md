@@ -1,6 +1,6 @@
 # Path Tracer
 
-Simple monte carlo path tracer in C++.
+Simple Monte Carlo path tracer in C++.
 
 ## Features
  - Mesh Rendering
