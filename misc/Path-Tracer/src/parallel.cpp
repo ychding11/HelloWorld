@@ -54,7 +54,7 @@ public:
 
 void workerThread(int tIndex)
 {
-    printf("- Thread %2d beginning.\n", tIndex);
+    printf("- Thread %2d begins running.\n", tIndex);
     threadIndex = tIndex;
     
     std::unique_lock<std::mutex> lock(workListMutex);
@@ -85,7 +85,7 @@ void workerThread(int tIndex)
             if (loop.Finished()) workListCondition.notify_all();
        }
     }
-    printf("- Thread %2d exiting.\n", tIndex);
+    printf("- Thread %2d exits.\n", tIndex);
 }
 
 void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize)
