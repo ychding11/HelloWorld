@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(pathtracer)
 
+set(CMAKE_BUILD_TYPE Debug)
+message("-- Build type: " ${CMAKE_BUILD_TYPE})
+
+message("-- Compiler ID: " ${CMAKE_CXX_COMPILER_ID})
 if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+	message("-- Compiler ID is not MSVC")
 endif()
 
 #FIND_PACKAGE(OpenMP)
@@ -12,9 +17,6 @@ if(OPENMP_FOUND)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(CMAKE_BUILD_TYPE Debug)
-message("-- Set build type: " ${CMAKE_BUILD_TYPE})
 
 set(SOURCE_FILES
     src/main.cpp
@@ -30,5 +32,17 @@ set(SOURCE_FILES
     lib/lodepng/lodepng.cpp
     lib/tiny_obj_loader/tiny_obj_loader.cc)
 
-add_executable(pathtracer ${SOURCE_FILES})
-target_link_libraries(pathtracer -lpthread)
+add_executable(pathtracer ${SOURCE_FILES}) #defines an executable target
+
+if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
+	message("-- CMake is runnning on Linux platform.")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-narrowing")
+	target_link_libraries(pathtracer -lpthread)
+elseif("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows")
+	message("-- CMake is runnning on Windows platform.")
+else()
+	message("-- CMake is runnning neither on Windows nor Linux platform.")
+
+endif()
+
+
