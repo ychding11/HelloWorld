@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(pathtracer)
 
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 message("-- Build type: " ${CMAKE_BUILD_TYPE})
 
 message("-- Compiler ID: " ${CMAKE_CXX_COMPILER_ID})
