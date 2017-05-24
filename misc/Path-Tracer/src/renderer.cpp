@@ -6,6 +6,7 @@
 #include "renderer.h"
 #include "../lib/lodepng/lodepng.h"
 #include "parallel.h"
+#include "progressreporter.h"
 
 #define MULTI_THREAD
 
@@ -55,6 +56,7 @@ void Renderer::render(int samples)
     }
 #else
     parallelInit();
+    ProgressReporter reporter(width * height, "Rendering");
     ParallelFor([&](int64_t y) {
         unsigned short Xi[3] = { 0, 0, y*y*y };
          for (int x = 0; x < width; x++)
@@ -66,8 +68,10 @@ void Renderer::render(int samples)
                 color = color + m_scene->trace_ray(ray,0,Xi);
             }
             m_pixel_buffer[y * width + x] = color * invSamples;
+            reporter.update();
          }
     }, height, 32);
+    reporter.done();
     parallelCleanup();
 #endif
 }
