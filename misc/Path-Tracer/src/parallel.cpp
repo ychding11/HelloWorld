@@ -8,6 +8,7 @@
 #include <functional>
 #include <cmath>
 #include <cstdio>
+#include <algorithm>
 
 
 class ParallelForLoop; // forward declare.

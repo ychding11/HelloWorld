@@ -1,16 +1,26 @@
 #include "progressreporter.h"
-
-#include <sys/ioctl.h>
-#include <unistd.h>
-#include <errno.h>
-
+#include <algorithm>
 #include <cstring>
 #include <cmath>
 #include <iostream>
 
+#ifdef __GNUG__
+#define RUN_ON_LINUX
+#else
+#endif  // __GNUG__
+
+#ifdef RUN_ON_LINUX
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <errno.h>
+#else
+#include <windows.h>
+#endif
+
+
 static int terminalWidth(void);
 
-ProgressReporter::ProgressReporter(int64_t totalwork, const std::string &title)
+ProgressReporter::ProgressReporter(int64_t totalWork, const std::string &title)
     : totalWork(totalWork)
     , title(title)
     , startTime(std::chrono::system_clock::now())
@@ -38,7 +48,8 @@ void ProgressReporter::done(void)
 void ProgressReporter::printBar(void)
 {
     int barLength = terminalWidth() - 28;
-    int totalPlus = std::max(2, barLength - (int)title.size());
+    //int totalPlus = std::max(2, (barLength - (int)title.size()));
+    int totalPlus = 2 < (barLength - (int)title.size()) ? (barLength - (int)title.size()) : 2;
     int plusPrinted = 0;
 
     const int bufLen = title.size() + totalPlus + 64;
@@ -87,6 +98,7 @@ void ProgressReporter::printBar(void)
 
 static int terminalWidth(void)
 {
+#ifdef RUN_ON_LINUX
 	struct winsize w;
 	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) < 0)
 	{
@@ -101,4 +113,14 @@ static int terminalWidth(void)
 		}
 	}
 	return w.ws_col;
+#else
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (h == INVALID_HANDLE_VALUE || !h) {
+		fprintf(stderr, "GetStdHandle() call failed");
+		return 80;
+	}
+	CONSOLE_SCREEN_BUFFER_INFO bufferInfo = { 0 };
+	GetConsoleScreenBufferInfo(h, &bufferInfo);
+	return bufferInfo.dwSize.X;
+#endif
 }
