@@ -1,6 +1,7 @@
 # Path Tracer
 
 Simple Monte Carlo path tracer in C++.
+It ports ForLoop multi-threads and progress reporter from pbrt-v3.
 
 ## Features
  - Mesh Rendering
@@ -8,6 +9,7 @@ Simple Monte Carlo path tracer in C++.
  - Textures (PNG only at the moment)
  - Simple naive KD tree for meshes.
  - Diffuse, specular, and emission material types
+ - Multi-Threading
  
 ## Compiling and Running
 Requires cmake and OpenMP for multithreading.
