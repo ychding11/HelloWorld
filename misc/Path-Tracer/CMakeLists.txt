@@ -17,6 +17,9 @@ if(OPENMP_FOUND)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
+message("-- Add external library: glog.")
+add_subdirectory( ext/glog )
+
 
 set(SOURCE_FILES
     src/main.cpp
@@ -34,6 +37,7 @@ set(SOURCE_FILES
     lib/tiny_obj_loader/tiny_obj_loader.cc)
 
 add_executable(pathtracer ${SOURCE_FILES}) #defines an executable target
+target_link_libraries(pathtracer glog)
 
 if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
 	message("-- CMake is runnning on Linux platform.")

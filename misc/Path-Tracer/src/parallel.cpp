@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <algorithm>
 
+#include "pathtracer.h"
 
 class ParallelForLoop; // forward declare.
 static std::vector<std::thread> threads;
@@ -57,7 +58,7 @@ public:
 
 void workerThread(int tIndex)
 {
-    //printf("- Thread %2d begins running.\n", tIndex);
+	LOG(INFO) << "Thread " << tIndex << " starting.";
     threadIndex = tIndex;
     
     std::unique_lock<std::mutex> lock(workListMutex);
@@ -88,7 +89,7 @@ void workerThread(int tIndex)
             if (loop.Finished()) workListCondition.notify_all();
        }
     }
-   // printf("- Thread %2d exits.\n", tIndex);
+	LOG(INFO) << "Thread " << tIndex << " exiting.";
 }
 
 void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize)

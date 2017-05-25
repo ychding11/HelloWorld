@@ -1,14 +1,10 @@
-#include "progressreporter.h"
 #include <algorithm>
 #include <cstring>
 #include <cmath>
 #include <iostream>
 
-#ifdef __GNUG__
-#define RUN_ON_LINUX
-#else
-#endif  // __GNUG__
-
+#include "progressreporter.h"
+#include "pathtracer.h"
 #ifdef RUN_ON_LINUX
 #include <sys/ioctl.h>
 #include <unistd.h>

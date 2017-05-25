@@ -22,6 +22,8 @@
 #include "scene.h"
 #include "renderer.h"
 
+#include "pathtracer.h"
+
 void printDuration(time_t start, time_t stop)
 {
     double diff = difftime(stop, start);
@@ -34,6 +36,7 @@ void printDuration(time_t start, time_t stop)
 /*! \brief simple demo. construct scenes and render. */
 int main(int argc, char *argv[])
 {
+	google::InitGoogleLogging(argv[0]);
 
     time_t start, stop;
     time(&start);               // Start execution timer
