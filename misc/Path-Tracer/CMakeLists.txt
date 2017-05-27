@@ -5,9 +5,11 @@ set(CMAKE_BUILD_TYPE Release)
 message("-- Build type: " ${CMAKE_BUILD_TYPE})
 
 message("-- Compiler ID: " ${CMAKE_CXX_COMPILER_ID})
-if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-	message("-- Compiler ID is not MSVC")
-endif()
+message("-- CMake module path: " ${CMAKE_MODULE_PATH})
+
+#if(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+#	message("-- Compiler ID is not MSVC")
+#endif()
 
 #FIND_PACKAGE(OpenMP)
 if(OPENMP_FOUND)
