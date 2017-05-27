@@ -21,18 +21,20 @@ ProgressReporter::ProgressReporter(int64_t totalWork, const std::string &title)
     , title(title)
     , startTime(std::chrono::system_clock::now())
 {
-    workDone = 0;
-    exitThread = false;
+    workDone = 0; // atomic variable
+    exitThread = false; // atomic variable
     updateThread = std::thread([this](){
         printBar();
     });
+	LOG(INFO) << "Progress reporter thread created, total workd=" << totalWork;
+
 }
 
 ProgressReporter::~ProgressReporter()
 {
     workDone = totalWork;
-    exitThread = true;
-    updateThread.join();
+    exitThread = true; // set thread exit flag.
+    updateThread.join(); // wait thread complete jobs.
 	printf("\n");
 }
 
@@ -62,7 +64,7 @@ void ProgressReporter::printBar(void)
 
     std::chrono::milliseconds sleepDuration(250);
     int iterCount = 0;
-    while (!exitThread)
+    while (!exitThread) //wait thread exit flag.
     {
     	std::this_thread::sleep_for(sleepDuration);
 		++iterCount;
@@ -92,6 +94,7 @@ void ProgressReporter::printBar(void)
     }
 }
 
+// This function is OS dependt
 static int terminalWidth(void)
 {
 #ifdef RUN_ON_LINUX
