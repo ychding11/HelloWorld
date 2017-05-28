@@ -37,7 +37,10 @@ public:
     ParallelForLoop(std::function<void(int64_t)> func, int64_t maxIndex, int chunkSize)
         :mFunc(func)
         ,mMaxIndex(maxIndex)
-        ,mChunkSize(chunkSize) { }
+        ,mChunkSize(chunkSize)
+	{
+		DLOG(INFO) << "ParallelForLoop, max idex=" << mMaxIndex << " Constructed.";
+	}
 
 public:
 
@@ -51,6 +54,7 @@ public:
 public:
     bool Finished(void) const
     {
+		//DLOG(INFO) << "ParallelForLoop, max idex=" << mMaxIndex << " Finished.";
         return mNextIndex >= mMaxIndex && mActiveWorkers == 0;
     }
 
@@ -79,7 +83,7 @@ void workerThread(int tIndex)
             loop.mActiveWorkers++;
 
             lock.unlock();
-            
+			DLOG(INFO) << "Thread " << threadIndex << "starts work on [" << indexStart << ", " << indexEnd << "]";
             for (uint64_t i = indexStart; i < indexEnd; ++i)
             {
                 if (loop.mFunc) loop.mFunc(i);
@@ -92,6 +96,7 @@ void workerThread(int tIndex)
 	LOG(INFO) << "Thread " << tIndex << " exiting.";
 }
 
+// PUBLIC interface
 void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize)
 {
    if (threads.size() == 0 || count < chunkSize) 
@@ -100,6 +105,7 @@ void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize
        return;
    }
 
+   // Create ParallelFor object and add it into work list.
    ParallelForLoop loop(std::move(func), count, chunkSize);
    workListMutex.lock();
    loop.next = workList;
@@ -117,8 +123,9 @@ void ParallelFor(std::function<void(int64_t)> func, int64_t count, int chunkSize
         if (loop.mNextIndex == loop.mMaxIndex) workList = loop.next;
         loop.mActiveWorkers++;
 
-        lock.unlock();
+        lock.unlock(); // release lock after update loop parameter.
         
+		DLOG(INFO) << "Main Thread " << "starts work on [" << indexStart << ", " << indexEnd << "]";
         for (uint64_t i = indexStart; i < indexEnd; ++i)
         {
             if (loop.mFunc) loop.mFunc(i);
