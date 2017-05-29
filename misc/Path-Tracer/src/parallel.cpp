@@ -142,6 +142,7 @@ void parallelInit(void)
     threadIndex = 0;
     for (int i = 0; i < nThreads - 1; ++i)
         threads.push_back(std::thread(workerThread, i+1));
+	LOG(INFO) << "Parallel module init Ok.";
 }
 
 void parallelCleanup(void)
@@ -157,5 +158,6 @@ void parallelCleanup(void)
     for (std::thread &thread : threads) thread.join();
     threads.erase(threads.begin(), threads.end());
     shutdowThread = false;
+	LOG(INFO) << "Parallel module cleanup Ok.";
 }
 

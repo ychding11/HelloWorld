@@ -10,8 +10,8 @@ class Camera
 
 private:
     int m_width;
-    double m_width_recp;
     int m_height;
+    double m_width_recp;
     double m_height_recp;
     double m_ratio;
     double m_x_spacing;
@@ -26,13 +26,16 @@ private:
 public:
     Camera(Vec position, Vec target, int width, int height);
 
+	// How about copy constructor and assign operator?
+	// The default one is sufficient? 
+
     int get_width() const
     { return m_width; }
+
     int get_height() const
     { return m_height; }
 
     Ray get_ray(int x, int y, bool jitter, unsigned short *Xi);
-
 };
 
 #endif //CAMERA_H

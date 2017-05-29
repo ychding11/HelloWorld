@@ -7,7 +7,9 @@
 #include "ray.h"
 #include "triangle.h"
 
-class KDNode {
+// dynamic memory manage need to rewrite.
+class KDNode
+{
 public:
     AABBox box;
     KDNode* left;

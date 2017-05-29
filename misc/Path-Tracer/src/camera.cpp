@@ -3,14 +3,15 @@
 
 //constructor
 Camera::Camera(Vec position, Vec target, int width, int height)
+	:m_width(width)
+	,m_height(height)
+	,m_position(position)
 {
-    m_width = width;
     m_width_recp = 1./m_width;
-    m_height = height;
     m_height_recp = 1./m_height;
     m_ratio = (double)m_width/m_height;
 
-    m_position = position;
+	// Construct camera space basis vector.
     m_direction = (target - m_position).norm();
     m_x_direction = Vec(0, 0, 1).cross(m_direction * -1).norm();
     m_y_direction = m_x_direction.cross(m_direction).norm();
@@ -24,7 +25,6 @@ Camera::Camera(Vec position, Vec target, int width, int height)
 // Generate a ray from camera origin through pixel(x,y)
 Ray Camera::get_ray(int x, int y, bool jitter, unsigned short *Xi)
 {
-
     double x_jitter, y_jitter;
 
     // If jitter == true, jitter point for anti-aliasing
@@ -39,7 +39,7 @@ Ray Camera::get_ray(int x, int y, bool jitter, unsigned short *Xi)
         y_jitter = 0;
     }
 
-    Vec pixel = m_position + m_direction*2;
+    Vec pixel = m_position + m_direction * 2; // Film position is fixed.
     pixel = pixel - m_x_direction*m_ratio + m_x_direction*((x * 2 * m_ratio)*m_width_recp) + x_jitter;
     pixel = pixel + m_y_direction - m_y_direction*((y * 2.0)*m_height_recp + y_jitter);
 
