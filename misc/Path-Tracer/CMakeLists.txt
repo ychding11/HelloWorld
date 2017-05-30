@@ -34,6 +34,7 @@ set(SOURCE_FILES
     src/renderer.cpp
     src/parallel.cpp
     src/progressreporter.cpp
+    src/stats.cpp
     lib/rand48/rand48.c
     lib/lodepng/lodepng.cpp
     lib/tiny_obj_loader/tiny_obj_loader.cc)

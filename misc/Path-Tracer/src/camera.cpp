@@ -1,5 +1,6 @@
 #include "ray.h"
 #include "camera.h"
+#include "stats.h"
 
 //constructor
 Camera::Camera(Vec position, Vec target, int width, int height)
@@ -22,6 +23,8 @@ Camera::Camera(Vec position, Vec target, int width, int height)
     m_y_spacing_half = m_y_spacing * 0.5;
 }
 
+STAT_COUNTER("Camera/rays", rays);
+
 // Generate a ray from camera origin through pixel(x,y)
 Ray Camera::get_ray(int x, int y, bool jitter, unsigned short *Xi)
 {
@@ -42,6 +45,6 @@ Ray Camera::get_ray(int x, int y, bool jitter, unsigned short *Xi)
     Vec pixel = m_position + m_direction * 2; // Film position is fixed.
     pixel = pixel - m_x_direction*m_ratio + m_x_direction*((x * 2 * m_ratio)*m_width_recp) + x_jitter;
     pixel = pixel + m_y_direction - m_y_direction*((y * 2.0)*m_height_recp + y_jitter);
-
+	rays++;
     return Ray(m_position, (pixel-m_position).norm());
 }

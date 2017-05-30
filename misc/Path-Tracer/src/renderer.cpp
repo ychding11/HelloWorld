@@ -6,6 +6,7 @@
 #include "renderer.h"
 #include "../lib/lodepng/lodepng.h"
 #include "parallel.h"
+#include "stats.h"
 #include "progressreporter.h"
 
 #define MULTI_THREAD
@@ -72,6 +73,10 @@ void Renderer::render(int samples)
          }
     }, height, 32);
     reporter.done();
+	MergeWorkerThreadStats();
+	ReportThreadStats();
+	PrintStats(stdout);
+	ClearStats();
     parallelCleanup();
 #endif
 }

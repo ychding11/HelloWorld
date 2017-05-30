@@ -1,7 +1,9 @@
 #include "parallel.h"
+#include "stats.h"
 #include <thread>
 #include <vector>
 #include <mutex>
+#include <atomic>
 #include <iostream>
 #include <cstdio>
 #include <condition_variable>
@@ -20,6 +22,18 @@ static std::condition_variable workListCondition;
 static ParallelForLoop *workList = nullptr;
 
 thread_local int threadIndex;
+
+// Bookkeeping variables to help with the implementation of
+// MergeWorkerThreadStats().
+static std::atomic<bool> reportWorkerStats{ false };
+
+// Number of workers that still need to report their stats.
+static std::atomic<int> reporterCount;
+
+// After kicking the workers to report their stats, the main thread waits
+// on this condition variable until they've all done so.
+static std::condition_variable reportDoneCondition;
+static std::mutex reportDoneMutex;
 
 int numSystemCores(void)
 {
@@ -68,7 +82,17 @@ void workerThread(int tIndex)
     std::unique_lock<std::mutex> lock(workListMutex);
     while (!shutdowThread)
     {
-       if (!workList) 
+		if (reportWorkerStats) //atomic
+		{
+			ReportThreadStats();
+			if (--reporterCount == 0)
+				// Once all worker threads have merged their stats, wake up
+				// the main thread.
+				reportDoneCondition.notify_one();
+			// Now sleep again.
+			workListCondition.wait(lock);
+		}
+       else if (!workList) 
        {
            workListCondition.wait(lock);
        }
@@ -161,3 +185,20 @@ void parallelCleanup(void)
 	LOG(INFO) << "Parallel module cleanup Ok.";
 }
 
+void MergeWorkerThreadStats()
+{
+	std::unique_lock<std::mutex> lock(workListMutex);
+	std::unique_lock<std::mutex> doneLock(reportDoneMutex);
+	// Set up state so that the worker threads will know that we would like
+	// them to report their thread-specific stats when they wake up.
+	reportWorkerStats = true;
+	reporterCount = threads.size();
+
+	// Wake up the worker threads.
+	workListCondition.notify_all();
+
+	// Wait for all of them to merge their stats.
+	reportDoneCondition.wait(lock, []() { return reporterCount == 0; });
+
+	reportWorkerStats = false;
+}
