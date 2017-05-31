@@ -11,8 +11,8 @@ class Camera
 private:
     int m_width;
     int m_height;
-    double m_width_recp;
-    double m_height_recp;
+    double m_width_inv;
+    double m_height_inv;
     double m_ratio;
     double m_x_spacing;
     double m_x_spacing_half;
