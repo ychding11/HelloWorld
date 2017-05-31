@@ -1,6 +1,6 @@
 
 #include <vector>
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 
 #include "renderer.h"
@@ -57,6 +57,7 @@ void Renderer::render(int samples)
     }
 #else
     parallelInit();
+{
     ProgressReporter reporter(width * height, "Rendering");
     ParallelFor([&](int64_t y) {
         unsigned short Xi[3] = { 0, 0, y*y*y };
@@ -73,6 +74,7 @@ void Renderer::render(int samples)
          }
     }, height, 32);
     reporter.done();
+}
 	MergeWorkerThreadStats();
 	ReportThreadStats();
 	PrintStats(stdout);

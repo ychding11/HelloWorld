@@ -163,9 +163,11 @@ void parallelInit(void)
 {
     if (threads.size() > 0) return;
     int nThreads = maxThreadIndex();
-    threadIndex = 0;
+    threadIndex = 0; // thread local variable.
+	//if (nThreads > 8) nThreads = 8; //debug only.
     for (int i = 0; i < nThreads - 1; ++i)
         threads.push_back(std::thread(workerThread, i+1));
+	printf("- Spaw %d worker threads.\n", nThreads - 1);
 	LOG(INFO) << "Parallel module init Ok.";
 }
 

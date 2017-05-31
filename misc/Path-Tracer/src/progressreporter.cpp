@@ -47,7 +47,7 @@ void ProgressReporter::printBar(void)
 {
     int barLength = terminalWidth() - 28;
     //int totalPlus = std::max(2, (barLength - (int)title.size()));
-    int totalPlus = 2 < (barLength - (int)title.size()) ? (barLength - (int)title.size()) : 2;
+    int totalPlus = 8 < (barLength - (int)title.size()) ? (barLength - (int)title.size()) : 8;
     int plusPrinted = 0;
 
     const int bufLen = title.size() + totalPlus + 64;
@@ -81,15 +81,17 @@ void ProgressReporter::printBar(void)
 		}
 		fputs(buf.get(), stdout);
 
+#if 1
 		float seconds = elapsedMs() / 1000.f;
 		float remains = seconds / percentDone - seconds;
 		if (percentDone == 1.f)
 			printf(" (%.1fs)       ", seconds);
-		else if (!std::isinf(remains))
+		//else if (!std::isinf(remains))
+		else if (remains >= 7200.0f) // more than 2 hours
 			printf(" (%.1fs|%.1fs) ", seconds);
 		else
 			printf(" (%.1fs|?s)    ", seconds);
-			
+#endif			
 		fflush(stdout);
     }
 }

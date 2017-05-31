@@ -17,9 +17,6 @@
 std::vector<std::function<void(StatsAccumulator &)>> *StatRegisterer::funcs;
 static StatsAccumulator statsAccumulator;
 
-
-
-
 // Statistics Definitions
 void ReportThreadStats()
 {
@@ -71,17 +68,24 @@ void StatsAccumulator::Print(FILE *dest)
         if (kb < 1024.)
             toPrint[category].push_back(StringPrintf( "%-42s                  %9.2f kB", title.c_str(), kb));
         else
-	{
+		{
             float mib = kb / 1024.;
             if (mib < 1024.)
                 toPrint[category].push_back(StringPrintf( "%-42s                  %9.2f MiB", title.c_str(), mib));
             else
-	    {
+			{
                 float gib = mib / 1024.;
                 toPrint[category].push_back(StringPrintf( "%-42s                  %9.2f GiB", title.c_str(), gib));
             }
         }
     }
+
+	for (auto &categories : toPrint)
+	{
+		fprintf(dest, "  %s\n", categories.first.c_str());
+		for (auto &item : categories.second)
+			fprintf(dest, "    %s\n", item.c_str());
+	}
 }
 
 void StatsAccumulator::Clear()
