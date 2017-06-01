@@ -28,7 +28,7 @@ STAT_COUNTER("Camera/rays", rays);
 // Generate a ray from camera origin through pixel(x,y)
 Ray Camera::get_ray(int x, int y, bool jitter, unsigned short *Xi)
 {
-    double x_jitter, y_jitter;
+    double x_jitter = .0, y_jitter = .0;
 
     // If jitter == true, jitter point for anti-aliasing
     if (jitter)
@@ -36,15 +36,8 @@ Ray Camera::get_ray(int x, int y, bool jitter, unsigned short *Xi)
         x_jitter = (erand48(Xi) * m_x_spacing) - m_x_spacing_half;
         y_jitter = (erand48(Xi) * m_y_spacing) - m_y_spacing_half;
     }
-    else
-    {
-        x_jitter = 0;
-        y_jitter = 0;
-    }
 
     Vec pixel = m_position + m_direction * 2; // Film position is fixed.
-    //pixel = pixel - m_x_direction*m_ratio + m_x_direction*((x * 2 * m_ratio)*m_width_recp) + x_jitter;
-    //pixel = pixel + m_y_direction - m_y_direction*((y * 2.0)*m_height_recp + y_jitter);
 	double unitY = (y + .5) * 2.0 * m_height_inv - 1.0 + y_jitter;
 	double unitX = (x + .5) * 2.0 * m_width_inv * m_ratio - 1.0 + x_jitter;
 	pixel = pixel + m_x_direction * unitX + m_y_direction * unitY;
