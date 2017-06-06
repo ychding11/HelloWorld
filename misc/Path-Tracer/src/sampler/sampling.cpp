@@ -130,7 +130,8 @@ Point2f UniformSampleTriangle(const Point2f &u) {
     return Point2f(1 - su0, u[1] * su0);
 }
 
-Distribution2D::Distribution2D(const Float *func, int nu, int nv) {
+Distribution2D::Distribution2D(const Float *func, int nu, int nv)
+{
     pConditionalV.reserve(nv);
     for (int v = 0; v < nv; ++v) {
         // Compute conditional sampling distribution for $\tilde{v}$
