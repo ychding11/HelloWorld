@@ -21,9 +21,11 @@ struct Vec
 
     // Vector operations
     Vec operator+(const Vec &b) const { return Vec(x+b.x,y+b.y,z+b.z); }        // Addition
+	Vec& operator+=(const Vec &b) { x += b.x; y += b.y; z += b.z; return *this; } 
     Vec operator-(const Vec &b) const { return Vec(x-b.x,y-b.y,z-b.z); }        // Subtraction
     Vec operator*(double b) const { return Vec(x*b,y*b,z*b); }                  // Multiplaction with scalar
     Vec operator/(float b) const { return Vec(x/b,y/b,z/b); }                   // Division with scalar
+
     Vec mult(const Vec &b) const { return Vec(x*b.x,y*b.y,z*b.z); }             // Multiplication
     Vec& norm(){ return *this = *this * (1/sqrt(x*x+y*y+z*z)); }                // Normalise vector
     double dot(const Vec &b) const { return x*b.x+y*b.y+z*b.z; }                // Dot product

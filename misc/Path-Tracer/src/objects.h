@@ -25,16 +25,13 @@ struct ObjectIntersection
 
 class Object
 {
-
 public:
 	Vec m_p; // Position
 	virtual ObjectIntersection get_intersection(const Ray &r) = 0;
 };
 
-
 class Sphere : public Object
 {
-
 private:
 	double m_r;	// Radius
 	Material m_m;	// Material
@@ -44,14 +41,11 @@ public:
     : m_r(r)
     , m_m(m) { m_p = p;}
 
-    virtual double get_radius()
-    { return m_r; }
-	virtual Material get_material()
-    { return m_m; }
+    virtual double get_radius() const { return m_r; }
+	virtual Material get_material() const { return m_m; }
 
-	virtual ObjectIntersection get_intersection(const Ray &r);
+	ObjectIntersection get_intersection(const Ray &r) override;
 };
-
 
 class Mesh : public Object
 {
@@ -67,8 +61,7 @@ private:
 public:
 	Mesh(Vec p_, const char* file_path, Material m_);
 
-    virtual ObjectIntersection get_intersection(const Ray &r);
+    ObjectIntersection get_intersection(const Ray &r) override;
 };
-
 
 #endif // OBJECTS_H
