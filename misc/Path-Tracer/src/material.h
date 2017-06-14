@@ -22,17 +22,16 @@ private:
     Texture m_texture;
 
 public:
-	Material(MaterialType t=DIFF,
-             Vec c=Vec(1,1,1),
-             Vec e=Vec(0,0,0),
-             Texture tex=Texture());
+	Material(MaterialType t = DIFF, const Vec &c = Vec(1, 1, 1), const Vec &e = Vec(0, 0, 0), const Texture &tex = Texture())
+		: m_type(t)
+		, m_colour(c)
+		, m_emission(e)
+		, m_texture(tex) {}
 
-	MaterialType get_type() const
-    { return m_type; }
-	Vec get_colour() const
-    { return m_colour; }           
-	Vec get_emission() const
-    { return m_emission; }
+
+	MaterialType get_type() const { return m_type; }
+	Vec get_colour() const { return m_colour; } 
+	Vec get_emission() const { return m_emission; } 
 
 	Vec get_colour_at(double u, double v) const;
 	Ray get_reflected_ray( const Ray &r, Vec &p, const Vec &n, unsigned short *Xi ) const;
