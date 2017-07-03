@@ -26,15 +26,25 @@ add_subdirectory( ext/glog )
 set(SOURCE_FILES
     src/main.cpp
     src/material.cpp
+    src/material.h
     src/objects.cpp
+    src/objects.h
     src/kdtree.cpp
+    src/kdtree.h
     src/texture.cpp
+    src/texture.h
     src/camera.cpp
+    src/camera.h
     src/scene.cpp
+    src/scene.h
     src/renderer.cpp
+    src/renderer.h
     src/parallel.cpp
+    src/parallel.h
     src/progressreporter.cpp
+    src/progressreporter.h
     src/stats.cpp
+    src/stats.h
     lib/rand48/rand48.c
     lib/lodepng/lodepng.cpp
     lib/tiny_obj_loader/tiny_obj_loader.cc)
