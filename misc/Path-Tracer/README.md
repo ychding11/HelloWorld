@@ -37,14 +37,19 @@ Take a look at src/main.cpp to see how to create a scene amd import objs.
 
 ## Intersection test
 
+The test happens in world space.
+
 ### Ray-Sphere test
+-----
 
 ![ray-sphere](./ray-sphere.png)
 
 ### Ray-Triangle test
+-----
 
 ![ray-triangle](./ray-triangle.png)
 
 ### solve 3x3 matrix linear equation
+-----
 
 ![solve equation](./solve3x3MatrixEquation.png)
