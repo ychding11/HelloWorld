@@ -45,6 +45,10 @@ set(SOURCE_FILES
     src/progressreporter.h
     src/stats.cpp
     src/stats.h
+    src/kdtreeaccel.cpp
+    src/kdtreeaccel.h
+    src/geometry.h
+    src/pathtracer.h
     lib/rand48/rand48.c
     lib/lodepng/lodepng.cpp
     lib/tiny_obj_loader/tiny_obj_loader.cc)

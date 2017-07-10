@@ -1,22 +1,21 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "ray.h"
-#include "vector.h"
+#include "geometry.h"
 #include "objects.h"
 
 class Scene
 {
 private:
-    std::vector<Object*> m_objects;
+    std::vector<Object*> mObjects;
+	Vector3f mBackground;
 
 public:
-    Scene(){};
+    Scene() :mBackground(0,0,0) {};
 
-    /*! \brief add an object into scene */
     void add(Object *object);
-    ObjectIntersection intersect(const Ray &ray);
-    Vec trace_ray(const Ray &ray, int depth, unsigned short*Xi);
+	SurfaceInteraction intersect(const Ray &ray);
+    Vector3f trace_ray(const Ray &ray, int depth, unsigned short*Xi);
 };
 
 #endif //SCENE_H

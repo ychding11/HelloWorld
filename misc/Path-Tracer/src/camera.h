@@ -2,8 +2,10 @@
 #define CAMERA_H
 
 #include "../lib/rand48/erand48.h"
-#include "vector.h"
-#include "ray.h"
+//#include "vector.h"
+//#include "ray.h"
+
+#include "geometry.h"
 
 class Camera
 {
@@ -18,22 +20,19 @@ private:
     double m_x_spacing_half;
     double m_y_spacing;
     double m_y_spacing_half;
-    Vec m_position;
-    Vec m_direction;
-    Vec m_x_direction;
-    Vec m_y_direction;
+    Point3f  m_position;
+    Vector3f m_direction;
+    Vector3f m_x_direction;
+    Vector3f m_y_direction;
 
 public:
-    Camera(Vec position, Vec target, int width, int height);
+    Camera(Point3f position, Point3f target, int width, int height);
 
 	// How about copy constructor and assign operator?
 	// The default one is sufficient? 
 
-    int get_width() const
-    { return m_width; }
-
-    int get_height() const
-    { return m_height; }
+    int get_width() const { return m_width; }
+    int get_height() const { return m_height; }
 
     Ray get_ray(int x, int y, bool jitter, unsigned short *Xi);
 };

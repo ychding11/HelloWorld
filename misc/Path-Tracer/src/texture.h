@@ -1,7 +1,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 #include <vector>
-#include "vector.h"
+#include "geometry.h"
 
 class Texture {
 private:
@@ -12,8 +12,8 @@ private:
 public:
     Texture(const char* filename);
     Texture(){};
-    Vec get_pixel(unsigned x, unsigned y) const;
-    Vec get_pixel(double u, double v) const;
+    Vector3f get_pixel(unsigned x, unsigned y) const;
+    Vector3f get_pixel(double u, double v) const;
     bool is_loaded() const;
 };
 
