@@ -47,4 +47,4 @@ Take a look at src/main.cpp to see how to create a scene amd import objs.
 
 ### solve 3x3 matrix linear equation
 
-![solve equation](./rsolve3x3MatrixEquation.png)
+![solve equation](./solve3x3MatrixEquation.png)
