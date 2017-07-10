@@ -5,10 +5,10 @@ Simple path tracer in C++. It ports ForLoop multi-threads and progress reporter 
 
 
 ## Features
- - Mesh Rendering
- - Obj Model Import
+ - Triangle Mesh 
+ - Obj Model Formart
  - Textures (PNG only at the moment)
- - Simple naive KD tree for meshes.
+ - KD tree accelarator from pbrt for mesh.
  - Diffuse, specular, and emission material types
  - Multi-Threading
  - solve 3x3 matrix linear equation
@@ -17,6 +17,7 @@ Simple path tracer in C++. It ports ForLoop multi-threads and progress reporter 
 
 - Ray and Shape intersection test is done in world space.
 - Only sphere and triangle are supported.
+- not support refraction yet
 
 ## Compiling and Running
 Requires cmake and OpenMP for multithreading.
