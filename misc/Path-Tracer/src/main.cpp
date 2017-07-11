@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     if (argc == 2) samples = atoi(argv[1]); // parse samples/pixel from command lines.
 
-    Camera camera = Camera(Point3f(0, -5, 2.5), Point3f(0,0,1), 640, 360);     // Create camera
+    Camera camera = Camera(Point3f(0, -5, 2.5), Point3f(0,0,1), 64, 64);     // Create camera
     Scene scene = Scene();                                              // Create scene
     scene.add( dynamic_cast<Object*>(new Sphere(Point3f(0,0,-1000), 1000, new Material())) );
     scene.add( dynamic_cast<Object*>(new Sphere(Point3f(-1004,0,0), 1000, new Material(DIFF, Vector3f(0.85,0.4,0.4)))) );

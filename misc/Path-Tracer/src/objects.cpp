@@ -119,7 +119,7 @@ Mesh::Mesh(Point3f center, const char* file_path, Material *defaultMaterial)
     m_materials.clear();
 	materials.clear();
     
-	printf(" - Building k-d tree...\n\n");
+	//printf(" - Building k-d tree...\n");
     //node = KDNode().build(tris, 0);
     printf("\n");
 }

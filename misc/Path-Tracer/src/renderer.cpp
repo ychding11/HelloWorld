@@ -2,15 +2,15 @@
 #include <cstdio>
 #include <iostream>
 
-#include "renderer.h"
 #include "../lib/lodepng/lodepng.h"
+#include "renderer.h"
 #include "parallel.h"
 #include "stats.h"
 #include "pathtracer.h"
 #include "progressreporter.h"
 
 
-#define MULTI_THREAD
+//#define MULTI_THREAD
 
 // Clamp double to min/max of 0/1
 inline double clamp(double x){ return x<0 ? 0 : x>1 ? 1 : x; }
@@ -40,26 +40,30 @@ void Renderer::render(int samples)
     int height = mCamera->get_height();
     double invSamples = 1./samples;
 
-#ifndef MULTI_THREAD
     // Main Loop
-    #pragma omp parallel for schedule(dynamic, 1)       // OpenMP
-    for (int y = 0; y < height; y++)
-    {
-        unsigned short Xi[3] = {0, 0, y*y*y};   // Stores seed for erand48
+#ifndef MULTI_THREAD
+	// Single thread for debug only
+	//memset();
+	for (int a = 0; a < samples; a++)
+	{
+        #pragma omp parallel for schedule(dynamic, 1)       // OpenMP
+		for (int y = 0; y < height; y++)
+		{
+			unsigned short Xi[3] = { 0, 0, y*y*y };   // Stores seed for erand48
 
-        fprintf(stderr, "\rRendering (%i samples): %.2f%% ",  samples, (double)y/height*100);  // report progress
+			fprintf(stderr, "\rRendering (%i samples): %.2f%% ", samples, (double)y / height * 100);  // report progress
 
-        for (int x = 0; x < width; x++)
-        {
-            Vec color = Vec();
-            for (int a = 0; a < samples; a++)
-            {
-                Ray ray = m_camera->get_ray(x, y, a > 0, Xi);
-                color = color + m_scene->trace_ray(ray,0,Xi);
-            }
-            m_pixel_buffer[(y)*width + x] = color * invSamples;
-        }
-    }
+			for (int x = 0; x < width; x++)
+			{
+				Ray ray = mCamera->get_ray(x, y, a > 0, Xi);
+				Vector3f color =  traceRay(ray, 0, Xi);
+				mPixelBuffer[y * width + x] += color * invSamples;
+			}
+		}
+		char filename[64];
+		sprintf(filename, "reulst-%d.png", a);
+		saveImage(filename);
+	}
 #else
     parallelInit();
 {
