@@ -10,7 +10,6 @@
 #include "objects.h"
 #include <memory>
 
-//namespace pbrt {
 
 // KdTreeAccel Declarations
 struct KdAccelNode;

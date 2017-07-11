@@ -204,24 +204,42 @@ class Vector3 {
         z -= v.z;
         return *this;
     }
-    bool operator==(const Vector3<T> &v) const {
+    bool operator==(const Vector3<T> &v) const
+	{
         return x == v.x && y == v.y && z == v.z;
     }
-    bool operator!=(const Vector3<T> &v) const {
+    bool operator!=(const Vector3<T> &v) const
+	{
         return x != v.x || y != v.y || z != v.z;
     }
     template <typename U>
-    Vector3<T> operator*(U s) const {
+    Vector3<T> operator*(U s) const
+	{
         return Vector3<T>(s * x, s * y, s * z);
     }
     template <typename U>
-    Vector3<T> &operator*=(U s) {
+    Vector3<T> &operator*=(U s)
+	{
         DCHECK(!isNaN(s));
         x *= s;
         y *= s;
         z *= s;
         return *this;
     }
+
+    Vector3<T> operator*(Vector3<T> s) const
+	{
+        return Vector3<T>(s.x * x, s.y * y, s.z * z);
+    }
+    Vector3<T> &operator*=(Vector3<T> s)
+	{
+        DCHECK(!isNaN(s));
+        x *= s.x;
+        y *= s.y;
+        z *= s.z;
+        return *this;
+    }
+
     template <typename U>
     Vector3<T> operator/(U f) const {
         CHECK_NE(f, 0);
@@ -941,14 +959,19 @@ class RayDifferential : public Ray {
 // Geometry Inline Functions
 template <typename T>
 inline Vector3<T>::Vector3(const Point3<T> &p)
-    : x(p.x), y(p.y), z(p.z) {
+    : x(p.x), y(p.y), z(p.z)
+{
     DCHECK(!HasNaNs());
 }
 
+#if 1
 template <typename T, typename U>
-inline Vector3<T> operator*(U s, const Vector3<T> &v) {
+inline Vector3<T> operator*(U s, const Vector3<T> &v)
+{
     return v * s;
 }
+#endif
+
 template <typename T>
 Vector3<T> Abs(const Vector3<T> &v) {
     return Vector3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));

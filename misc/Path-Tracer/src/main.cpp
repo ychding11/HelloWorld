@@ -46,16 +46,16 @@ int main(int argc, char *argv[])
 
     Camera camera = Camera(Point3f(0, -5, 2.5), Point3f(0,0,1), 640, 360);     // Create camera
     Scene scene = Scene();                                              // Create scene
-    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(0,0,-1000), 1000, Material())) );
-    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(-1004,0,0), 1000, Material(DIFF, Vector3f(0.85,0.4,0.4)))) );
-    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(1004,0,0), 1000, Material(DIFF, Vector3f(0.4,0.4,0.85)))) );
-    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(0,1006,0), 1000, Material())) );
-    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(0,0,110), 100, Material(EMIT, Vector3f(1,1,1), Vector3f(2.2,2.2,2.2)))) );
-    scene.add( dynamic_cast<Object*>(new Mesh(Point3f(), "../models/dragon2.obj", Material(DIFF, Vector3f(0.9, 0.9, 0.9)))) );
+    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(0,0,-1000), 1000, new Material())) );
+    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(-1004,0,0), 1000, new Material(DIFF, Vector3f(0.85,0.4,0.4)))) );
+    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(1004,0,0), 1000, new Material(DIFF, Vector3f(0.4,0.4,0.85)))) );
+    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(0,1006,0), 1000, new Material())) );
+    scene.add( dynamic_cast<Object*>(new Sphere(Point3f(0,0,110), 100, new Material(EMIT, Vector3f(1,1,1), Vector3f(2.2,2.2,2.2)))) );
+    scene.add( dynamic_cast<Object*>(new Mesh(Point3f(), "../models/dragon2.obj", new Material(DIFF, Vector3f(0.9, 0.9, 0.9)))) );
 
     Renderer renderer = Renderer(&scene, &camera);  // Create renderer with our scene and camera
     renderer.render(samples);                       // Render image to pixel buffer
-    renderer.save_image("dragon-in-box.png");              // Save image
+    renderer.saveImage("dragon-in-box.png");              // Save image
 
     time(&stop);
     printDuration(start, stop);

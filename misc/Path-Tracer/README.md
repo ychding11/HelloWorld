@@ -54,3 +54,8 @@ The test happens in world space.
 -----
 
 ![solve equation](./solve3x3MatrixEquation.png)
+
+## Reference
+
+- [pbrt book v3]() 
+- [fundamental of computer graphics]()

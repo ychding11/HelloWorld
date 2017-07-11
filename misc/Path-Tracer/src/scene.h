@@ -6,7 +6,7 @@
 
 class Scene
 {
-private:
+public:
     std::vector<Object*> mObjects;
 	Vector3f mBackground;
 
@@ -15,7 +15,6 @@ public:
 
     void add(Object *object);
 	SurfaceInteraction intersect(const Ray &ray);
-    Vector3f trace_ray(const Ray &ray, int depth, unsigned short*Xi);
 };
 
 #endif //SCENE_H

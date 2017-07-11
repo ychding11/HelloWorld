@@ -29,8 +29,6 @@ set(SOURCE_FILES
     src/material.h
     src/objects.cpp
     src/objects.h
-    src/kdtree.cpp
-    src/kdtree.h
     src/texture.cpp
     src/texture.h
     src/camera.cpp
@@ -49,6 +47,7 @@ set(SOURCE_FILES
     src/kdtreeaccel.h
     src/geometry.h
     src/pathtracer.h
+    src/mathutility.h
     lib/rand48/rand48.c
     lib/lodepng/lodepng.cpp
     lib/tiny_obj_loader/tiny_obj_loader.cc)

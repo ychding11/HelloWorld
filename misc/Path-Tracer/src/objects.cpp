@@ -27,7 +27,7 @@ bool Sphere::getIntersection(const Ray &ray, SurfaceInteraction &intersection) c
 //constructor
 // https://syoyo.github.io/tinyobjloader/
 // https://en.wikipedia.org/wiki/Wavefront_.obj_file
-Mesh::Mesh(Point3f center, const char* file_path, Material defaultMaterial)
+Mesh::Mesh(Point3f center, const char* file_path, Material *defaultMaterial)
 	: Object(center, defaultMaterial)
 {
 	CHECK(file_path);
@@ -108,7 +108,7 @@ Mesh::Mesh(Point3f center, const char* file_path, Material defaultMaterial)
             if (m_shapes[i].mesh.material_ids[ f ] < materials.size())
                 mTriangles.push_back(new Triangle(v0_, v1_, v2_, t0_, t1_, t2_, &materials[ m_shapes[i].mesh.material_ids[ f ] ]));
             else
-                mTriangles.push_back(new Triangle(v0_, v1_, v2_, t0_, t1_, t2_, &mMaterial));
+                mTriangles.push_back(new Triangle(v0_, v1_, v2_, t0_, t1_, t2_, mMaterial));
         }
     }
 
@@ -127,17 +127,22 @@ Mesh::Mesh(Point3f center, const char* file_path, Material defaultMaterial)
 // override
 bool Mesh::getIntersection(const Ray &ray, SurfaceInteraction &intersection) const
 {
-	Float t = 0, tmin = INFINITY;
-	Vector3f normal, colour;
-	bool hit = false;
-	if (mKDtree) mKDtree->Intersect(ray, &intersection);
-	else
+	intersection.hit = false;
+	//if (mKDtree) mKDtree->Intersect(ray, &intersection);
+	//else
 	{
 		for (auto a : mTriangles)
 		{
-
+			SurfaceInteraction  curIntersection;
+			if (a->Intersect(ray, &curIntersection))
+			{
+				if (intersection.u == 0.0 || curIntersection.u < intersection.u)
+				{
+					intersection = curIntersection;
+				}
+			}
 		}
 
 	}
-	return hit;
+	return intersection.hit;
 }

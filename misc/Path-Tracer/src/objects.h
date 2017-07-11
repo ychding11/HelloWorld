@@ -3,18 +3,19 @@
 
 #include "material.h"
 #include "geometry.h"
-#include "kdtreeaccel.h"
-
+//#include "kdtreeaccel.h"
+#include "mathUtility.h"
+#include "pathtracer.h"
 #include <algorithm>
 
 struct SurfaceInteraction
 {
 	bool hit;	// If there was an intersection
 	Float u;	// Distance to intersection along ray
-	Vector3f n;		// Normal of intersected face
-	Material m;	// Material of intersected face
+	Vector3f  n;		// Normal of intersected face
+	Material *m;	// Material of intersected face
 
-	SurfaceInteraction(bool hit = false, Float u = 0.0, Vector3f n= Vector3f(), Material m = Material())
+	SurfaceInteraction(bool hit = false, Float u = 0.0, Vector3f n= Vector3f(), Material *m = nullptr)
     : hit(hit) , u(u) , n(n) , m(m) {}
 };
 
@@ -40,12 +41,12 @@ public:
 
 	Triangle(Point3f v0_, Point3f v1_, Point3f v2_,
 		     Point3f t0_ = Point3f(), Point3f t1_ = Point3f(), Point3f t2_ = Point3f(), Material *m_ = NULL)
-		:v0(v0_), v1(v1_), v2(v2_)
-		,t0(t0_), t1(t1_), t2(t2_)
+		: v0(v0_), v1(v1_), v2(v2_)
+		, t0(t0_), t1(t1_), t2(t2_)
+		, m(m_)
 	{
 		e1 = v1 - v0; e2 = v2 - v0;
 		n = Normalize(Cross(e1, e2));
-		m = m_;
 	}
 
 	Bounds3f WorldBound() const override
@@ -63,23 +64,30 @@ public:
 	}
 	virtual bool Intersect(const Ray &r, SurfaceInteraction * intersect) const override
 	{
-
-		return false;
+		CHECK(intersect);
+		Vector3f a, b, c, d;
+		a = v0 - v1; b = v0 - v2; c = r.d; d = v0 - r.o;
+		Vector3f x = solveLinearEquation(a, b, c, d);
+		if (x[0] < 0 || x[0] > 1 || x[1] < 0 || x[1] > 1 - x[0]) return false;
+		intersect->hit = true;
+		intersect->u = x[2];
+		intersect->n = n;
+		intersect->m = m;
+		return true;
 	}
 	bool IntersectP(const Ray &r) const override
 	{
-		return false;
+		Vector3f a, b, c, d;
+		a = v0 - v1; b = v0 - v2; c = r.d; d = v0 - r.o;
+		Vector3f x = solveLinearEquation(a, b, c, d);
+		if (x[0] < 0 || x[0] > 1 || x[1] < 0 || x[1] > 1 - x[0]) return false;
+		return true;
 	}
 	const Material *GetMaterial() const override
 	{
 		return m;
 	}
 
-	// Returns axis aligned bounding box that contains the triangle
-	//AABBox get_bounding_box() const
-	void get_bounding_box() const
-	{
-	}
 
 	// Returns the midpoint of the triangle
 	//Vec get_midpoint() const
@@ -150,14 +158,15 @@ class Object
 {
 protected:
 	Point3f mCenter; // World Position
-	Material mMaterial;	// Material
+	Material *mMaterial;	// Material
 public:
-	explicit Object(Point3f center) : mCenter(center), mMaterial(){ }
-	Object(Point3f center, Material material) : mCenter(center), mMaterial(material){ }
-	Object() : mCenter(0, 0, 0), mMaterial() { }
-
+	explicit Object(Point3f center) : mCenter(center), mMaterial(nullptr){ }
+	Object(Point3f center, Material *material) : mCenter(center), mMaterial(material){ }
+	Object() : mCenter(0, 0, 0), mMaterial(nullptr) { }
+	
+	~Object() { if (mMaterial) delete mMaterial;  }
 	virtual bool getIntersection(const Ray &r, SurfaceInteraction &intersection) const = 0;
-	Material getMaterial() const { return mMaterial; }
+	Material* getMaterial() const { return mMaterial; }
 };
 
 class Sphere : public Object
@@ -166,7 +175,7 @@ private:
 	Float mRadius;	// Radius
 
 public:
-	Sphere(Point3f p, double radius, Material m)	
+	Sphere(Point3f p, double radius, Material *m)	
     : mRadius(radius) , Object(p, m) { }
 
     Float getRadius() const { return mRadius; }
@@ -174,19 +183,17 @@ public:
 	bool getIntersection(const Ray &r, SurfaceInteraction &intersection) const override;
 };
 
+class KdTreeAccel;
 class Mesh : public Object
 {
 private:
-	
     std::vector<Triangle*> mTriangles;
 	KdTreeAccel *mKDtree = nullptr;
 
 public:
-	Mesh(Point3f p_, const char* file_path, Material m_);
+	Mesh(Point3f p_, const char* file_path, Material *m_);
 
 	bool getIntersection(const Ray &r, SurfaceInteraction &intersection) const  override;
 };
-
-
 
 #endif // OBJECTS_H
