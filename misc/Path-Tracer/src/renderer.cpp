@@ -51,7 +51,7 @@ void Renderer::render(int samples)
 		{
 			unsigned short Xi[3] = { 0, 0, y*y*y };   // Stores seed for erand48
 
-			fprintf(stderr, "\rRendering (%i samples): %.2f%% ", samples, (double)y / height * 100);  // report progress
+			fprintf(stderr, "\rRendering (%i samples): %d, %.2f%% ", samples, a, (double)y / height * 100);  // report progress
 
 			for (int x = 0; x < width; x++)
 			{
@@ -113,7 +113,7 @@ void Renderer::saveImage(const char *filepath)
     if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 } 
 
-
+#if 0
 Vector3f Renderer::traceRay(const Ray &ray, int depth, unsigned short *Xi) const
 {
 
@@ -148,6 +148,7 @@ Vector3f Renderer::traceRay(const Ray &ray, int depth, unsigned short *Xi) const
 	Vector3f result = colour * colourReflect;
 	return result;
 }
+#endif
 
 Ray Renderer::getReflectedRay(const Ray &r, const Point3f &p, const Vector3f &n, MaterialType type, unsigned short *Xi) const
 {
@@ -180,4 +181,27 @@ Ray Renderer::getReflectedRay(const Ray &r, const Point3f &p, const Vector3f &n,
 		// invalid branch
 		CHECK(type == SPEC || type == DIFF);
 	}
+}
+
+Vector3f Renderer::traceRay(const Ray &ray, int depth, unsigned short *Xi) const
+{
+
+	SurfaceInteraction isct = mScene->intersect(ray);
+	if (!isct.hit) return mScene->mBackground;
+	// light source, termination
+	if (isct.m->getType() == EMIT) return isct.m->get_emission();
+
+	Vector3f colour = isct.getColour();
+	return colour;
+}
+
+Vector3f Renderer::castRay(const Ray &ray) const
+{
+	SurfaceInteraction isct = mScene->intersect(ray);
+	if (!isct.hit) return mScene->mBackground;
+	// light source, termination
+	if (isct.m->getType() == EMIT) return isct.m->get_emission();
+
+	Vector3f colour = isct.getColour();
+	return colour;
 }

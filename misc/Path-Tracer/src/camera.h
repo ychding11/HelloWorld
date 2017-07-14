@@ -8,28 +8,21 @@ class Camera
 {
 
 private:
-    int m_width;
-    int m_height;
-    double m_width_inv;
-    double m_height_inv;
-    double m_ratio;
-    double m_x_spacing;
-    double m_x_spacing_half;
-    double m_y_spacing;
-    double m_y_spacing_half;
-    Point3f  m_position;
-    Vector3f m_direction;
-    Vector3f m_x_direction;
-    Vector3f m_y_direction;
-
+    int mFilmWidth;
+    int mFilmHeight;
+    Point3f  mEyePosition;
+    Vector3f mDx;
+	Vector3f mDy;
+    Vector3f mDz;
+    Point3f mFilmCenter; // Film position
 public:
     Camera(Point3f position, Point3f target, int width, int height);
 
 	// How about copy constructor and assign operator?
 	// The default one is sufficient? 
 
-    int get_width() const { return m_width; }
-    int get_height() const { return m_height; }
+    int get_width() const  { return mFilmWidth; }
+    int get_height() const { return mFilmHeight; }
 
     Ray get_ray(int x, int y, bool jitter, unsigned short *Xi);
 };

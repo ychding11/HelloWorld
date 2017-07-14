@@ -21,6 +21,7 @@ public:
 
 private:
 	Vector3f traceRay(const Ray &ray, int depth, unsigned short*Xi) const;
+	Vector3f castRay(const Ray &ray) const;
 	Ray getReflectedRay(const Ray &r, const Point3f &p, const Vector3f &n, MaterialType type, unsigned short *Xi) const;
 };
 

@@ -17,6 +17,13 @@ struct SurfaceInteraction
 
 	SurfaceInteraction(bool hit = false, Float u = 0.0, Vector3f n= Vector3f(), Material *m = nullptr)
     : hit(hit) , u(u) , n(n) , m(m) {}
+
+	Vector3f getColour() const
+	{
+		if (m) return m->getColour();
+		return Vector3f(0,0,0); //black
+
+	}
 };
 
 class Primitive

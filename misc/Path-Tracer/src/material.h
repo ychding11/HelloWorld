@@ -23,7 +23,7 @@ private:
     Texture  m_texture;
 
 public:
-	Material(MaterialType t = DIFF, const Vector3f &c = Vector3f(1, 1, 1), const Vector3f &e = Vector3f(0, 0, 0), const Texture &tex = Texture())
+	Material(MaterialType t = DIFF, const Vector3f &c = Vector3f(), const Vector3f &e = Vector3f(0, 0, 0), const Texture &tex = Texture())
 		: m_type(t) , m_colour(c), m_emission(e), m_texture(tex) {}
 
 
