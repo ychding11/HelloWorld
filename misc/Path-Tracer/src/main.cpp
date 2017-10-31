@@ -44,19 +44,19 @@ int main(int argc, char *argv[])
 
     if (argc == 2) samples = atoi(argv[1]); // parse samples/pixel from command lines.
 
-    Camera camera(Point3f(-2, 1, -2), Point3f(0,0,0), 64, 64);     // Create camera
+    Camera camera(Point3f(2.828,2.828, 0), Point3f(0,0,0), 32, 32);     // Create camera
     Scene scene;                                              // Create scene
-#if 0
-    scene.add(new Sphere(Point3f(1e5 + 1, 40.8, 81.60), 1e5, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Left
-    scene.add(new Sphere(Point3f(-1e5 + 99, 40.8, 81.6), 1e5, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Right
-    scene.add(new Sphere(Point3f(50, 40.8, 1e5), 1e5, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Back
-    scene.add(new Sphere(Point3f(50, 40.8, -1e5 + 170), 1e5, new Material(DIFF))); //Front
-    scene.add(new Sphere(Point3f(50, 1e5, 81.6), 1e5, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Bottom
-    scene.add(new Sphere(Point3f(50, -1e5 + 81.6, 81.6), 1e5, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Top
-    scene.add(new Sphere(Point3f(50, 681.6 - .27, 81.60), 600, new Material(EMIT, Vector3f(), Vector3f(12,12,12)))); //light source
+#if 1
+    scene.add(new Sphere(Point3f(0, 0, 0), 1, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Left
+    //scene.add(new Sphere(Point3f(-104, 0, 0), 100, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Right
+    //scene.add(new Sphere(Point3f(104, 0, 0), 100, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Back
+    //scene.add(new Sphere(Point3f(0, 106, 0), 100, new Material(DIFF))); //Front
+    //scene.add(new Sphere(Point3f(0, 0, 11), 10, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Bottom
+//    scene.add(new Sphere(Point3f(50, -1e5 + 81.6, 81.6), 1e5, new Material(DIFF, Vector3f(0.85,0.4,0.4)))); //Top
+ //   scene.add(new Sphere(Point3f(50, 681.6 - .27, 81.60), 600, new Material(EMIT, Vector3f(), Vector3f(12,12,12)))); //light source
+  //  scene.add(new Sphere(Point3f(10, 3, 10), 1, new Material(EMIT, Vector3f(), Vector3f(12,12,12)))); //light source
+  //  scene.add(new Mesh(Point3f(), "../models/dragon2.obj", new Material(DIFF, Vector3f(0.9, 0.9, 0.9))));
 #endif
-    scene.add(new Sphere(Point3f(10, 3, 10), 1, new Material(EMIT, Vector3f(), Vector3f(12,12,12)))); //light source
-    scene.add(new Mesh(Point3f(), "../models/dragon2.obj", new Material(DIFF, Vector3f(100, 200, 9))));
 
     Renderer renderer = Renderer(&scene, &camera);  // Create renderer with our scene and camera
     renderer.render(samples);                       // Render image to pixel buffer

@@ -55,7 +55,7 @@ void Renderer::render(int samples)
 
 			for (int x = 0; x < width; x++)
 			{
-				Ray ray = mCamera->get_ray(x, y, a > 0, Xi);
+				Ray ray = mCamera->get_ray(x, y, a < 0, Xi);
 				Vector3f color =  traceRay(ray, 0, Xi);
 				mPixelBuffer[y * width + x] += color * invSamples;
 			}
