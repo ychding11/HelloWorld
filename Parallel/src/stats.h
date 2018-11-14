@@ -13,6 +13,15 @@
 #include <string>
 #include <functional>
 
+// Called by both Main Thread and Worker Thread
+void ReportThreadStats();
+
+// Called by Main Thread
+void PrintStats(FILE *dest);
+
+// Called by Main Thread
+void ClearStats();
+
 
 // Statistics Declarations
 class StatsAccumulator; //forward declare
@@ -32,9 +41,6 @@ class StatRegisterer
     static std::vector<std::function<void(StatsAccumulator &)>> *funcs;
 };
 
-void PrintStats(FILE *dest);
-void ClearStats();
-void ReportThreadStats();
 
 class StatsAccumulator
 {
