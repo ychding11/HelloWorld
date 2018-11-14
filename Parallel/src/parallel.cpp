@@ -45,12 +45,12 @@ static std::mutex reportDoneMutex;
 // Used for log
 static std::shared_ptr<spdlog::logger> mylogger;
 
-int numSystemCores(void)
+static int numSystemCores(void)
 {
     return std::max(1u, std::thread::hardware_concurrency());
 }
 
-int maxThreadIndex(void)
+static int maxThreadIndex(void)
 {
     return numSystemCores();
 }
@@ -239,7 +239,6 @@ void parallelCleanup(void)
 }
 
 // Called in Main Thread
-// Main Thread would wait for all worker to report.
 void MergeWorkerThreadStats()
 {
 	std::unique_lock<std::mutex> lock(workListMutex);
@@ -271,6 +270,8 @@ int main()
 #define N (1024 * 1024 * 1)
     static int64_t a[N] = {0};
     parallelInit();
+
+    // Main Thread also does jobs
     {
         ProgressReporter reporter(N, "Progressing");
         ParallelFor([&](int64_t i) {
@@ -279,6 +280,7 @@ int main()
         }, N, 4096);
         reporter.done();
     }
+
     MergeWorkerThreadStats();
     ReportThreadStats();
     PrintStats(stdout);
