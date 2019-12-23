@@ -40,50 +40,50 @@ struct ListNode
 {
     int val;
     ListNode *next;
-    ListNode(int x) : val(x), next(NULL) { }
+    ListNode(int x) : val(x), next(nullptr) { }
 };
 
-    /*! \brief reverse list */
-    ListNode* reverseList(ListNode* head);
+/*! \brief reverse list */
+ListNode* reverseList(ListNode* head);
+    
+/*************************************************
+    *  rotateRight. 
+    *  example:
+    *  1->2->3->4->5->NULL and k = 2.
+    *  4->5->1->2->3->NULL.
+	*  Idea: 
+	*  1. find right cut point and glue two list part
+	*     in new order.
+	*  2. if k is large, it should mod list length n.
+	*     so a very big k is valid.
+*************************************************/
+ListNode *rotateRight(ListNode *head, int k);
     
     /*************************************************
-     *  rotateRight. 
-     *  example:
-     *  1->2->3->4->5->NULL and k = 2.
-     *  4->5->1->2->3->NULL.
-	 *  Idea: 
-	 *  1. find right cut point and glue two list part
-	 *     in new order.
-	 *  2. if k is large, it should mod list length n.
-	 *     so a very big k is valid.
-    *************************************************/
-    ListNode *rotateRight(ListNode *head, int k);
-    
-     /*************************************************
-     *  removeNthFromEnd. 
-     *  example:
-     *  1->2->3->4->5->NULL and n = 2.
-     *  1->2->3->5->NULL.
-	 *  It applys trick that get Nth node from List End.
-    *************************************************/
-    ListNode* removeNthFromEnd(ListNode* head, int n);
+    *  removeNthFromEnd. 
+    *  example:
+    *  1->2->3->4->5->NULL and n = 2.
+    *  1->2->3->5->NULL.
+	*  It applys trick that get Nth node from List End.
+*************************************************/
+ListNode* removeNthFromEnd(ListNode* head, int n);
 
 /*! \brief  Helper function contruct a linked list from a vector.
- *  Constructed list order is reversed.
- */
+*  Constructed list order is reversed.
+*/
 ListNode* constructList(const vector<int> &nums);
 
 /*************************************************
- *  Helper function
- *  destruct a linked list from a vector.
- *  NOTE: list order is reversed.
- *  SUPPOSE all list Node is allocated by new operator.
+*  Helper function
+*  destruct a linked list from a vector.
+*  NOTE: list order is reversed.
+*  SUPPOSE all list Node is allocated by new operator.
 *************************************************/
-void destructList(ListNode *head);
+uint32_t destructList(ListNode *head);
 
 /*************************************************
- *  Tester function
- *  reverseList algorithm tester.
- *  param: n number of elements
+*  Tester function
+*  reverseList algorithm tester.
+*  param: n number of elements
 *************************************************/
-void reverseListTester(int n);
+bool reverseListTester(int n);

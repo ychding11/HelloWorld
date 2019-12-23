@@ -32,28 +32,19 @@
 #include <ctime>
 #include <cassert>
 #include <vector>
-#include "Logger.h"
 
-//using namespace std;
+#include <glog/logging.h>
+
+
+//#define ENTER_FUNCTION logger << ">>>>" << __FUNCTION__ << std::endl
+//#define EXIT_FUNCTION  logger << "<<<<" << __FUNCTION__ << std::endl
+
+#define ENTER_FUNCTION 
+#define EXIT_FUNCTION 
 
 #define BUFSIZE 1024
 
-#define PERFORMANCE_METER
-
-#if 0
-typedef enum tagLogLevel
-{
-LOG_LEVEL_ERR,
-LOG_LEVEL_INFO,
-LOG_LEVEL_DBG,
-LOG_LEVLE_ALL,
-} LogLevel;
-LogLevel gCurLoglevel = LOG_LEVLE_ALL;
-
-#define LOG_D(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_DBG) fprintf(stdout, "[ DEBUG ] " fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_E(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_ERR) fprintf(stdout, "[ ERROR ] " fmt,##__VA_ARGS__ ); } while(0)
-#define LOG_I(fmt, ...)  do { if (gCurLoglevel >= LOG_LEVEL_INFO) fprintf(stdout, "[ INFO ] " fmt,##__VA_ARGS__ ); } while(0)
-#endif
+//#define PERFORMANCE_METER
 
 typedef int DataType;
 
@@ -116,6 +107,7 @@ void gen_distinct_rand(int m, int n)
     time_t tm1, tm2;
     time(&tm1); /* get current time */
     #endif
+
     int i, j;
     srand(time(NULL)); 
     for (i = 0; i < n; i++) //generate sorted random number i
@@ -124,7 +116,7 @@ void gen_distinct_rand(int m, int n)
         {    
             m--;
             gRawDataSet[gDataSetCount++] = i; 
-            logger << i << std::endl;      
+            //logger << i << std::endl;      
         }
     }
 
@@ -153,7 +145,7 @@ void gen_distinct_rand(int m, int n)
 template <class DataType>
 static bool isArraySorted(const DataType a[], int n)
 {
-    assert(a != NULL && n > 1);
+    CHECK(a != NULL && n > 1);
     for (int i = 0; i < n - 1; i++)
     {    
         if (a[i + 1] < a[i])
@@ -212,7 +204,7 @@ template <class DataType>
 void simpleInsertSort(DataType a[], int n)
 {
     ENTER_FUNCTION;
-    assert(a != NULL && n > 1);
+    CHECK(a != NULL && n > 1);
    
     #ifdef PERFORMANCE_METER
     time_t tm1, tm2;
@@ -220,17 +212,17 @@ void simpleInsertSort(DataType a[], int n)
     #endif
 
     int i, j;
-    for (j = 1; j < n; j++)
+    for (j = 1; j < n; j++) //< [j, n) is unsorted
     {
-        DataType temp = a[j];
-        for (i = j - 1; i >= 0; i--)
+        DataType v = a[j];
+        for (i = j - 1; i >= 0; i--) //< [0, j-1] is sorted
         {    
-            if (temp < a[i])
+            if (v < a[i])
             {    a[i + 1] = a[i];  }
             else 
             {    break;    }
         }
-        a[i + 1] = temp; /* right place for a[j] */
+        a[i + 1] = v; /* right place for a[j] */
     }
 
     #ifdef PERFORMANCE_METER
@@ -250,13 +242,13 @@ void simpleInsertSort(DataType a[], int n)
  *   
  * Retrun: void 
  * Ideas:  
- * Notice: After sorting, array is in asending order 
+ * Notice: Sorting in asending order 
 *************************************************/
 template<class DataType>
 void bubble_sort(DataType a[], int n)
 {
     ENTER_FUNCTION;
-    assert(a != NULL && n > 1);
+    CHECK(a != NULL && n > 1);
 
     #ifdef PERFORMANCE_METER
     time_t tm1, tm2;
@@ -269,19 +261,13 @@ void bubble_sort(DataType a[], int n)
         sorted = 1; /* before checking, suppose [0, i-1] is sorted */
         for (j = 0; j < i; j++)
         {
-            if (a[j + 1] < a[j]) /* unsorted element is detected. */
+            if (a[j] > a[j + 1]) /* unsorted element */
             {
                 swap(a[j], a[j + 1]);
                 sorted = 0;
             }
         }
     }
-
-    #ifdef PERFORMANCE_METER
-    time(&tm2);
-    double seconds = difftime(tm2, tm1); /* return double */
-    printf("[bubble sort time] = %.lf seconds!\tsorted %d elements!\n", seconds, n);
-    #endif
 
     EXIT_FUNCTION;
 }
@@ -310,11 +296,12 @@ template <class DataType>
 static void partition(DataType a[], int p, int q)
 {
     ENTER_FUNCTION;
-
-    if (p >= q) return; // recursion terminate condition 
-    DataType target = a[p]; /* pivot would be selected randomly */
+    
+    if (p >= q) return; //< recursion terminate condition 
+    DataType target = a[p]; //< pivot be selected randomly is better
     int i =p, j = q + 1;
-    /* initial condition: a[p, i] < target, [j, inf] > target*/
+
+    //< initial condition: a[p, i] < target, [j, inf] > target
     while(true)
     {
         do {i++;} while(i <= q && a[i] < target);
@@ -327,7 +314,7 @@ static void partition(DataType a[], int p, int q)
     /* a[j] <= target, a[j] is the right place for pivot */
     if (j != p)
     {  
-        logger << "put " << target << " in " << j << " position." << std::endl;
+        //LOG(INFO) << "put " << target << " in " << j << " position." << std::endl;
         swap(a[j], a[p]); 
     }
     
@@ -366,7 +353,7 @@ template <class DataType>
 void quick_sort(DataType a[], int n)
 {
     ENTER_FUNCTION;
-    assert(a != NULL && n > 1);
+    CHECK(a != nullptr && n > 1);
 
     #ifdef PERFORMANCE_METER
     clock_t clk1, clk2;
@@ -374,12 +361,6 @@ void quick_sort(DataType a[], int n)
     #endif
     
     partition(a, 0, n - 1); /* sort array recursivly by partition */
-
-    #ifdef PERFORMANCE_METER
-    clk2 = clock();
-    float seconds = ((float)(clk2 - clk1)) / CLOCKS_PER_SEC; /* calculate in seconds units */
-    printf("[quick sort time] = %ld ticks, %.4f seconds!\tsorted %d elements!\n", clk2 - clk1, seconds, n);
-    #endif
 
     EXIT_FUNCTION;
 }
@@ -448,12 +429,12 @@ void heapSort(DataType a[], int n)
     for (int i = 0; i < n; i++)
     {
         prique.insert(a[i]);
-        logger << "Insert " << a[i] << " into min heap." << std::endl;
+        //LOG(INFO) << "Insert " << a[i] << " into min heap." << std::endl;
     }
     for (int i = 0; i < n; i++)
     {
         a[i] = prique.extract_min();
-        logger << "Extract " << a[i] << " from min heap." << std::endl;
+        //LOG(INFO) << "Extract " << a[i] << " from min heap." << std::endl;
     }
 }
 
@@ -461,36 +442,42 @@ void heapSort(DataType a[], int n)
 #define BIT_SORT_SHIFT     5   // 2 ^ 5 == 32
 #define BIT_PER_WORD      32
 #define MAX_INPUT_NUM     (1000 * 10000)
-#define BIT_MAP_SIZE      (1 + MAX_INPUT_NUM / BIT_PER_WORD)
+#define BIT_MAP_SIZE      ((31 + MAX_INPUT_NUM) / BIT_PER_WORD)
 int BitMap[BIT_MAP_SIZE] = { 0 };
 
 void set(unsigned int i) {             BitMap[i >> BIT_SORT_SHIFT] |=  (1 << (i & BIT_SORT_MASK));}
 void clr(unsigned int i) {             BitMap[i >> BIT_SORT_SHIFT] &= ~(1 << (i & BIT_SORT_MASK));}
 int test(unsigned int i) { return      BitMap[i >> BIT_SORT_SHIFT] &   (1 << (i & BIT_SORT_MASK));}
 
-/*************************************************
- *  bit sort requires that no duplicate elements
- *  in unsorted set.
+/*********************************************************************
+ *  bit sort requires that NO duplicate elements in unsorted set.
  *  algorithm ideas:
  *  1. read unsorted set & build the bit map
- *  2. check the each bit in bit map and output 
- *     element according to checking bit.
- * 
-*************************************************/
+ *  2. check the each bit in bit map and output element according to checking bit.
+*********************************************************************/
 void bit_sort(DataType a[], int n)
 {
-    
+    CHECK(a != NULL && n > 1);
+	memset(BitMap,0,sizeof(BitMap));
+
     for (int i = 0; i < n; i++)
     { 
         set(a[i]); 
     }
+
+	int k = 0;
     for (int i = 0; i < MAX_INPUT_NUM; i++)
     { 
         if (test(i)) 
         { 
-            printf(" %d ", i); 
+            //printf(" %d ", i); 
+			a[k++] = i;
         }
     }
+	if (k < n);
+	{
+		LOG(INFO) << "There are duplicate " << (n-k) << " elements in array.";
+	}
 }
 
 /*************************************************
@@ -502,9 +489,8 @@ struct ListNode
     int val;
     ListNode *next;
     
-    ListNode(int x) 
-    : val(x)
-    , next(NULL)
+    ListNode(int x = 0) 
+    : val(x) , next(nullptr)
     {}
 };
 
@@ -538,25 +524,26 @@ private:
         return node.next;
     }
 
-    /*************************************************
+    /**********************************************************
      * find median of a linked list.
      * [1 2 3] return 2
      * [1 2] return 1
-    *************************************************/   
+	 * result is supposed to [head, median], [median+1, tail]
+    **********************************************************/   
     ListNode* median(ListNode *h)
     {
-        if (!h || !h->next)
+        if (!h || !h->next) //< empty Node or single Node
         {
-            return NULL;
+            return nullptr; 
         }
         ListNode *slow, *fast, *prv;
         slow = fast = h;
-        prv = NULL;
+        prv = nullptr;
         while (fast)
         {
             prv = slow;
             slow = slow->next;
-            fast = fast->next ? fast->next->next : NULL;
+            fast = fast->next ? fast->next->next : nullptr;
         }
         return prv;
     }
@@ -564,10 +551,12 @@ private:
 public:
     /*************************************************
      * implement merge sort.
+	 * It is based on single Linked List
+	 * It is a recursive implementation.
     *************************************************/
     ListNode *sortList(ListNode *head) 
     {
-        if (!head || !head->next)
+        if (!head || !head->next) //< It is a termination condition
         {
             return head;
         }
@@ -585,7 +574,7 @@ public:
 *************************************************/
 ListNode* buildList(const std::vector<int> &nums)
 {
-    ListNode node(0), *tempTail = &node;
+    ListNode node(0), *tempTail = &node; //< helper variable
     for (unsigned int i = 0; i < nums.size(); i++)
     {
         ListNode *temp = new ListNode(nums[i]);
@@ -596,7 +585,7 @@ ListNode* buildList(const std::vector<int> &nums)
         }
         else
         {
-            std::cout << "Out of memory." << std::endl;
+			LOG(FATAL) << "Out of memory.";
             return node.next;
         }
     }
@@ -604,12 +593,12 @@ ListNode* buildList(const std::vector<int> &nums)
 }
 
 /*************************************************
- *  Tester
+ *  Test Function
  *  check correctness of merge sort.
 *************************************************/
 void mergeSortTester(int n)
 {
-    assert(n > 0);
+    CHECK(n > 0);
     std::vector<int> nums(n, 0);
     for (int i = 0; i < n; i++) //generate data 
     {
@@ -622,12 +611,12 @@ void mergeSortTester(int n)
     {
         if (head2->val > head2->next->val)
         {
-            std::cout << "Unsorted " << head2->val << " " << head2->next->val << std::endl;
+			LOG(ERROR) << "Unsorted " << head2->val << " " << head2->next->val;
             return;
         }
         head2 = head2->next;
     }
-    std::cout << "Merge Sort algorithm correct. " << std::endl;
+	LOG(INFO) << "Merge Sort algorithm correct. ";
     //release resources
     
 }
@@ -636,7 +625,7 @@ void mergeSortTester(int n)
  *  Tester
  *  test algorithms based on array.
 *************************************************/
-enum //can improve with c++11
+enum ESortType //can improve with c++11
 {
     SORT_TYPE_SIMPLE_INSERT = 0,
     SORT_TYPE_BUBBLE,
@@ -646,7 +635,7 @@ enum //can improve with c++11
     SORT_TYPE_COUNT,
 };
 
-const char* sort_type_name [SORT_TYPE_COUNT] = 
+const char* sort_type_name [ESortType::SORT_TYPE_COUNT] = 
 {
     "Simple insert Sort",
     "Bubble Sort",
@@ -666,54 +655,56 @@ SortFunction sort_func_tbl[SORT_TYPE_COUNT] =
     heapSort,
 };
 
+
+void SortTest(int typeSort, int numElement, int numIteration)
+{
+    LOG(INFO) << "type = " << sort_type_name[typeSort] << " Iteration = " << numIteration << " Elements = " << numElement << std:: endl;
+
+    if (typeSort < 0) //test algorithm based on linked list
+    {
+        for (int i = 0; i < numIteration; i++)
+        {
+            mergeSortTester(numElement);
+        }
+    }
+    else  //test algorithm based on array.
+    {
+        for (int i = 0; i < numIteration; i++)
+        {
+            prepare_random_data(numElement);
+            printf("Before\t Sorted ?  %d\n", isArraySorted(gRawDataSet,numElement));
+            //display(gRawDataSet,n);
+            sort_func_tbl[typeSort](gRawDataSet, numElement);
+            printf("After\t Sorted ?  %d\n", isArraySorted(gRawDataSet,numElement));
+            //display(gRawDataSet,n);
+            printf("=============================================================\n");    
+        }
+    }
+}
+
 /*************************************************
  *  Tester
  *  a simple tester
 *************************************************/
 int main(int argc, char** argv)
 {
-    logger.setLevel(DEBUG);
-    logger.setLineLevel(INFO);
     ENTER_FUNCTION;
 
     if (argc != 4)
     {
-        printf("Usage error!\n"
-                "%s [sort type] [input size] [iteration number]\n", argv[0]); 
+		LOG(ERROR) << "Usage:" << argv[0] << " [sort type] [input size] [iteration number]";
         return -1;
     }
-    int type, n, m;
-    type = atoi(argv[1]);
-    n = atoi(argv[2]);
-    m = atoi(argv[3]);
-    logger << DEBUG << "type = " << type << " m = " << m << " n = " << n << std:: endl;
-    if (n > DATA_SET_SIZE)
-    {
-        logger << ERROR << "input size invalid." << std::endl;
-        return -2;
-    }
-    if (type < 0) //test algorithm based on linked list
-    {
-        for (int i = 0; i < m; i++)
-        {
-            mergeSortTester(n);
-        }
-    }
-    else
-    {
-        //test algorithm based on array.
-        for (int i = 0; i < m; i++)
-        {
-            prepare_random_data(n);
-            printf("Before\t Sorted ?  %d\n", isArraySorted(gRawDataSet,n));
-            display(gRawDataSet,n);
-            sort_func_tbl[type](gRawDataSet, n);
-            printf("After\t Sorted ?  %d\n", isArraySorted(gRawDataSet,n));
-            display(gRawDataSet,n);
-            printf("=============================================================\n");    
-        }
-    }
-       
+    int typeSort, numElement, numIteration;
+    typeSort = atoi(argv[1]);
+    numElement = atoi(argv[2]);
+    numIteration = atoi(argv[3]);
+	CHECK(numElement <= DATA_SET_SIZE);
+	CHECK(numElement > 0 && numIteration > 0 && typeSort < ESortType::SORT_TYPE_COUNT);
+
+	for (int i = 0; i < ESortType::SORT_TYPE_COUNT; ++i)
+		SortTest(i, numElement, numIteration);
+
     EXIT_FUNCTION;
     return 0;
 }

@@ -6,8 +6,8 @@
 *.avi
 *.a
 *.so
-/CMakeFiles
-/build
+CMakeFiles
+build
+bin
 .*
-*.cmake
 *~

@@ -34,113 +34,119 @@
 #include <map>
 #include <vector>
 #include <iostream>
-#include "list.h"
 
-#if !defined(BUILD_LIBRARY)
-#include "Logger.h"
-#endif
+#include <glog/logging.h>
+
+#include "list.h"
 
 using std::cin;
 using std::cout;
 
-#define PERFORMANCE_METER
+//#define PERFORMANCE_METER
+
+//#define ENTER_FUNCTION logger << ">>>>" << __FUNCTION__ << std::endl
+//#define EXIT_FUNCTION  logger << "<<<<" << __FUNCTION__ << std::endl
+
+#define ENTER_FUNCTION 
+#define EXIT_FUNCTION 
 
 /*************************************************
  *  ListAlgorithms class -- a collection of classic
  *  list algorithms.
  *  NOTE: .
 *************************************************/
-    ListNode* reverseList(ListNode* head)
+ListNode* reverseList(ListNode* head)
+{
+    if (!head || !head->next) //< empty node or single node 
     {
-        if (!head || !head->next) //check param
-        {
-            return head;
-        }
-        ListNode tempHead(0), *hd = &tempHead;
-        hd->next = NULL; // it's not needed because of ListNode constructor
-        while (head)
-        {
-            ListNode *cur = head; // operation order is important
-            head = head->next;
-            cur->next = hd->next;
-            hd->next = cur;
-        }
-        return tempHead.next;
+        return head;
     }
-    
-    /*************************************************
-     *  rotateRight. 
-     *  example:
-     *  1->2->3->4->5->NULL and k = 2.
-     *  4->5->1->2->3->NULL.
-	 *  Idea: 
-	 *  1. find right cut point and glue two list part
-	 *     in new order.
-	 *  2. if k is large, it should mod list length n.
-	 *     so a very big k is valid.
-    *************************************************/
-    ListNode *rotateRight(ListNode *head, int k) 
+    ListNode tempHead(0), *hd = &tempHead;
+    hd->next = NULL; //< it's not needed because of ListNode constructor
+    while (head)
     {
-        again:  
-        if (!head || !head->next || k <= 0) //check param
-        {   return head;    }
+        ListNode *cur = head; // operation order is important
+        head = head->next;
+        cur->next = hd->next;
+        hd->next = cur;
+    }
+    return tempHead.next;
+}
+    
+/*************************************************
+    *  rotateRight. 
+    *  example:
+    *  1->2->3->4->5->NULL and k = 2.
+    *  4->5->1->2->3->NULL.
+	*  Idea: 
+	*  1. find right cut point and glue two list part
+	*     in new order.
+	*  2. if k is large, it should mod list length n.
+	*     so a very big k is valid.
+*************************************************/
+ListNode *rotateRight(ListNode *head, int k) 
+{
+    again:  
+    if (!head || !head->next || k <= 0) //check param
+    {   return head;    }
         
-        ListNode *p = head;
-        int n = 0, m = k;
-        while (p && m > 0) {    n++; p = p->next; m--; }
-        if (p == NULL)     {    k = k % n; goto again; }
-        if (m <= 0)
-        {
-            ListNode *cur = head, *ret = NULL;
-            while (p && p->next) {  cur = cur->next; p = p->next; }
-            ret = cur->next; cur->next = NULL; //find 'cut point' and cut
-            if (p) p->next = head;
-            return ret;
-        }
-    }
-    
-     /*************************************************
-     *  removeNthFromEnd. 
-     *  example:
-     *  1->2->3->4->5->NULL and n = 2.
-     *  1->2->3->5->NULL.
-	 *  It applys trick that get Nth node from List End.
-    *************************************************/
-    ListNode* removeNthFromEnd(ListNode* head, int n) 
+    ListNode *p = head;
+    int n = 0, m = k;
+    while (p && m > 0) {    n++; p = p->next; m--; }
+    if (p == NULL)     {    k = k % n; goto again; }
+    if (m <= 0)
     {
-        assert((head != NULL) && (n > 0));
-        ListNode *p, *q, *prv;
-        p = q = head; prv = NULL;
-        int i = 0;
-        for (i = 0; q && i < n; i++, q = q->next); //move n step from head-->tail
-        if (!q && i < n)
-        {
-            printf("Error, invalid param n = %d, line: %d\n", n, __LINE__);
-            return head;
-        }
-        while (q) //continue moving p && q start moving
-        {   
-            prv = p; p = p->next;  
-            q = q->next; 
-        }
-        if (!prv)
-        { 
-            ListNode *ret = p->next;
-            delete p; /* delete Node p */
-            return ret;
-        }
-        else 
-        { 
-            prv->next = p->next; 
-            ListNode *temp = p; 
-            delete temp; /* delete Node p*/
-            return head;
-        }
+        ListNode *cur = head, *ret = NULL;
+        while (p && p->next) {  cur = cur->next; p = p->next; }
+        ret = cur->next; cur->next = NULL; //find 'cut point' and cut
+        if (p) p->next = head;
+        return ret;
     }
+}
+    
+/*************************************************
+  *  removeNthFromEnd. 
+  *  example:
+  *  1->2->3->4->5->NULL and n = 2.
+  *  1->2->3->5->NULL.
+  *  It applys trick that get Nth node from List End.
+*************************************************/
+ListNode* removeNthFromEnd(ListNode* head, int n) 
+{
+    assert((head != NULL) && (n > 0));
+    ListNode *p, *q, *prv;
+    p = q = head; prv = NULL;
+    int i = 0;
+    for (i = 0; q && i < n; i++, q = q->next); //move n step from head-->tail
+    if (!q && i < n)
+    {
+        printf("Error, invalid param n = %d, line: %d\n", n, __LINE__);
+        return head;
+    }
+    while (q) //continue moving p && q start moving
+    {   
+        prv = p; p = p->next;  
+        q = q->next; 
+    }
+    if (!prv)
+    { 
+        ListNode *ret = p->next;
+        delete p; /* delete Node p */
+        return ret;
+    }
+    else 
+    { 
+        prv->next = p->next; 
+        ListNode *temp = p; 
+        delete temp; /* delete Node p*/
+        return head;
+    }
+}
 
-/*! \brief  Helper function contruct a linked list from a vector.
+/************************************************************
+ *  Helper function contruct a linked list from a vector.
  *  Constructed list order is reversed.
- */
+************************************************************/
 ListNode* constructList(const vector<int> &nums)
 {
     ListNode tempHead(0), *head = &tempHead;
@@ -154,37 +160,38 @@ ListNode* constructList(const vector<int> &nums)
         }
         else
         {
-            cout << "Out of memory." << std::endl;
+			LOG(FATAL) << "Out of memory.";
             return tempHead.next;
         }
     }
     return tempHead.next;
 }
 
-/*************************************************
- *  Helper function
- *  destruct a linked list from a vector.
- *  NOTE: list order is reversed.
- *  SUPPOSE all list Node is allocated by new operator.
-*************************************************/
-void destructList(ListNode *head)
+/************************************************************
+ *  Helper function to destruct a linked list
+ *  Return: num of element deleted.
+ *  SUPPOSE: all list Node is allocated by new operator.
+************************************************************/
+uint32_t destructList(ListNode *head)
 {
+	uint32_t num = 0;
     while (head)
     {
         ListNode *cur = head;
         head = head->next;
         delete cur;
+		++num;
     }
+	return num;
 }
 
 /*************************************************
- *  Tester function
- *  reverseList algorithm tester.
- *  param: n number of elements
+ *  Test function for Reverse List algorithm
+ *  param: n  elements
 *************************************************/
-void reverseListTester(int n)
+bool reverseListTester(int n)
 {
-    assert(n >= 0); // element number check
+    CHECK(n >= 0); // element number check
     vector<int> nums(n, 0);
     srand(time(NULL)); //rand seed
     for (int i = 0; i < n; i++)
@@ -193,18 +200,20 @@ void reverseListTester(int n)
     }
     ListNode *head = constructList(nums);
 
+	//< check test data is in right order.
     int c = n - 1;
     ListNode *tempHead = head;
-    while (tempHead) // check test data.
+    while (tempHead)
     {
         if (tempHead->val != nums[c])
         {
-            cout << "Test data error." << std::endl;
-            return;
+			LOG(ERROR) << "Single List order is error.";
+            return false;
         }
         tempHead = tempHead->next;
         --c;
     }
+	CHECK(c==-1);
     
     ListNode *result = reverseList(head); 
     c = 0; tempHead = result;
@@ -212,25 +221,26 @@ void reverseListTester(int n)
     {
         if (tempHead->val != nums[c])
         {
-            cout << "Element mismatch. index = " << c << std::endl;
-            return;
+			LOG(ERROR) << "Reverse Algorithm is wrong. Element mismatch @index=" << c;
+            return false;
         }
         tempHead = tempHead->next;
         ++c;
     }
-    destructList(result); //release memory.
-    cout << "Algorithm is correct." << std::endl;
+	CHECK(c==n);
+	CHECK(destructList(result) == n); // release memory
+	LOG(ERROR) << "Reverse Algorithm is correct.";
+	return true;
 }
 
-#if !defined(BUILD_LIBRARY)
+//#if !defined(BUILD_LIBRARY)
 /*************************************************
  * list algorithm tester.
 *************************************************/
 int main(int argc, char** argv)
 {
-  logger.setLevel(DEBUG);
-  logger.setLineLevel(DEBUG);
   ENTER_FUNCTION;
+
   int n;  //input size
   while (true)
   {
@@ -246,4 +256,4 @@ int main(int argc, char** argv)
   EXIT_FUNCTION;
   return 0;
 }
-#endif
+//#endif

@@ -1,42 +1,176 @@
-cmake_minimum_required(VERSION 2.8)
-project(algorithms)
+cmake_minimum_required (VERSION 3.6)
+project (Algorithms-Test)
 
-set(CMAKE_BUILD_TYPE Debug)
-message("-- Set build type: " ${CMAKE_BUILD_TYPE})
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithDebInfo" CACHE STRING "Configuration types" FORCE)
 
-add_definitions("-DBUILD_LIB")
-message("-- Add build option: BUILD_LIB.")
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 
-if (WIN32)
-	#set(OpenCV_STATIC true)
-	add_definitions("-D_SCL_SECURE_NO_WARNINGS")
+if(NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glog")
+  message(FATAL_ERROR "The glog submodule directory is missing! "
+    "You probably did not clone the project with --recursive, or first checked out "
+    "before it was added. It is possible to recover by running "
+    "\"git submodule update --init --recursive\"")
 endif()
 
-if(UNIX)
-    # Should add c++11 support check here.
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  message ("-- Enable c++11")
-endif(UNIX)
- 
-include_directories("./")
-message ("-- Incude current directory into search path.")
+SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON) 
 
-# Build Library
-add_library(algorithms 
-	strings.cpp
-	combination.cpp
-    random.cpp
-    misc.cpp
-    bits.cpp
+## 3rd party dependencies
+#######################################################################################
+if(WIN32)
+  add_definitions( -D GOOGLE_GLOG_DLL_DECL= )
+endif()
+set(WITH_GFLAGS OFF CACHE BOOL "Use gflags")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL " " FORCE)
+set(BUILD_TESTING OFF CACHE BOOL "Build the glog unit test.")
+#message(STATUS "OPT BEFORE=${BUILD_TESTING}")
+add_subdirectory(thirdparty/glog)
+#message(STATUS "OPT AFTER=${BUILD_TESTING}")
+set_property(TARGET glog PROPERTY FOLDER "dependencies")
+include_directories (
+  ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glog/src
+  ${CMAKE_BINARY_DIR}/thirdparty/glog
 )
-# target_link_libraries(inpaint ${OpenCV_LIBRARIES})
-	
-# Testes
-add_executable(subsetTester algorithms.h test/subsetTester.cpp)
-target_link_libraries(subsetTester algorithms)
 
-add_executable(dataSourceTester algorithms.h test/dataSourceTester.cpp)
-target_link_libraries(dataSourceTester algorithms)
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/
+)
 
-add_executable(miscTester algorithms.h test/miscTester.cpp)
-target_link_libraries(miscTester algorithms)
+file(GLOB  SORT_SRC_FILES
+	${CMAKE_SOURCE_DIR}/sort.cpp
+)
+file(GLOB  List_SRC_FILES
+	${CMAKE_SOURCE_DIR}/list.cpp
+)
+
+
+## Output include directory for debug
+#######################################################################################
+get_property(includes DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach(dir ${includes})
+    message(STATUS "include dir='${dir}'")
+endforeach()
+
+## Reorg source code structure
+#######################################################################################
+foreach(f ${SORT_SRC_FILES})
+    # Get the path of the file relative to ${DIRECTORY},
+    # then alter it (not compulsory)
+    file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
+    set(SRCGR "Sort-Test/${SRCGR}")
+
+    # Extract the folder, ie remove the filename part
+    string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
+
+    # Source_group expects \\ (double antislash), not / (slash)
+    string(REPLACE / \\ SRCGR ${SRCGR})
+    source_group("${SRCGR}" FILES ${f})
+endforeach()
+
+foreach(f ${List_SRC_FILES})
+    # Get the path of the file relative to ${DIRECTORY},
+    # then alter it (not compulsory)
+    file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
+    set(SRCGR "List-Test/${SRCGR}")
+
+    # Extract the folder, ie remove the filename part
+    string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
+
+    # Source_group expects \\ (double antislash), not / (slash)
+    string(REPLACE / \\ SRCGR ${SRCGR})
+    source_group("${SRCGR}" FILES ${f})
+endforeach()
+
+## custom settings
+#######################################################################################
+set(ENABLE_HIDECONSOLE_BUILD FALSE CACHE BOOL "TRUE to hide console for Windows sys" FORCE)
+if(ENABLE_HIDECONSOLE_BUILD)
+	message(STATUS "Console is hidden")
+else()
+	message(STATUS "Console is visible")
+endif()
+
+## preproc
+#######################################################################################
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+add_definitions(-D__STDC_FORMAT_MACROS)
+add_definitions(-DBX_CONFIG_ENABLE_MSVC_LEVEL4_WARNINGS=1)
+add_definitions(-D__STDC_LIMIT_MACROS)
+add_definitions(-D__STDC_CONSTANT_MACROS)
+add_definitions(-DUSE_DL_PREFIX)
+if(${ENABLE_HIDECONSOLE_BUILD})
+	if(MSVC)
+		add_definitions(-DWIN32)
+		add_definitions(-D_WIN32)
+		add_definitions(-DNOMINMAX)
+	endif()
+endif()
+
+if(WINDOWS)
+  set(GUI_TYPE WIN32)
+elseif(MACOSX)
+  set(GUI_TYPE MACOSX_BUNDLE)
+endif()
+
+## external libraries
+#######################################################################################
+find_package(OpenMP)
+if(OPENMP_FOUND)
+	message(STATUS "OpenMP found")
+	if(MSVC)
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /openmp")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp")
+		#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+	endif()
+endif()
+
+## link options
+#######################################################################################
+if(MSVC)
+    if(ENABLE_HIDECONSOLE_BUILD)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+    else()
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE ")
+        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE")
+    endif()
+endif(MSVC)
+
+SET(LINK_OPTIONS " ")
+
+
+## macro definition
+#######################################################################################
+macro(default_property EXE_NAME)
+    message(STATUS "set default output property of target:${EXE_NAME}")
+    set_target_properties(${EXE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin )
+    set_target_properties(${EXE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin )
+    set_target_properties(${EXE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_SOURCE_DIR}/bin )
+    set_target_properties(${EXE_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+    set_target_properties(${EXE_NAME} PROPERTIES RELWITHDEBINFO_POSTFIX "RelWithDebInfo")
+    set_target_properties(${EXE_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+	if(ENABLE_HIDECONSOLE_BUILD)
+		if(WINDOWS)
+			set_target_properties(${EXE_NAME} PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:WINDOWS")
+			set_target_properties(${EXE_NAME} PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
+		endif()
+	endif()
+endmacro()
+
+## target: Sort
+#######################################################################################
+set(EXE_NAME "Sort-Test")
+add_executable(${EXE_NAME} ${SORT_SRC_FILES})
+target_link_libraries(${EXE_NAME} glog)
+default_property(${EXE_NAME})
+
+## target: List
+#######################################################################################
+set(EXE_NAME "List-Test")
+add_executable(${EXE_NAME} ${List_SRC_FILES})
+target_link_libraries(${EXE_NAME} glog)
+default_property(${EXE_NAME})
+
+#######################################################################################
+##For reference
+##https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#target-properties
+#######################################################################################
