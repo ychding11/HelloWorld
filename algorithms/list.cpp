@@ -33,11 +33,13 @@
 #include <cassert>
 #include <map>
 #include <vector>
+#include <algorithm>
 #include <iostream>
 
 #include <glog/logging.h>
 
 #include "list.h"
+#include "profiler.h"
 
 using std::cin;
 using std::cout;
@@ -73,17 +75,15 @@ ListNode* reverseList(ListNode* head)
     return tempHead.next;
 }
     
-/*************************************************
+/**************************************************************
     *  rotateRight. 
     *  example:
     *  1->2->3->4->5->NULL and k = 2.
     *  4->5->1->2->3->NULL.
 	*  Idea: 
-	*  1. find right cut point and glue two list part
-	*     in new order.
-	*  2. if k is large, it should mod list length n.
-	*     so a very big k is valid.
-*************************************************/
+	*  1. find cut point and glue two list parts in new order.
+	*  2. if k is large, it should mod list length n. so a big k is valid.
+**************************************************************/
 ListNode *rotateRight(ListNode *head, int k) 
 {
     again:  
@@ -113,14 +113,14 @@ ListNode *rotateRight(ListNode *head, int k)
 *************************************************/
 ListNode* removeNthFromEnd(ListNode* head, int n) 
 {
-    assert((head != NULL) && (n > 0));
+    CHECK((head != nullptr) && (n > 0));
     ListNode *p, *q, *prv;
-    p = q = head; prv = NULL;
+    p = q = head; prv = nullptr;
     int i = 0;
     for (i = 0; q && i < n; i++, q = q->next); //move n step from head-->tail
     if (!q && i < n)
     {
-        printf("Error, invalid param n = %d, line: %d\n", n, __LINE__);
+		LOG(ERROR) << "Error, Invalid Param n = " << n;
         return head;
     }
     while (q) //continue moving p && q start moving
@@ -128,6 +128,8 @@ ListNode* removeNthFromEnd(ListNode* head, int n)
         prv = p; p = p->next;  
         q = q->next; 
     }
+
+	//< if parameter is valid, p pointer to node to delete
     if (!prv)
     { 
         ListNode *ret = p->next;
@@ -192,29 +194,32 @@ uint32_t destructList(ListNode *head)
 bool reverseListTester(int n)
 {
     CHECK(n >= 0); // element number check
-    vector<int> nums(n, 0);
-    srand(time(NULL)); //rand seed
-    for (int i = 0; i < n; i++)
-    {
-        nums[i] =  rand() % n;
-    }
-    ListNode *head = constructList(nums);
+
+	core::CPUProfiler profiler("List reverse test");
+
+	vector<int> nums(n, 0);
+	srand(time(NULL)); //rand seed
+	for (int i = 0; i < n; i++)
+	{
+		nums[i] = rand() % n;
+	}
+	ListNode *head = constructList(nums);
 
 	//< check test data is in right order.
-    int c = n - 1;
-    ListNode *tempHead = head;
-    while (tempHead)
-    {
-        if (tempHead->val != nums[c])
-        {
+	int c = n - 1;
+	ListNode *tempHead = head;
+	while (tempHead)
+	{
+		if (tempHead->val != nums[c])
+		{
 			LOG(ERROR) << "Single List order is error.";
-            return false;
-        }
-        tempHead = tempHead->next;
-        --c;
-    }
-	CHECK(c==-1);
-    
+			return false;
+		}
+		tempHead = tempHead->next;
+		--c;
+	}
+	CHECK(c == -1);
+
     ListNode *result = reverseList(head); 
     c = 0; tempHead = result;
     while (tempHead)
@@ -233,12 +238,16 @@ bool reverseListTester(int n)
 	return true;
 }
 
+std::unordered_map<std::string, core::ProfilerEntry> core::CPUProfiler::ProfilerData;
+
 //#if !defined(BUILD_LIBRARY)
 /*************************************************
  * list algorithm tester.
 *************************************************/
 int main(int argc, char** argv)
 {
+  core::CPUProfiler::begin();
+
   ENTER_FUNCTION;
 
   int n;  //input size
@@ -246,14 +255,16 @@ int main(int argc, char** argv)
   {
     cout << "Enter elements number:";
     cin >> n;
-    if (-1 == n)
+    if (0 >= n)
     {
         cout << "Game Over.";
-        return 0;
+		break;
     }
     reverseListTester(n);
   }
   EXIT_FUNCTION;
+  auto report = core::CPUProfiler::end();
+  LOG(INFO) << report;
   return 0;
 }
 //#endif

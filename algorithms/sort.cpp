@@ -35,6 +35,7 @@
 
 #include <glog/logging.h>
 
+#include "profiler.h"
 
 //#define ENTER_FUNCTION logger << ">>>>" << __FUNCTION__ << std::endl
 //#define EXIT_FUNCTION  logger << "<<<<" << __FUNCTION__ << std::endl
@@ -44,7 +45,7 @@
 
 #define BUFSIZE 1024
 
-//#define PERFORMANCE_METER
+#define PERFORMANCE_METER
 
 typedef int DataType;
 
@@ -66,8 +67,7 @@ void prepare_random_data(int n)
     ENTER_FUNCTION;
     
     #ifdef PERFORMANCE_METER
-    time_t tm1, tm2;
-    time(&tm1); /* get current time */
+	core::CPUProfiler profiler("Generate random data");
     #endif
 
     srand(time(NULL)); 
@@ -75,12 +75,6 @@ void prepare_random_data(int n)
     {        
         gRawDataSet[i] = rand() % (n * 10); // % DATA_SET_SIZE;
     }
-
-    #ifdef PERFORMANCE_METER
-    time(&tm2);
-    double seconds = difftime(tm2, tm1); /* return double */
-    printf("[Prepare data time] = %.lf seconds!\n", seconds);
-    #endif
 
     EXIT_FUNCTION;
 }
@@ -104,8 +98,7 @@ void gen_distinct_rand(int m, int n)
     ENTER_FUNCTION;
     
     #ifdef PERFORMANCE_METER
-    time_t tm1, tm2;
-    time(&tm1); /* get current time */
+	core::CPUProfiler profiler("Generate distinct sorted random data");
     #endif
 
     int i, j;
@@ -119,12 +112,6 @@ void gen_distinct_rand(int m, int n)
             //logger << i << std::endl;      
         }
     }
-
-    #ifdef PERFORMANCE_METER
-    time(&tm2);
-    double seconds = difftime(tm2, tm1); /* return double */
-    printf("[Run time] %.lf s!\n", seconds);
-    #endif
 
     EXIT_FUNCTION;
 }
@@ -207,8 +194,7 @@ void simpleInsertSort(DataType a[], int n)
     CHECK(a != NULL && n > 1);
    
     #ifdef PERFORMANCE_METER
-    time_t tm1, tm2;
-    time(&tm1); /* get current time */
+	core::CPUProfiler profiler("Simple Insert Sort");
     #endif
 
     int i, j;
@@ -224,12 +210,6 @@ void simpleInsertSort(DataType a[], int n)
         }
         a[i + 1] = v; /* right place for a[j] */
     }
-
-    #ifdef PERFORMANCE_METER
-    time(&tm2);
-    double seconds = difftime(tm2, tm1); /* return double */
-    printf("[Simple insert sort time] = %.lf seconds!\n", seconds);
-    #endif
 
     EXIT_FUNCTION;
 }
@@ -251,8 +231,7 @@ void bubble_sort(DataType a[], int n)
     CHECK(a != NULL && n > 1);
 
     #ifdef PERFORMANCE_METER
-    time_t tm1, tm2;
-    time(&tm1); /* get current time */
+	core::CPUProfiler profiler("Bubble Sort");
     #endif
 
     int i, j, sorted = 0;
@@ -356,8 +335,7 @@ void quick_sort(DataType a[], int n)
     CHECK(a != nullptr && n > 1);
 
     #ifdef PERFORMANCE_METER
-    clock_t clk1, clk2;
-    clk1 = clock(); /* get current clcok ticks elapsed since epoch */
+	core::CPUProfiler profiler("Quick Sort");
     #endif
     
     partition(a, 0, n - 1); /* sort array recursivly by partition */
@@ -390,7 +368,7 @@ public:
     PriQueue(int m)
     : _maxsize(m), _n(0)
     {
-        _p = new T[_maxsize + 1]; // how about allocation fail?
+        _p = new T[_maxsize + 1]; //< how about allocation fail ?
     }
     
     void insert(T t) 
@@ -425,6 +403,11 @@ public:
 template <class DataType>
 void heapSort(DataType a[], int n)
 {
+    #ifdef PERFORMANCE_METER
+	core::CPUProfiler profiler("Heap Sort");
+    #endif
+
+    CHECK(a != NULL && n > 1);
     PriQueue<DataType> prique(n);
     for (int i = 0; i < n; i++)
     {
@@ -457,6 +440,10 @@ int test(unsigned int i) { return      BitMap[i >> BIT_SORT_SHIFT] &   (1 << (i 
 *********************************************************************/
 void bit_sort(DataType a[], int n)
 {
+    #ifdef PERFORMANCE_METER
+	core::CPUProfiler profiler("Bit Sort");
+    #endif
+
     CHECK(a != NULL && n > 1);
 	memset(BitMap,0,sizeof(BitMap));
 
@@ -556,6 +543,10 @@ public:
     *************************************************/
     ListNode *sortList(ListNode *head) 
     {
+		#ifdef PERFORMANCE_METER
+		core::CPUProfiler profiler("Merge Sort");
+		#endif
+
         if (!head || !head->next) //< It is a termination condition
         {
             return head;
@@ -611,7 +602,7 @@ void mergeSortTester(int n)
     {
         if (head2->val > head2->next->val)
         {
-			LOG(ERROR) << "Unsorted " << head2->val << " " << head2->next->val;
+			LOG(ERROR) << "Merge Sort Fails, Unsorted " << head2->val << " " << head2->next->val;
             return;
         }
         head2 = head2->next;
@@ -682,6 +673,8 @@ void SortTest(int typeSort, int numElement, int numIteration)
     }
 }
 
+std::unordered_map<std::string, core::ProfilerEntry> core::CPUProfiler::ProfilerData;
+
 /*************************************************
  *  Tester
  *  a simple tester
@@ -702,9 +695,12 @@ int main(int argc, char** argv)
 	CHECK(numElement <= DATA_SET_SIZE);
 	CHECK(numElement > 0 && numIteration > 0 && typeSort < ESortType::SORT_TYPE_COUNT);
 
+	core::CPUProfiler::begin();
+
 	for (int i = 0; i < ESortType::SORT_TYPE_COUNT; ++i)
 		SortTest(i, numElement, numIteration);
 
+	LOG(INFO) << core::CPUProfiler::end();
     EXIT_FUNCTION;
     return 0;
 }

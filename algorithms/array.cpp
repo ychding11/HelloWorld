@@ -33,20 +33,20 @@
 
 using namespace std;
 
-/*************************************************
- * Function: Given an integer array containing only
- * 1, 0 and a integer m. Flip m 0s at most so that 
- * number of consecutive 1s is maximized.
+/************************************************************************************
+ * Function:
+ *   Given an array containing only 1 and 0, an integer m. Flip m 0s at most so that 
+ *   number of consecutive 1s is maximized.
  *   
  * Param[in]:  nums array of '1' '0' 
  * Param[in]:  max number of flipping 0 to 1 
  *   
- * Retrun: index vector indicating which elements
- * flipped.
+ * Retrun:
+ *   "index vector* indicating which elements to flip.
  *   
  * Notice:   
  * Ideas:  sliding window.
-*************************************************/
+************************************************************************************/
 vector<int> flips(vector<int> &nums, int m)
 {
 	vector<int> ret;
@@ -101,7 +101,7 @@ vector<int> flips(vector<int> &nums, int m)
 void reorderIndex(vector<int> &nums, vector<int> &index)
 {
 	int n = nums.size();
-	if (n <= 1) return; // no need to reorder
+	if (n <= 1) return; //< no need to reorder
 	for (int i = 0; i < n; i++)
 	{
 		while (index[i] != i) //disorder
@@ -147,36 +147,6 @@ int NumberOfStrictlyIncreasedSubarrays(const vector<int> &array)
 }
 
 /*************************************************
- * Function: Given two sorted integer array, find
- * the intersecting elements. That is all elements 
- * appears in both arrays.
- *   
- * Param[in]: array
- * Param[in]: array
- *   
- * Retrun: array, intersecting elements 
- * Ideas:  
- * Notice:  Two array must be sorted. 
-*************************************************/
-vector<int> intersectOfSortedArray(const vector<int> &a, const vector<int> &b)
-{
-	vector<int> ret;
-	int m = a.size(), n = b.size();
-	int i, j;
-	for (i = 0, j = 0; i < m && j < n;)
-	{
-		if (a[i] < b[j]) ++i;
-		else if (a[i] > b[j]) ++j;
-		else
-		{
-			ret.push_back(a[i]);	
-			++i; ++j;
-		}
-	}
-	return ret;
-}
-
-/*************************************************
  * Function: 
  *   
  * Param[in]:   
@@ -205,6 +175,35 @@ int longestIncreasingSubsequence(const vector<int> &nums)
         }
     }
     return ret;
+}
+
+/**************************************************************
+ * Function:
+ *   Given two sorted integer array, find all elements appears in both arrays.
+ *   
+ * Param[in]: array
+ * Param[in]: array
+ *   
+ * Retrun: array, intersecting elements 
+ * Ideas:  
+ * Notice:  Two array must be sorted. 
+**************************************************************/
+vector<int> intersectOfSortedArray(const vector<int> &a, const vector<int> &b)
+{
+	vector<int> ret;
+	int m = a.size(), n = b.size();
+	int i, j;
+	for (i = 0, j = 0; i < m && j < n;)
+	{
+		if (a[i] < b[j]) ++i;
+		else if (a[i] > b[j]) ++j;
+		else
+		{
+			ret.push_back(a[i]);	
+			++i; ++j;
+		}
+	}
+	return ret;
 }
 
 int main()

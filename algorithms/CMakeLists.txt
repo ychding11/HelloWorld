@@ -33,6 +33,8 @@ include_directories (
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/
+  ${CMAKE_CURRENT_SOURCE_DIR}/common/
+  ${CMAKE_CURRENT_SOURCE_DIR}/common/profiler.h
 )
 
 file(GLOB  SORT_SRC_FILES
@@ -40,6 +42,12 @@ file(GLOB  SORT_SRC_FILES
 )
 file(GLOB  List_SRC_FILES
 	${CMAKE_SOURCE_DIR}/list.cpp
+)
+file(GLOB  Array_SRC_FILES
+	${CMAKE_SOURCE_DIR}/array.cpp
+)
+file(GLOB  Tree_SRC_FILES
+	${CMAKE_SOURCE_DIR}/binTree.cpp
 )
 
 
@@ -71,6 +79,34 @@ foreach(f ${List_SRC_FILES})
     # then alter it (not compulsory)
     file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
     set(SRCGR "List-Test/${SRCGR}")
+
+    # Extract the folder, ie remove the filename part
+    string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
+
+    # Source_group expects \\ (double antislash), not / (slash)
+    string(REPLACE / \\ SRCGR ${SRCGR})
+    source_group("${SRCGR}" FILES ${f})
+endforeach()
+
+foreach(f ${Array_SRC_FILES})
+    # Get the path of the file relative to ${DIRECTORY},
+    # then alter it (not compulsory)
+    file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
+    set(SRCGR "Array-Test/${SRCGR}")
+
+    # Extract the folder, ie remove the filename part
+    string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
+
+    # Source_group expects \\ (double antislash), not / (slash)
+    string(REPLACE / \\ SRCGR ${SRCGR})
+    source_group("${SRCGR}" FILES ${f})
+endforeach()
+
+foreach(f ${Tree_SRC_FILES})
+    # Get the path of the file relative to ${DIRECTORY},
+    # then alter it (not compulsory)
+    file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
+    set(SRCGR "Tree-Test/${SRCGR}")
 
     # Extract the folder, ie remove the filename part
     string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
@@ -167,6 +203,20 @@ default_property(${EXE_NAME})
 #######################################################################################
 set(EXE_NAME "List-Test")
 add_executable(${EXE_NAME} ${List_SRC_FILES})
+target_link_libraries(${EXE_NAME} glog)
+default_property(${EXE_NAME})
+
+## target: Array
+#######################################################################################
+set(EXE_NAME "Array-Test")
+add_executable(${EXE_NAME} ${Array_SRC_FILES})
+target_link_libraries(${EXE_NAME} glog)
+default_property(${EXE_NAME})
+
+## target: Tree
+#######################################################################################
+set(EXE_NAME "Tree-Test")
+add_executable(${EXE_NAME} ${Tree_SRC_FILES})
 target_link_libraries(${EXE_NAME} glog)
 default_property(${EXE_NAME})
 
