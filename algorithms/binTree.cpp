@@ -34,15 +34,26 @@
 #include<deque>
 #include<unordered_set> //only in c++11 or above
 
+#include <glog/logging.h>
+
 using namespace std;
 
-struct TreeNode
+template<typename T>
+static T mymin(T a, T b)
 {
-	int val;
-	TreeNode *left, *right;
+	return a < b ? a : b;
+}
 
-	TreeNode(int v) : val(v), left(NULL), right(NULL) {}
+template<typename T>
+struct TTreeNode
+{
+	T val;
+	TTreeNode *left, *right;
+
+	TTreeNode(T v) : val(v), left(NULL), right(NULL) {}
 };
+
+typedef TTreeNode<int> TreeNode;
 
 /*************************************************
  * Function: Given an integer sequence, judge whether
@@ -73,9 +84,9 @@ bool isValidBSTpreOrderSequence (const vector<int> &seq)
 	return true;
 }
 
-/*************************************************
- * Function: For a node, print all its ancestors in
- * BST.
+/************************************************************************
+ * Function:
+ *   For a node, print all its ancestors in BST.
  *   
  * Param[in]: root of a bst   
  * Param[in]: searched node 
@@ -84,7 +95,7 @@ bool isValidBSTpreOrderSequence (const vector<int> &seq)
  *   
  * Notice:  suppose the searched node is in root 
  * Ideas: use stack implement in-order traversal 
-*************************************************/
+************************************************************************/
 void printAncestors(TreeNode *root, TreeNode *e)
 {
 	if (!root || !e) return;
@@ -117,16 +128,16 @@ void printAncestors(TreeNode *root, TreeNode *e)
 	printf("\n");
 }
 
-/*************************************************
- * Function: print elements in a binary tree in post
- * order by iterative way.
+/**************************************************************************
+ * Function:
+ *   print elements in a binary tree in post order by iterative way.
  *   
  * Param[in]:  binary tree root 
  *   
  * Retrun: void
  *   
  * Notice:  implements iterative method by two stacks 
-*************************************************/
+**************************************************************************/
 void postOrderIterativeTraversal(TreeNode * root)
 {
 	if (!root) return;
@@ -147,7 +158,7 @@ void postOrderIterativeTraversal(TreeNode * root)
 	printf("\n");
 }
 
-/*************************************************
+/**************************************************************************
  * Function: Judge whether a binary tree is complete
  *   
  * Param[in]:  root of binary tree 
@@ -162,7 +173,7 @@ void postOrderIterativeTraversal(TreeNode * root)
  * 
  * Notice:  For a complete binary tree, a node has
  * no left child imply it has no right node.
-*************************************************/
+**************************************************************************/
 bool isCompleteBinaryTree(const TreeNode *root)
 {
 	if (!root) return true; // empty tree is complete
@@ -192,9 +203,9 @@ bool isCompleteBinaryTree(const TreeNode *root)
 	return true;
 }
 
-/*************************************************
- * Function: Caculate given binary tree height by 
- * level order traversal.
+/********************************************************************
+ * Function:
+ *   Caculate given binary tree height by level order traversal.
  *   
  * Param[in]: root, the root node of binary tree 
  *   
@@ -203,7 +214,7 @@ bool isCompleteBinaryTree(const TreeNode *root)
  * Ideas:   
  * Notice: How to tell different levels and
  * increase tree height.
-*************************************************/
+********************************************************************/
 int binaryTreeHeightByLevel(const TreeNode *root)
 {
 	int height = 0;
@@ -252,26 +263,28 @@ const TreeNode* lowestCommAncestor(const TreeNode *root, int v1, int v2)
 	return root;
 }
 
-/*************************************************
+/*************************************************************************
  * Function: Calculate the minimum depth of binary tree.
- * we define minimum depth is the number of nodes on the
- * shortest path from root to leaf.
+ *
+ * Define:
+ * minimum depth is the number of nodes on the shortest path from root to leaf.
  *   
  * Param[in]:  root, root node of binary search tree 
- *   
- * Retrun: minimum depth of binary tree. 
+ * Retrun:     minimum depth of binary tree. 
  *   
  * Notice: It's a recursive solution. 
  *     1
  *  2    
  *  The minimum depth of the above tree is 2 not 1.
-*************************************************/
+ *
+ * This solution perfectly demostrates the beauty of recursion.
+*************************************************************************/
 int minDepth(const TreeNode *root)
 {
 	if (!root) return 0;
 	if (!root->left) return minDepth(root->right) + 1;
 	if (!root->right) return minDepth(root->left) + 1;
-	return min(minDepth(root->left), minDepth(root->right)) + 1;
+	return mymin(minDepth(root->left), minDepth(root->right)) + 1;
 }
 
 /*************************************************
@@ -366,9 +379,9 @@ vector<int> postOrderTraversal(const TreeNode *root)
 {
 	vector<int> ret;
 	if (!root) return vector<int>();
-	vector<int> lc = inOrderTraversal(root->left);
+	vector<int> lc = postOrderTraversal(root->left);
 	ret.insert(ret.end(), lc.begin(), lc.end());
-	vector<int> rc = inOrderTraversal(root->right);
+	vector<int> rc = postOrderTraversal(root->right);
 	ret.insert(ret.end(), rc.begin(), rc.end());
 	ret.push_back(root->val);
 	return ret;
@@ -399,9 +412,8 @@ bool subArray(const vector<int> &array1, const vector<int> &array2)
 	return false;
 }
 
-/*************************************************
- * Function: Determine whether binary tree root2 is
- * a sub tree of binary tree root1.
+/***************************************************************************
+ * Function: Determine whether binary tree root2 is a sub tree of binary tree root1.
  *   
  * Param[in]: root1   
  * Param[in]: root2
@@ -409,12 +421,12 @@ bool subArray(const vector<int> &array1, const vector<int> &array2)
  * Retrun: bool, indicating whether root2 is a subtree
  * of root1.
  *   
- * Idea: 1. binary tree root2 is a subtree of root1
- * imply that in-order traversal sequence is subarray 
+ * Idea:
+ *   1. binary tree root2 is a subtree of root1 imply the in-order traversal sequence is subarray 
  * of root1's in-order traversal sequence.
- * 2. rule 1 is true for post-order traversal sequence.
+ *   2. rule 1 is true for post-order traversal sequence.
  * Notice:   
-*************************************************/
+***************************************************************************/
 bool isSubTree(const TreeNode *root1, const TreeNode *root2)
 {
 	vector<int> seq1, seq2;
@@ -427,7 +439,7 @@ bool isSubTree(const TreeNode *root1, const TreeNode *root2)
 	return true;
 }
 
-/*************************************************
+/******************************************************************
  * Function: Find the min distance in a binary tree. 
  * Item distance refers to from root node to leaf node.
  *   
@@ -438,7 +450,7 @@ bool isSubTree(const TreeNode *root1, const TreeNode *root2)
  * Retrun: void 
  * Ideas:  
  * Notice:   
-*************************************************/
+******************************************************************/
 void minDistance(const TreeNode *root, int level, int &minDist)
 {
 	if (!root) return;
@@ -513,7 +525,7 @@ int minDistanceToLeaf(const TreeNode *root, const TreeNode *node)
 	return ret;
 }
 
-/*************************************************
+/**************************************************************************
  * Function: Count single-valued subtrees in a
  * binary tree.
  *   
@@ -527,7 +539,7 @@ int minDistanceToLeaf(const TreeNode *root, const TreeNode *node)
  *    2
  *  2   2 
  *  A tree itself is also a subtree.
-*************************************************/
+**************************************************************************/
 bool isSingleValued(TreeNode *root, int &count)
 {
 	if (!root) return true;
@@ -540,7 +552,7 @@ bool isSingleValued(TreeNode *root, int &count)
 	return true;
 }
 
-/*************************************************
+/**************************************************************************
  * Function: Given two binary search tree, Print common 
  * nodes of two binary trees.
  *   
@@ -551,12 +563,46 @@ bool isSingleValued(TreeNode *root, int &count)
  * Ideas: Find intersect elements of two sorted 
  * array. Time Complexity is O(m + n) 
  * Notice: The idea is only suitable for BST 
-*************************************************/
+**************************************************************************/
 void printCommonNodeOfBinaryTree(const TreeNode *root1, const TreeNode *root2)
 {
 }
 
+template<typename T>
+TTreeNode<T>* buildBST(/*const std::vector<T>& data*/ const T a[], int p, int q)
+{
+	if (p > q)  return nullptr;
+	if (p == q) return new TTreeNode<T>(a[q]);
+	int m = (p + q) / 2;
+	TTreeNode<T> *root = new TTreeNode<T>(a[m]);
+
+	root->left = buildBST(a, p, m - 1);
+	root->right = buildBST(a, m + 1, q);
+	return root;
+}
+
+
+#include <algorithm>
+//< function object to generate an ascending sequence 
+template<typename T>
+struct AscendingNumber 
+{
+	AscendingNumber() { current = 0; }
+
+	T operator()() { return current++; }
+private:
+	T current;
+};
+
 int main()
 {
+	AscendingNumber<int>  numberGenerator;
+	std::vector<int> testData(100);
+	std::generate(testData.begin(), testData.end(), numberGenerator);
+
+	TTreeNode<int> *root = buildBST(testData.data(), 0, testData.size()-1);
+
+	LOG(INFO) << std::is_sorted(testData.begin(), testData.end());
+
 	return 0;
 }
