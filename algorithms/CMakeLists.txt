@@ -192,6 +192,14 @@ macro(default_property EXE_NAME)
 	endif()
 endmacro()
 
+
+## Source file Not need to list
+#######################################################################################
+file ( GLOB GTEST_SOURCE
+    ${CMAKE_SOURCE_DIR}/thirdparty/gtest/*.h
+    ${CMAKE_SOURCE_DIR}/thirdparty/gtest/*.cc
+)
+
 ## target: Sort
 #######################################################################################
 set(EXE_NAME "Sort-Test")
@@ -216,7 +224,7 @@ default_property(${EXE_NAME})
 ## target: Tree
 #######################################################################################
 set(EXE_NAME "Tree-Test")
-add_executable(${EXE_NAME} ${Tree_SRC_FILES})
+add_executable(${EXE_NAME} ${Tree_SRC_FILES} ${GTEST_SOURCE})
 target_link_libraries(${EXE_NAME} glog)
 default_property(${EXE_NAME})
 

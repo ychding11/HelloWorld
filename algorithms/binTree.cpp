@@ -594,15 +594,38 @@ private:
 	T current;
 };
 
+
+#include "thirdparty/gtest/gtest.h"
+
+
+TEST(TreeTest, InTraversal)
+{
+	AscendingNumber<int>  numberGenerator;
+	std::vector<int> testData(100);
+	std::generate(testData.begin(), testData.end(), numberGenerator);
+	auto ret = std::is_sorted(testData.begin(), testData.end());
+	EXPECT_EQ(ret, true);
+
+	TTreeNode<int> *root = buildBST(testData.data(), 0, testData.size()-1);
+	std::vector<int> inSequence = inOrderTraversal(root);
+	ret = inSequence == testData;
+	EXPECT_EQ(ret, true);
+}
+
+
+#if 0
 int main()
 {
 	AscendingNumber<int>  numberGenerator;
 	std::vector<int> testData(100);
 	std::generate(testData.begin(), testData.end(), numberGenerator);
+	LOG(INFO) << std::is_sorted(testData.begin(), testData.end());
 
 	TTreeNode<int> *root = buildBST(testData.data(), 0, testData.size()-1);
-
-	LOG(INFO) << std::is_sorted(testData.begin(), testData.end());
+	std::vector<int> inSequence = inOrderTraversal(root);
+	LOG(INFO) << (inSequence == testData);
 
 	return 0;
 }
+#endif
+
