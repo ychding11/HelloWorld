@@ -116,16 +116,16 @@ void reorderIndex(vector<int> &nums, vector<int> &index)
 	}
 }
 
-/*************************************************
- * Function: Given an integer array, find the number
- * of strictly increased subarrays in that array.
+/***********************************************************************
+ * Function:
+ *   Given an integer array, find the number of strictly increased subarrays
+ *   in that array.
  *   
  * Param[in]:  array, integer array 
- *   
- * Retrun: int, subarray number  
+ * Retrun:     int, subarray number  
  *   
  * Notice:   
-*************************************************/
+***********************************************************************/
 int NumberOfStrictlyIncreasedSubarrays(const vector<int> &array)
 {
 	int n = array.size();
@@ -138,24 +138,24 @@ int NumberOfStrictlyIncreasedSubarrays(const vector<int> &array)
 			++len; 
 		else
 		{
-			ret += len * (len - 1) / 2; len = 1;
+			ret += len * (len + 1) / 2; len = 1;
 		}
 	}
 	if (n > 1)
-		ret += len * (len - 1) / 2;
+		ret += len * (len + 1) / 2;
 	return ret;
 }
 
-/*************************************************
+/*********************************************************************
  * Function: 
  *   
  * Param[in]:   
  *   
- * Retrun: 
+ * Retrun: int, the length of longest increasing subsequence
  * Ideas:  
  * Notice:   
  * How to test it?
-*************************************************/
+*********************************************************************/
 int longestIncreasingSubsequence(const vector<int> &nums)
 {
     int n = nums.size();

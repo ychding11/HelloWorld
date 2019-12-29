@@ -526,9 +526,9 @@ int minDistanceToLeaf(const TreeNode *root, const TreeNode *node)
 }
 
 /**************************************************************************
- * Function: Count single-valued subtrees in a
- * binary tree.
- *   
+ * Function: Count single-valued subtrees in a  binary tree.
+ *  "Single Valued subtree" only contains one value in subtree.
+ *
  * Param[in]: root, root node of binary tree. 
  * Param[out]: count, single valued subtree number. 
  *   
@@ -548,7 +548,7 @@ bool isSingleValued(TreeNode *root, int &count)
 	if (leftSingled == false || rightSingled == false) return false;
 	if (root->left && root->val != root->left->val) return false;
 	if (root->right && root->val != root->right->val) return false;
-	++count;
+	++count; //< record the number of subtree until now
 	return true;
 }
 
