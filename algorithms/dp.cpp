@@ -37,11 +37,11 @@ using std::max;  //better
 using std::min;  //better 
 
 
-/*************************************************
- * Function: Given a mxn array, each cell of the
- * array contains an integer number. Caculcate number
- * of paths from left up to bottom right with constraint
- * that path sum equal to K
+/************************************************************************************
+ * Function:
+ *   Given a mxn array, each cell of the array contains an integer number.
+ *   Caculcate the number of paths from left up to bottom right with constraint
+ *   that path sum equal to K
  *   
  * Param[in]:   
  * Param[in]:   
@@ -50,11 +50,10 @@ using std::min;  //better
  * Param[in]:   
  *   
  * Retrun: int, path number 
- * Ideas: Recursion on a matrix. Each move has two
- * choices.
- * Notice:  Handle boundary. 
- * TODO: any better solutions?
-*************************************************/
+ * Ideas: Recursion on a matrix. Each move has two choices.
+ * Notice: Handle boundary. 
+ * TODO: any better solutions ?
+**************************************************************************************/
 int pathNumberWithK(const vector<vector<int>> &a, int m, int n, int c, const int K)
 {
 	if (m < 0 || n < 0) return 0;
@@ -63,8 +62,20 @@ int pathNumberWithK(const vector<vector<int>> &a, int m, int n, int c, const int
 		if (c + a[m][n] == K) return 1; // !caution
 	    else return 0;
 	}
-	return pathNumberWithK(a, m -1, n, c + a[m][n], K) +
-	    pathNumberWithK(a, m, n - 1, c + a[m][n], K);
+	return pathNumberWithK(a, m - 1, n,     c + a[m][n], K) +
+	       pathNumberWithK(a, m,     n - 1, c + a[m][n], K);
+}
+
+int PathSumEquatoK(const int **a, int m, int n, int c, const int K)
+{
+	if (m < 0 || n < 0) return 0;
+	if (m == 0 && n == 0)
+	{
+		if (c + a[m][n] == K) return 1; // !caution
+	    else return 0;
+	}
+	return PathSumEquatoK(a, m - 1, n,     c + a[m][n], K) +
+	       PathSumEquatoK(a, m,     n - 1, c + a[m][n], K);
 }
 
 

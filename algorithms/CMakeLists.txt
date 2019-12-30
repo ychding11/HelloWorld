@@ -217,7 +217,7 @@ default_property(${EXE_NAME})
 ## target: Array
 #######################################################################################
 set(EXE_NAME "Array-Test")
-add_executable(${EXE_NAME} ${Array_SRC_FILES})
+add_executable(${EXE_NAME} ${Array_SRC_FILES} ${GTEST_SOURCE})
 target_link_libraries(${EXE_NAME} glog)
 default_property(${EXE_NAME})
 
