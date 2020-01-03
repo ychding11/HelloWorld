@@ -207,6 +207,64 @@ vector<int> intersectOfSortedArray(const vector<int> &a, const vector<int> &b)
 	return ret;
 }
 
+/************************************************************************************
+* Function:
+*   Given a mxn array, each cell of the array contains an integer number.
+*   Caculcate the number of paths from left up to bottom right with constraint
+*   that path sum equal to K
+*
+* Param[in]:
+* Param[in]:
+* Param[in]:
+* Param[in]:
+* Param[in]:
+*
+* Retrun: int, path number
+* Ideas: Recursion on a matrix. Each move has two choices.
+* Notice: Handle boundary.
+* TODO: any better solutions ?
+**************************************************************************************/
+int pathNumberWithK(const vector<vector<int>> &a, int m, int n, int c, const int K)
+{
+    if (m < 0 || n < 0) return 0;
+    if (m == 0 && n == 0)
+    {
+        if (c + a[m][n] == K) return 1; // !caution
+        else return 0;
+    }
+    return pathNumberWithK(a, m - 1, n, c + a[m][n], K) +
+        pathNumberWithK(a, m, n - 1, c + a[m][n], K);
+}
+
+template<typename T>
+int AllPathOn2D(const std::vector<std::vector<T>>& a, int m, int n, std::vector<T> path, std::vector<std::vector<T>>& paths)
+{
+    if (m < 0 || n < 0) return 0; //< out of range
+    if (m == 0 && n == 0)
+    {
+        path.emplace_back(a[0][0]);
+        paths.emplace_back(path);
+        return 1; // !caution
+    }
+    path.emplace_back(a[m][n]);
+    return AllPathOn2D(a, m - 1, n, path, paths) +
+        AllPathOn2D(a, m, n - 1, path, paths);
+}
+
+template<typename T>
+int PathSumEquatoK(const T **a, int m, int n, int c, const int K)
+{
+    if (m < 0 || n < 0) return 0; //< out of range
+    if (m == 0 && n == 0)
+    {
+        if (c + a[m][n] == K) return 1; // !caution
+        else return 0; //< invalid
+    }
+    return PathSumEquatoK(a, m - 1, n, c + a[m][n], K) +
+        PathSumEquatoK(a, m, n - 1, c + a[m][n], K);
+}
+
+
 /*********************************************************************************
  * Function:
  *
@@ -246,6 +304,7 @@ int coinChange(int money, const vector<int> &coins)
 	return num;
 }
 
+//< list all possible solutions: [1 1 5] and [5 1 1] are two solutions.
 int coinChange2(int money, const vector<int> &coins, std::vector<int>& solution, std::vector<std::vector<int>>& solutions)
 {
 	if (money == 0)
@@ -267,6 +326,7 @@ int coinChange2(int money, const vector<int> &coins, std::vector<int>& solution,
 	return num;
 }
 
+//< list all possible solutions: [1 1 5] and [5 1 1] are one solutions.
 int coinChange3(int money, const vector<int> &coins, std::vector<int>& solution, std::vector<std::vector<int>>& solutions)
 {
 	if (money == 0)
@@ -374,4 +434,15 @@ TEST(DP, CoinChange3)
 	{
 		printSolution(10, *it);
 	}
+}
+
+TEST(PathOnGrid, AllPathOn2D)
+{
+    std::vector<std::vector<int>> a{ {1,2,3}, {4, 5, 6}, {7, 8, 9} };
+    std::vector<int> path;
+    std::vector<std::vector<int>> paths;
+
+    auto n = AllPathOn2D<int>(a, 2, 2, path, paths);
+    EXPECT_EQ(6, n);
+
 }
