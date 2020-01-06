@@ -190,7 +190,6 @@ static void display(DataType a[], int n)
 template <class DataType>
 void simpleInsertSort(DataType a[], int n)
 {
-    ENTER_FUNCTION;
     CHECK(a != NULL && n > 1);
    
     #ifdef PERFORMANCE_METER
@@ -210,8 +209,6 @@ void simpleInsertSort(DataType a[], int n)
         }
         a[i + 1] = v; /* right place for a[j] */
     }
-
-    EXIT_FUNCTION;
 }
 
 /*************************************************
@@ -227,7 +224,6 @@ void simpleInsertSort(DataType a[], int n)
 template<class DataType>
 void bubble_sort(DataType a[], int n)
 {
-    ENTER_FUNCTION;
     CHECK(a != NULL && n > 1);
 
     #ifdef PERFORMANCE_METER
@@ -247,8 +243,6 @@ void bubble_sort(DataType a[], int n)
             }
         }
     }
-
-    EXIT_FUNCTION;
 }
 
 /*************************************************
@@ -258,24 +252,23 @@ void bubble_sort(DataType a[], int n)
  *  do actual quick sorting here by recursion.
  *  partition elements in a[p,q] into two parts.
 *************************************************/
-/*************************************************
- * Function: This is a recursion function. It's a
- * quick sort helper. It divides the array into 
- * two parts by a pivot.
+/***************************************************************
+ * Function: It is a recursion function.
+ *           It is a quick sort helper.
  *   
  * Param[inout]: array  
  * Param[in]: array's left side index   
  * Param[in]: array's right side index   
  *   
  * Retrun: void 
- * Ideas:  
- * Notice: recursion terminate condition 
-*************************************************/
+ * Ideas: 
+ *       divides the array into two parts by a pivot recursively.
+ * Notice:
+ *       recursion terminate condition 
+***************************************************************/
 template <class DataType>
 static void partition(DataType a[], int p, int q)
 {
-    ENTER_FUNCTION;
-    
     if (p >= q) return; //< recursion terminate condition 
     DataType target = a[p]; //< pivot be selected randomly is better
     int i =p, j = q + 1;
@@ -305,7 +298,6 @@ static void partition(DataType a[], int p, int q)
     
     partition(a, p, j - 1);
     partition(a, j + 1, q);
-    EXIT_FUNCTION;
 }
 
 /*************************************************
@@ -331,7 +323,6 @@ static void partition(DataType a[], int p, int q)
 template <class DataType>
 void quick_sort(DataType a[], int n)
 {
-    ENTER_FUNCTION;
     CHECK(a != nullptr && n > 1);
 
     #ifdef PERFORMANCE_METER
@@ -339,25 +330,22 @@ void quick_sort(DataType a[], int n)
     #endif
     
     partition(a, 0, n - 1); /* sort array recursivly by partition */
-
-    EXIT_FUNCTION;
 }
 
-/*************************************************
- *  Priority Queue  Template.
- *  It based on MIN Heap.
- *  Implement two interfaces:
+/********************************************************************
+ *  Priority Queue
+ *  It is a MIN Heap.
+ *  Interfaces:
  *  1. insert().
  *  2. extract_min().
- *  NOTE: Implementation in class declaration will
- *        be regarded as inline function.
+ *  NOTE: Implementation in class declaration will be regarded as inline function.
  *        template should be put into header files.
-*************************************************/
+********************************************************************/
 template <class T> 
 class PriQueue
 {
 private:
-    T *_p;
+    T *_p;  //< should we use a unique_ptr<T[]> here ?
     int _n, _maxsize;
     void swap(int i, int j)
     { 
@@ -369,6 +357,11 @@ public:
     : _maxsize(m), _n(0)
     {
         _p = new T[_maxsize + 1]; //< how about allocation fail ?
+    }
+
+    ~PriQueue()
+    {
+        delete[] _p; //< delete a nullptr is valid
     }
     
     void insert(T t) 
