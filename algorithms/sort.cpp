@@ -32,6 +32,7 @@
 #include <ctime>
 #include <cassert>
 #include <vector>
+#include <unordered_map>
 
 #include <glog/logging.h>
 
@@ -616,6 +617,7 @@ enum ESortType //can improve with c++11
     SORT_TYPE_QUICK_SORT,
     SORT_TYPE_BIT_SORT,
     SORT_TYPE_Heap_SORT,
+    SORT_TYPE_Merge_SORT,
     SORT_TYPE_COUNT,
 };
 
@@ -626,6 +628,15 @@ const char* sort_type_name [ESortType::SORT_TYPE_COUNT] =
     "Quick Sort",
     "Bit Sort",
     "Heap Sort"
+};
+
+static std::unordered_map<ESortType, std::string> gSortAlgorithmNames{
+    {SORT_TYPE_SIMPLE_INSERT, "Simple Insert Sort"},
+    {SORT_TYPE_BUBBLE, "Bubble Sort"},
+    {SORT_TYPE_QUICK_SORT, "Quick Sort"},
+    {SORT_TYPE_BIT_SORT, "Bit Sort"},
+    {SORT_TYPE_Heap_SORT, "Heap Sort"},
+    {SORT_TYPE_Merge_SORT, "Merge Sort"},
 };
 
 typedef void (*SortFunction)(DataType a[], int n);
@@ -640,11 +651,12 @@ SortFunction sort_func_tbl[SORT_TYPE_COUNT] =
 };
 
 
-void SortTest(int typeSort, int numElement, int numIteration)
+void SortTest(ESortType typeSort, int numElement, int numIteration)
 {
-    LOG(INFO) << "type = " << sort_type_name[typeSort] << " Iteration = " << numIteration << " Elements = " << numElement << std:: endl;
+    CHECK(typeSort >= SORT_TYPE_SIMPLE_INSERT && typeSort < SORT_TYPE_COUNT);
+    LOG(INFO) << "type = " << gSortAlgorithmNames[typeSort] << " Iteration = " << numIteration << " Elements = " << numElement << std:: endl;
 
-    if (typeSort < 0) //test algorithm based on linked list
+    if (typeSort == SORT_TYPE_Merge_SORT) //< test algorithm based on linked list
     {
         for (int i = 0; i < numIteration; i++)
         {
@@ -666,6 +678,7 @@ void SortTest(int typeSort, int numElement, int numIteration)
     }
 }
 
+//< It's just a definition
 std::unordered_map<std::string, core::ProfilerEntry> core::CPUProfiler::ProfilerData;
 
 /*************************************************
@@ -691,7 +704,7 @@ int main(int argc, char** argv)
 	core::CPUProfiler::begin();
 
 	for (int i = 0; i < ESortType::SORT_TYPE_COUNT; ++i)
-		SortTest(i, numElement, numIteration);
+		SortTest(ESortType(i), numElement, numIteration);
 
 	LOG(INFO) << core::CPUProfiler::end();
     EXIT_FUNCTION;
