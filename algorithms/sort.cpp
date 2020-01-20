@@ -621,15 +621,6 @@ enum ESortType //can improve with c++11
     SORT_TYPE_COUNT,
 };
 
-const char* sort_type_name [ESortType::SORT_TYPE_COUNT] = 
-{
-    "Simple insert Sort",
-    "Bubble Sort",
-    "Quick Sort",
-    "Bit Sort",
-    "Heap Sort"
-};
-
 static std::unordered_map<ESortType, std::string> gSortAlgorithmNames{
     {SORT_TYPE_SIMPLE_INSERT, "Simple Insert Sort"},
     {SORT_TYPE_BUBBLE, "Bubble Sort"},

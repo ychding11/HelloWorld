@@ -49,8 +49,7 @@ struct TTreeNode
 {
 	T val;
 	TTreeNode *left, *right;
-
-	TTreeNode(T v) : val(v), left(NULL), right(NULL) {}
+	TTreeNode(T v) : val(v), left(nullptr), right(nullptr) {}
 };
 
 typedef TTreeNode<int> TreeNode;
@@ -239,10 +238,10 @@ int binaryTreeHeightByLevel(const TreeNode *root)
 	return height;
 }
 
-/*************************************************
- * Function: Given a binary search tree and two nodes 
- * v1 and v2, find the lowest commom ancestor node of 
- * v1 and v2.
+/*******************************************************************************
+ * Function:
+ *   Given a binary search tree and two nodes v1 and v2,
+ *   find the lowest commom ancestor node of v1 and v2.
  *   
  * Param[in]:  root, root node of BST 
  * Param[in]:  v1, BST node value  
@@ -250,14 +249,14 @@ int binaryTreeHeightByLevel(const TreeNode *root)
  *   
  * Retrun: lowest common ancestor TreeNode 
  *   
- * Ideas: apply property of BST. It's a recursion
- * solution.
- * Notice:  The binary tree is BST, node v1 v2
- * must be in the tree
-*************************************************/
+ * Ideas:
+ *  exploits property of BST. It's a recursion solution.
+ * Assumption:
+ *   The binary tree is BST, node v1, v2 be in the tree
+*******************************************************************************/
 const TreeNode* lowestCommAncestor(const TreeNode *root, int v1, int v2)
 {
-	if (!root) return NULL;
+	if (!root) return nullptr;
 	if (root->val > v1 && root->val > v2) return lowestCommAncestor(root->left, v1, v2);
 	if (root->val < v1 && root->val < v2) return lowestCommAncestor(root->right, v1, v2);
 	return root;
@@ -267,7 +266,7 @@ const TreeNode* lowestCommAncestor(const TreeNode *root, int v1, int v2)
  * Function: Calculate the minimum depth of binary tree.
  *
  * Define:
- * minimum depth is the number of nodes on the shortest path from root to leaf.
+ *   minimum depth: number of nodes on the shortest path from root to leaf.
  *   
  * Param[in]:  root, root node of binary search tree 
  * Retrun:     minimum depth of binary tree. 
@@ -387,26 +386,23 @@ vector<int> postOrderTraversal(const TreeNode *root)
 	return ret;
 }
 
-/*************************************************
- * Function: Determine whether array2 is a  subarray
- * of array1.
+/**************************************************************************
+ * Function: Determine whether sub is a  subarray of a.
  *   
- * Param[in]:  array1 
- * Param[in]:  array2 
+ * Param[in]: a
+ * Param[in]: sub 
  *   
- * Retrun: bool, indicating whether array2 is a 
- * subarray of array1.
- * Notice:   
-*************************************************/
-bool subArray(const vector<int> &array1, const vector<int> &array2)
+ * Retrun: bool, indicating whether sub is a subarray of a.
+**************************************************************************/
+bool subArray(const vector<int> &a, const vector<int> &sub)
 {
-	int m = array1.size(), n = array2.size();
+	int m = a.size(), n = sub.size();
 	if (n > m) return false;
 	int i, j;
 	for (i = 0; i <= m -n; ++i)
 	{
 		for (j = 0; j < n; ++j)
-			if (array2[j] != array1[i + j]) break;
+			if (sub[j] != a[i + j]) break;
 		if (j >= n) return true;
 	}
 	return false;
@@ -568,8 +564,9 @@ void printCommonNodeOfBinaryTree(const TreeNode *root1, const TreeNode *root2)
 {
 }
 
+//< There is No need to check parameters
 template<typename T>
-TTreeNode<T>* buildBST(/*const std::vector<T>& data*/ const T a[], int p, int q)
+TTreeNode<T>* buildBST(const T a[], int p, int q)
 {
 	if (p > q)  return nullptr;
 	if (p == q) return new TTreeNode<T>(a[q]);
@@ -581,37 +578,93 @@ TTreeNode<T>* buildBST(/*const std::vector<T>& data*/ const T a[], int p, int q)
 	return root;
 }
 
+template<typename T>
+int  releaseBST(TTreeNode<T> *root)
+{
+	if (!root) return 0;
+	int nl = releaseBST(root->left);
+	int nr = releaseBST(root->right);
+	delete root;
+	return nl + nr + 1;
+}
+
+//< reverse Binary Search Tree
+TreeNode *reverseBST(TreeNode *root)
+{
+	if (!root) return nullptr;
+	TreeNode *lc = reverseBST(root->left);
+	TreeNode *rc = reverseBST(root->right);
+	root->left  = rc;
+	root->right = lc;
+	return root;
+}
 
 #include <algorithm>
+
 //< function object to generate an ascending sequence 
 template<typename T>
 struct AscendingNumber 
 {
 	AscendingNumber() { current = 0; }
 
+	//< make it a function object
 	T operator()() { return current++; }
 private:
 	T current;
 };
 
-
 #include "thirdparty/gtest/gtest.h"
 
-
-TEST(TreeTest, InTraversal)
+TEST(TreeTest, inTraversal)
 {
 	AscendingNumber<int>  numberGenerator;
 	std::vector<int> testData(100);
 	std::generate(testData.begin(), testData.end(), numberGenerator);
-	auto ret = std::is_sorted(testData.begin(), testData.end());
-	EXPECT_EQ(ret, true);
+	auto sorted = std::is_sorted(testData.begin(), testData.end());
+	EXPECT_EQ(true, sorted);
 
 	TTreeNode<int> *root = buildBST(testData.data(), 0, testData.size()-1);
 	std::vector<int> inSequence = inOrderTraversal(root);
-	ret = inSequence == testData;
-	EXPECT_EQ(ret, true);
+	EXPECT_EQ(true, inSequence == testData);
+
+
+	EXPECT_EQ(100, releaseBST(root)); //< release BST 
 }
 
+TEST(TreeTest, reverse)
+{
+	AscendingNumber<int>  numberGenerator;
+	std::vector<int> testData(100);
+	std::generate(testData.begin(), testData.end(), numberGenerator);
+	auto sorted = std::is_sorted(testData.begin(), testData.end());
+	EXPECT_EQ(true, sorted);
+
+	TTreeNode<int> *root = buildBST(testData.data(), 0, testData.size()-1);
+
+	reverse(testData.begin(), testData.end()); //< reverse test data
+	std::vector<int> inSequenceReverse = inOrderTraversal(reverseBST(root));
+	EXPECT_EQ(true, inSequenceReverse == testData);
+
+	EXPECT_EQ(100, releaseBST(root)); //< release BST 
+}
+
+TEST(TreeTest, subarray)
+{
+	AscendingNumber<int>  numberGenerator;
+	std::vector<int> testData(100);
+	std::generate(testData.begin(), testData.end(), numberGenerator);
+	auto sorted = std::is_sorted(testData.begin(), testData.end());
+	EXPECT_EQ(true, sorted); //< test data is expected
+
+	std::vector<int> subvec{testData.begin()+10, testData.begin()+50};
+	EXPECT_EQ(true, search(testData.begin(), testData.end(), subvec.begin(), subvec.end())!= testData.end());
+	EXPECT_EQ(true, subArray(testData,subvec));
+	subvec.push_back(-1);
+	EXPECT_EQ(false, search(testData.begin(), testData.end(), subvec.begin(), subvec.end())!= testData.end());
+	EXPECT_EQ(false, subArray(testData,subvec));
+	
+
+}
 
 #if 0
 int main()
