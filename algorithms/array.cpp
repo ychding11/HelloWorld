@@ -30,6 +30,7 @@
 #include<cstdio>
 #include<vector>
 #include<deque>
+#include<set>
 #include <glog/logging.h>
 
 using namespace std;
@@ -352,8 +353,6 @@ int coinChange3(int money, const vector<int> &coins, std::vector<int>& solution,
  * Function:
  *   Given a set, a vaue K, does exist a subset whose sum is equal to K ?
  *
- * Param[in]:
- * Param[in]:
  * This is a recursion solution
 *********************************************************************************/
 bool subsetSumEqualK(const vector<int> &nums, int K,  int index, int curSum, bool &found)
@@ -373,7 +372,106 @@ bool SubsetSumEqualK(const vector<int> &nums, int K)
 	return subsetSumEqualK(nums, K, 0, 0, found);
 }
 
+
+/*********************************************************************************
+ * Function:
+ *   Caculate the suqare root of a perfect squre. if NOT a perfect square return -1. 
+ *
+ * This is a recursion solution
+*********************************************************************************/
+int SqrtOfPerfectSquare(int n)
+{
+	CHECK(n >= 0); // perfect squre >= 0
+	int low = 0, high = n;
+	while (low <= high)
+	{
+		int mid = (low + high) / 2;
+		if (mid * mid > n) high = mid - 1;
+		else if (mid * mid < n) low = mid + 1;
+		else return mid;
+	}
+	return -1; // n is not a perfect squre.
+}
+
+/*********************************************************************************
+ * Function:
+ *   count number of 1 in binary format of an integer number n 
+ *
+ * This is a recursion solution
+*********************************************************************************/
+int BitOnes(unsigned long n)
+{
+	int c = 0;
+	while (n)
+	{
+		++c;
+		n = n & (n - 1);
+	}
+	return c;
+}
+
+/*********************************************************************************
+ * Function:
+ *   get all permutation string of string str. duplidates should be removed. 
+ *
+ * It is a recursion solution
+*********************************************************************************/
+void PermutateStr(std::string str, int i, int j, std::set<string> &ret)
+{
+	if (str.empty()) //< NO need to permutation
+		return;
+
+    if (i == j) //< termination condition
+    {
+        ret.insert(str);
+        return;
+    }
+
+	auto test = [&str, i ](int k)
+	{
+		if (str[i] == str[k]) return str;
+		std::string temp = str;
+		char c = temp[i];
+		temp[i] = temp[k];
+		temp[k] = c;
+		return temp;
+	};
+        
+    for (int k = i; k <= j; ++k)
+    {
+        PermutateStr(test(k), i + 1, j, ret);
+    }
+}
+
 #include "thirdparty/gtest/gtest.h"
+#include<bitset>
+
+TEST(Misc, PermutateStr)
+{
+	std::string str{ "abc" };
+	std::set<string> expected{"abc", "acb", "bac", "bca", "cba", "cab"};
+	std::set<string> ret;
+	PermutateStr(str, 0,2,ret);
+	EXPECT_EQ(expected, ret);
+}
+
+TEST(Misc, BitOnes)
+{
+	std::bitset<32> bits;
+	for (unsigned int i = 0; i < 32; ++i)
+	{
+		bits[i] = 1;
+	    EXPECT_EQ(i+1, BitOnes(bits.to_ulong()));
+	}
+}
+
+TEST(Misc, PerfectSqure)
+{
+	EXPECT_EQ(6, SqrtOfPerfectSquare(6*6));
+	EXPECT_EQ(3, SqrtOfPerfectSquare(3*3));
+	EXPECT_EQ(0, SqrtOfPerfectSquare(0*3));
+	EXPECT_EQ(-1, SqrtOfPerfectSquare(5*3));
+}
 
 TEST(Recursion, SetSum)
 {
@@ -382,7 +480,7 @@ TEST(Recursion, SetSum)
 	EXPECT_EQ(false, SubsetSumEqualK(set, 7));
 }
 
-TEST(DP, CoinChange)
+TEST(Recursion, CoinChange)
 {
 	std::vector<int> coins = {1, 5, 10};
 	//std::vector<int> coins = {1, 5, };
@@ -399,7 +497,7 @@ TEST(DP, CoinChange)
 	EXPECT_EQ(4, num);
 }
 
-TEST(DP, CoinChange2)
+TEST(Recursion, CoinChange2)
 {
 	std::vector<int> coins = {1, 5, 10};
 
@@ -437,7 +535,7 @@ TEST(DP, CoinChange2)
 	}
 }
 
-TEST(DP, CoinChange3)
+TEST(Recursion, CoinChange3)
 {
 	std::vector<int> coins = {1, 5, 10};
 
