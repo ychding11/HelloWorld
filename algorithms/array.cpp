@@ -348,8 +348,39 @@ int coinChange3(int money, const vector<int> &coins, std::vector<int>& solution,
 	return num;
 }
 
+/*********************************************************************************
+ * Function:
+ *   Given a set, a vaue K, does exist a subset whose sum is equal to K ?
+ *
+ * Param[in]:
+ * Param[in]:
+ * This is a recursion solution
+*********************************************************************************/
+bool subsetSumEqualK(const vector<int> &nums, int K,  int index, int curSum, bool &found)
+{
+    if (index >= nums.size()) //< search end condition
+    {
+       if (curSum == K) found = true; // How about static local varible?
+       return found;
+    }
+
+    return found || (subsetSumEqualK(nums, K, index + 1, curSum + nums[index], found)) ||
+                    (subsetSumEqualK(nums, K, index + 1, curSum, found));
+}
+bool SubsetSumEqualK(const vector<int> &nums, int K)
+{
+	bool found = false;
+	return subsetSumEqualK(nums, K, 0, 0, found);
+}
 
 #include "thirdparty/gtest/gtest.h"
+
+TEST(Recursion, SetSum)
+{
+	std::vector<int> set{1, -1, 2, 3, -2};
+	EXPECT_EQ(true, SubsetSumEqualK(set, 6));
+	EXPECT_EQ(false, SubsetSumEqualK(set, 7));
+}
 
 TEST(DP, CoinChange)
 {
