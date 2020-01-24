@@ -71,7 +71,7 @@ void prepare_random_data(int n)
 	core::CPUProfiler profiler("Generate random data");
     #endif
 
-    srand(time(NULL)); 
+    srand((unsigned int)time(NULL)); 
     for (int i = 0; i < n; i++ )
     {        
         gRawDataSet[i] = rand() % (n * 10); // % DATA_SET_SIZE;
@@ -102,8 +102,8 @@ void gen_distinct_rand(int m, int n)
 	core::CPUProfiler profiler("Generate distinct sorted random data");
     #endif
 
-    int i, j;
-    srand(time(NULL)); 
+    int i;
+    srand((unsigned int)time(NULL)); 
     for (i = 0; i < n; i++) //generate sorted random number i
     {            
         if (rand() % (n - i) < m)
@@ -669,17 +669,12 @@ void SortTest(ESortType typeSort, int numElement, int numIteration)
     }
 }
 
-//< It's just a definition
-std::unordered_map<std::string, core::ProfilerEntry> core::CPUProfiler::ProfilerData;
-
 /*************************************************
  *  Tester
  *  a simple tester
 *************************************************/
 int main(int argc, char** argv)
 {
-    ENTER_FUNCTION;
-
     if (argc != 4)
     {
 		LOG(ERROR) << "Usage:" << argv[0] << " [sort type] [input size] [iteration number]";
@@ -698,7 +693,6 @@ int main(int argc, char** argv)
 		SortTest(ESortType(i), numElement, numIteration);
 
 	LOG(INFO) << core::CPUProfiler::end();
-    EXIT_FUNCTION;
     return 0;
 }
 

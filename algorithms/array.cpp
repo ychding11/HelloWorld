@@ -443,8 +443,103 @@ void PermutateStr(std::string str, int i, int j, std::set<string> &ret)
     }
 }
 
+inline int LowestBitSet(unsigned long n)
+{
+    int bits = sizeof(n) * 8, i;
+    for (i = 0; i < bits && !(n & (1 << i)); ++i);
+    return i;
+}
+
+/*********************************************************************************
+ * Function:
+ *   an array of number, all number occur twice except one, find that number.
+*********************************************************************************/
+inline int UnpairNumber(const vector<int> &nums)
+{
+	int ret = 0;
+	for (auto a : nums) ret ^= a;
+	return ret;
+}
+
+/*********************************************************************************
+ * Function:
+ *   an array of number, all number occur twice except two, find the pair.
+*********************************************************************************/
+inline std::pair<int,int> UnpairNumbers(const vector<int> &nums)
+{
+	int ret = 0;
+	for (auto a : nums) ret ^= a;
+	ret = ret & (1 << LowestBitSet(ret));
+	int x = 0;
+	int y = 0;
+	for (auto a : nums)
+	{
+		if (ret & a) x ^= a;
+		else y ^= a;
+	}
+	return std::pair<int, int>{x,y};
+}
+
+//< 2's complement code
+inline unsigned long IncreaseOne(unsigned long n)
+{
+	return -(~n);
+}
+
+
+/*************************************************
+ * Binary Search Function
+ * search 't' in data array 'a'
+ * It is a very excellent algorithm.
+*************************************************/
+template <typename T>
+int binSearch(T a[], int n, T t)
+{
+    CHECK(a != nullptr && n > 0);
+    
+    int l, u, m;
+    l = -1; u = n;
+    LOG(INFO) << "l = " << l << " u = " << u;
+    while (l + 1 != u)
+    {
+        m = (l + u) / 2;
+        LOG(INFO) << "m = " << m;
+        if (a[m] < t)
+        {    l = m; }
+        else
+        {    u = m; }
+        LOG(INFO) << "l = " << l << " u = " << u;
+    }
+    int idx = u;
+    if (idx >= n || a[idx] != t)
+    {    
+        LOG(INFO) << "Not Find target " << t;
+        return -1;    
+    }
+    return idx;
+}
+
 #include "thirdparty/gtest/gtest.h"
 #include<bitset>
+
+TEST(Misc, BitOperations)
+{
+	std::bitset<32> bits;
+	EXPECT_EQ(32, LowestBitSet(bits.to_ulong()));
+	bits[6] = 1;
+	EXPECT_EQ(6, LowestBitSet(bits.to_ulong()));
+
+	std::vector<int>nums{1,1,2,2,3,3,9};
+	EXPECT_EQ(9, UnpairNumber(nums));
+
+	nums = {1,1,2,2,3,3,9,13};
+	std::pair<int, int> expected{13,9};
+	EXPECT_EQ(expected, UnpairNumbers(nums));
+
+	EXPECT_EQ(11, IncreaseOne(10));
+	EXPECT_EQ(1001, IncreaseOne(1000));
+	EXPECT_EQ(899, IncreaseOne(898));
+}
 
 TEST(Misc, PermutateStr)
 {

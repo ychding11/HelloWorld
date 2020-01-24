@@ -31,10 +31,17 @@ include_directories (
   ${CMAKE_BINARY_DIR}/thirdparty/glog
 )
 
+## source files
+#######################################################################################
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/
   ${CMAKE_CURRENT_SOURCE_DIR}/common/
   ${CMAKE_CURRENT_SOURCE_DIR}/common/profiler.h
+)
+
+file(GLOB  Common_SRC_FILES
+	${CMAKE_SOURCE_DIR}/common/profiler.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/common/profiler.h
 )
 
 file(GLOB  SORT_SRC_FILES
@@ -58,63 +65,39 @@ foreach(dir ${includes})
     message(STATUS "include dir='${dir}'")
 endforeach()
 
-## Reorg source code structure
+
+## macro definition
 #######################################################################################
-foreach(f ${SORT_SRC_FILES})
-    # Get the path of the file relative to ${DIRECTORY},
-    # then alter it (not compulsory)
-    file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
-    set(SRCGR "Sort-Test/${SRCGR}")
+macro(group_src_files src_files target)
+	foreach(f ${src_files})
+		message(STATUS "check parameters original source file :${f}")
+	endforeach()
+	message(STATUS "check parameters new group name :${target}")
+    
+    foreach(f ${src_files})
+		# Get the path of the file relative to ${DIRECTORY},
+		# then alter it (not compulsory)
+		file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
+		set(SRCGR "${target}/${SRCGR}")
+		
+		# Extract the folder, ie remove the filename part
+		string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
 
-    # Extract the folder, ie remove the filename part
-    string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
+		# Source_group expects \\ (double antislash), not / (slash)
+		string(REPLACE / \\ SRCGR ${SRCGR})
+		source_group("${SRCGR}" FILES ${f})
+		message(STATUS "New group name :${SRCGR}")
+	endforeach()
+endmacro()
 
-    # Source_group expects \\ (double antislash), not / (slash)
-    string(REPLACE / \\ SRCGR ${SRCGR})
-    source_group("${SRCGR}" FILES ${f})
-endforeach()
+## Regroup source code structure
+#######################################################################################
+group_src_files("${Common_SRC_FILES}" "Shared")
+group_src_files("${SORT_SRC_FILES}"  "Sort-Test")
+group_src_files("${List_SRC_FILES}"  "List-Test")
+group_src_files("${Array_SRC_FILES}" "Array-Test")
+group_src_files("${Tree_SRC_FILES}"  "Tree-Test")
 
-foreach(f ${List_SRC_FILES})
-    # Get the path of the file relative to ${DIRECTORY},
-    # then alter it (not compulsory)
-    file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
-    set(SRCGR "List-Test/${SRCGR}")
-
-    # Extract the folder, ie remove the filename part
-    string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
-
-    # Source_group expects \\ (double antislash), not / (slash)
-    string(REPLACE / \\ SRCGR ${SRCGR})
-    source_group("${SRCGR}" FILES ${f})
-endforeach()
-
-foreach(f ${Array_SRC_FILES})
-    # Get the path of the file relative to ${DIRECTORY},
-    # then alter it (not compulsory)
-    file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
-    set(SRCGR "Array-Test/${SRCGR}")
-
-    # Extract the folder, ie remove the filename part
-    string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
-
-    # Source_group expects \\ (double antislash), not / (slash)
-    string(REPLACE / \\ SRCGR ${SRCGR})
-    source_group("${SRCGR}" FILES ${f})
-endforeach()
-
-foreach(f ${Tree_SRC_FILES})
-    # Get the path of the file relative to ${DIRECTORY},
-    # then alter it (not compulsory)
-    file(RELATIVE_PATH SRCGR ${CMAKE_SOURCE_DIR} ${f})
-    set(SRCGR "Tree-Test/${SRCGR}")
-
-    # Extract the folder, ie remove the filename part
-    string(REGEX REPLACE "(.*)(/[^/]*)$" "\\1" SRCGR ${SRCGR})
-
-    # Source_group expects \\ (double antislash), not / (slash)
-    string(REPLACE / \\ SRCGR ${SRCGR})
-    source_group("${SRCGR}" FILES ${f})
-endforeach()
 
 ## custom settings
 #######################################################################################
@@ -203,7 +186,7 @@ file ( GLOB GTEST_SOURCE
 ## target: Sort
 #######################################################################################
 set(EXE_NAME "Sort-Test")
-add_executable(${EXE_NAME} ${SORT_SRC_FILES})
+add_executable(${EXE_NAME} ${SORT_SRC_FILES} ${Common_SRC_FILES})
 target_link_libraries(${EXE_NAME} glog)
 default_property(${EXE_NAME})
 

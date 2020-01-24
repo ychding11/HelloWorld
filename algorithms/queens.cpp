@@ -34,17 +34,13 @@
  
 #include <cstdio>
 #include <cstdlib>
-#include <cstring>
-#include <ctime>
 #include <cassert>
 #include <map>
 #include <vector>
+#include <string>
 #include <iostream>
-#include "Logger.h"
 
 using namespace std;
-
-#define PERFORMANCE_METER
 
 /*************************************************
  *  The class is to solver N Queens problem.
@@ -59,6 +55,7 @@ private:
 	// binary format. The map stores 
 	// <integer, corresponding bit index>
     map<int, int> columnMap;
+
 private:
     bool checkPath(vector<int>& path)
     {
@@ -90,23 +87,27 @@ private:
         return ret;
     }
 
-    /*************************************************
-     * Function: search nxn chessboard to find all 
-     * possible solution.
+    /*********************************************************************
+     * Function:
+	 *   search NxN chessboard to find all possible solutions.
      *   
-     * Param[in]:  n, int nxn chessboard 
+     * Param[in]:  n, int NxN chessboard 
      * Param[in]:  curRow, int currently searched row 
      * Param[out]: allPath, array all feasible solutions 
      * Param[out]: curPath, array current feasible solutions 
      *   
      * Retrun:void 
-     * Ideas: search nxn chessboard with constrains. 
+     * Ideas: search NxN chessboard with constrains. 
      * Notice:  How to check whether constrains are meet. 
-    *************************************************/
+    *********************************************************************/
     void solveNQueensHelper(vector<vector<string> >& allPath, vector<int>& curPath, int n, int curRow)
     {
         /* stop search condition */
-        if(curRow == n) { allPath.push_back(path2Board(curPath)); return;   }
+        if(curRow == n)
+		{
+			allPath.push_back(path2Board(curPath));
+			return;  
+		}
         
         /* search column: each row search from 0 ==> n-1 */
         for(int j = 0; j < n; j++)
@@ -116,7 +117,9 @@ private:
             
             /* current path ok, search for next row */
             if(true == checkPath(curPath))  
-            { solveNQueensHelper(allPath, curPath, n, curRow + 1); }
+            {
+			    solveNQueensHelper(allPath, curPath, n, curRow + 1);
+			}
             
             curPath.pop_back(); /* remove current column positon, test next column position */
         }
@@ -124,36 +127,23 @@ private:
     
 public:  
     
-    /*************************************************
-     *  The public interface is to solver N Queens 
-     *  problem.
+    /***********************************************************************
+     *  The public interface is to solver N Queens problem.
      *
-     *  it returns all possible chessboard.
-     *  each chessboard is describled by a vector<string>
-     *  while the queen is represented by char 'Q'
-     *************************************************/
+     *  It returns all possible chessboard.
+     *  chessboard is describled by a vector<string> while queen is represented by char 'Q'
+     ***********************************************************************/
     vector<vector<string> > solveNQueens(int n) 
     {
-         #ifdef PERFORMANCE_METER
-        clock_t clk1, clk2;
-        clk1 = clock(); /* get current clcok ticks elapsed since epoch */
-        #endif
-    
-        vector<vector<string> > allPath;
+        vector<vector<string> > allPaths;
         vector<int> curPath;
         for(int i = 0; i < n; ++i)
         { 
             columnMap[1 << i] = n-1-i;
         }
-        solveNQueensHelper(allPath, curPath, n, 0);
+        solveNQueensHelper(allPaths, curPath, n, 0);
         
-        #ifdef PERFORMANCE_METER
-        clk2 = clock();
-        float seconds = ((float)(clk2 - clk1)) / CLOCKS_PER_SEC; /* calculate in seconds units */
-        printf("[Solve time] = %ld ticks, %.4f seconds!\t Solve %d Queen!\n", clk2 - clk1, seconds, n);
-        #endif
-
-        return allPath;
+        return allPaths;
     }
 };
 
@@ -162,25 +152,20 @@ public:
 *************************************************/
 int main(int argc, char** argv)
 {
-  logger.setLevel(DEBUG);
-  logger.setLineLevel(DEBUG);
-  ENTER_FUNCTION;
+	int n;
+	NQueensSolver solver;
+	while (true)
+	{
+		cout << "Enter Queen Number:";
+		cin >> n;
+		if (-1 == n)
+		{
+			cout << "Game Over." << std::endl;
+			return 0;
+		}
+		solver.solveNQueens(n);
+	}
   
-  int n;
-  NQueensSolver solver;
-  while (true)
-  {
-    cout << "Enter Queens number:";
-    cin >> n;
-    if (-1 == n)
-    {
-        cout << "Game Over." << std::endl;
-        return 0;
-    }
-    solver.solveNQueens(n);
-  }
-  
-  EXIT_FUNCTION;
   return 0;
 }
 
