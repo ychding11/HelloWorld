@@ -56,6 +56,9 @@ file(GLOB  Array_SRC_FILES
 file(GLOB  Tree_SRC_FILES
 	${CMAKE_SOURCE_DIR}/binTree.cpp
 )
+file(GLOB  Mem_SRC_FILES
+	${CMAKE_SOURCE_DIR}/mem.cpp
+)
 
 
 ## Output include directory for debug
@@ -97,7 +100,7 @@ group_src_files("${SORT_SRC_FILES}"  "Sort-Test")
 group_src_files("${List_SRC_FILES}"  "List-Test")
 group_src_files("${Array_SRC_FILES}" "Array-Test")
 group_src_files("${Tree_SRC_FILES}"  "Tree-Test")
-
+group_src_files("${Mem_SRC_FILES}"  "Mem-Test")
 
 ## custom settings
 #######################################################################################
@@ -208,6 +211,13 @@ default_property(${EXE_NAME})
 #######################################################################################
 set(EXE_NAME "Tree-Test")
 add_executable(${EXE_NAME} ${Tree_SRC_FILES} ${GTEST_SOURCE})
+target_link_libraries(${EXE_NAME} glog)
+default_property(${EXE_NAME})
+
+## target: Memory
+#######################################################################################
+set(EXE_NAME "Mem-Test")
+add_executable(${EXE_NAME} ${Mem_SRC_FILES} ${GTEST_SOURCE})
 target_link_libraries(${EXE_NAME} glog)
 default_property(${EXE_NAME})
 
