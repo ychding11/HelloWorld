@@ -27,6 +27,7 @@
  */
  
 #include <cstdio>
+#include <cstdarg>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -35,10 +36,9 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-
+#include <intrin.h>
 #include <glog/logging.h>
 
-#include "list.h"
 #include "profiler.h"
 
 using std::cin;
@@ -51,6 +51,24 @@ std::unordered_map<std::string, core::ProfilerEntry> core::CPUProfiler::Profiler
 #define ENTER_FUNCTION 
 #define EXIT_FUNCTION 
 
+#define Debug_Internal_State
+
+#if defined(Debug_Internal_State)
+//static std::fstream g_DebugStream("PagesOfOneSize_debug.txt", std::fstream::out);
+std::string WriteLog(const char* format, ...)
+{
+	char buffer[4096] = { 0 };
+	va_list args;
+	va_start(args, format);
+	vsprintf_s(buffer, 4096, format, args);
+	std::cout << buffer;
+	return std::string(buffer);
+}
+void FlushLog(void)
+{
+}
+#endif
+
 //< 64K  512K  2M  8M
 struct SimpleMemAllocator
 {
@@ -61,47 +79,117 @@ struct SimpleMemAllocator
 		uint64_t slot;
 
 	};
-	struct AllocateInfo
+	struct AllocateBlock
 	{
 		void* addr;
 		uint64_t size;
+		uint64_t slicesize;
 		uint64_t slot;
 	};
 	std::vector<std::list<MemSlice>> mSlicePool;
 
-	AllocateInfo allocate(size_t size)
+	static uint64_t sMinSliceSize;
+
+	AllocateBlock allocate(size_t size)
 	{
-		uint64_t slotIndex;
-		//< slot
-		//< allocate(one insert, another put into pool) or  return from pool
-		//< insert or make a new entry
+		void *addr = nullptr;
+		uint64_t integer = size / sMinSliceSize;
+		uint64_t fraction = size % sMinSliceSize;
+		if (fraction > 0) integer += 1;
+		unsigned long bitIndex = 0;
+		uint64_t slotIndex = (integer & (integer-1)) ? _BitScanReverse64(&bitIndex, (integer << 1) ): _BitScanReverse64(&bitIndex, integer);
+		slotIndex = slotIndex > 0 ? bitIndex : 0;
+		uint64_t sliceSize =  sMinSliceSize * (0x1 << slotIndex);
+
+		WriteLog("allocate (%llu, %llu, %llu) \t",size, sliceSize, slotIndex);
 		
-
-
+		if (slotIndex >= mSlicePool.size())
+		{
+			for (int i = mSlicePool.size(); i <= slotIndex; ++i)
+			{
+				mSlicePool.emplace_back(std::list<MemSlice>{});
+			}
+			auto& list = mSlicePool[slotIndex];
+			addr = malloc(sliceSize);
+			list.emplace_back(MemSlice{ malloc(sliceSize), sliceSize, slotIndex });
+		    WriteLog("new entry(0x%p)\n", addr);
+		}
+		else
+		{
+			auto& list = mSlicePool[slotIndex];
+			if (list.empty())
+			{
+				addr = malloc(sliceSize);
+				list.emplace_back(MemSlice{malloc(sliceSize), sliceSize, slotIndex});
+				WriteLog("new slice(0x%p)\n", addr);
+			}
+			else
+			{
+				auto head = list.front();
+				list.pop_front();
+				addr = head.addr;
+				WriteLog("reuse(0x%p)\n", addr);
+			}
+		}
+		return AllocateBlock{addr, size, sliceSize, slotIndex};
 	}
 
-	void retire(const AllocateInfo &info)
+	void retire(const AllocateBlock &info)
 	{
-		//< put it into the certain list.
+		mSlicePool[info.slot].emplace_back(MemSlice{info.addr, info.slicesize, info.slot});
 	}
 
 	static SimpleMemAllocator* getMemAllocator();
 
-
+	SimpleMemAllocator()
+		: mSlicePool(16)
+	{
+		for (uint64_t slot = 0; slot < 10; ++slot)
+		{
+			uint64_t sliceSize =  sMinSliceSize * (0x1 << slot);
+			auto& list = mSlicePool[slot];
+			list.emplace_back(MemSlice{ malloc(sliceSize), sliceSize, slot});
+		}
+	}
 
 };
 
-//#if !defined(BUILD_LIBRARY)
-/*************************************************
- * list algorithm tester.
-*************************************************/
-int main(int argc, char** argv)
+uint64_t SimpleMemAllocator::sMinSliceSize = 64 * 1024;
+SimpleMemAllocator* SimpleMemAllocator::getMemAllocator()
+{
+	static SimpleMemAllocator *allocator = new SimpleMemAllocator();
+	return allocator;
+}
+
+
+#include "thirdparty/gtest/gtest.h"
+
+TEST(Basic, allocate)
 {
   core::CPUProfiler::begin();
-  ENTER_FUNCTION;
+  SimpleMemAllocator::AllocateBlock block;
+  uint64_t size = 64 * 1024;
+  block = SimpleMemAllocator::getMemAllocator()->allocate(size);
+  EXPECT_EQ(64 * 1024 * 1, block.slicesize);
+  EXPECT_EQ(0, block.slot);
 
-  EXIT_FUNCTION;
-  LOG(INFO) << core::CPUProfiler::end();
-  return 0;
+  size = 61 * 1024;
+  block = SimpleMemAllocator::getMemAllocator()->allocate(size);
+  EXPECT_EQ(64 * 1024 * 1, block.slicesize);
+  EXPECT_EQ(0, block.slot);
+
+  size = 66 * 1024;
+  block = SimpleMemAllocator::getMemAllocator()->allocate(size);
+  EXPECT_EQ(64 * 1024 * 2, block.slicesize);
+  EXPECT_EQ(1, block.slot);
+
+  size = 36 * 1024 * 1024;
+  block = SimpleMemAllocator::getMemAllocator()->allocate(size);
+  EXPECT_EQ(64 * 1024 * (0x1<<10), block.slicesize);
+  EXPECT_EQ(10, block.slot);
+
+  auto str = core::CPUProfiler::end();
+  WriteLog("%s\n",str.c_str());
+  char c;
+  std::cin >> c;
 }
-//#endif
