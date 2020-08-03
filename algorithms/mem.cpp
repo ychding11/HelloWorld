@@ -36,6 +36,8 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <intrin.h>
 #include <glog/logging.h>
 
@@ -69,6 +71,16 @@ void FlushLog(void)
 }
 #endif
 
+std::string prettySize(uint64_t s)
+{
+	const uint64_t G = 1024 * 1024 * 1024;
+	const uint64_t M = 1024 * 1024;
+	const uint64_t K = 1024;
+	char buf[1024];
+	sprintf_s(buf, "%lluG%lluM%lluK",s / G,(s % G) / M,((s % G) % M) / K );
+	return std::string(buf);
+}
+
 //< 64K  512K  2M  8M
 struct SimpleMemAllocator
 {
@@ -101,7 +113,7 @@ struct SimpleMemAllocator
 		slotIndex = slotIndex > 0 ? bitIndex : 0;
 		uint64_t sliceSize =  sMinSliceSize * (0x1 << slotIndex);
 
-		WriteLog("allocate (%llu, %llu, %llu) \t",size, sliceSize, slotIndex);
+		WriteLog("allocate (%s, %s, %llu) \t",prettySize(size).c_str(), prettySize(sliceSize).c_str(), slotIndex);
 		
 		if (slotIndex >= mSlicePool.size())
 		{
@@ -150,6 +162,18 @@ struct SimpleMemAllocator
 			auto& list = mSlicePool[slot];
 			list.emplace_back(MemSlice{ malloc(sliceSize), sliceSize, slot});
 		}
+	}
+
+	uint64_t TotalSizeInPool(void) const
+	{
+		uint64_t ret = 0;
+		for (uint64_t slot = 0; slot < mSlicePool.size(); ++slot)
+		{
+			uint64_t sliceSize =  sMinSliceSize * (0x1 << slot);
+			uint64_t sliceNum = mSlicePool[slot].size();
+			ret += sliceNum * sliceSize;
+		}
+		return ret;
 	}
 
 };
