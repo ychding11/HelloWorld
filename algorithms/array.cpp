@@ -397,7 +397,6 @@ int SqrtOfPerfectSquare(int n)
  * Function:
  *   count number of 1 in binary format of an integer number n 
  *
- * This is a recursion solution
 *********************************************************************************/
 int BitOnes(unsigned long n)
 {
@@ -443,18 +442,13 @@ void PermutateStr(std::string str, int i, int j, std::set<string> &ret)
     }
 }
 
-inline int LowestBitSet(unsigned long n)
-{
-    int bits = sizeof(n) * 8, i;
-    for (i = 0; i < bits && !(n & (1 << i)); ++i);
-    return i;
-}
-
 /*********************************************************************************
  * Function:
- *   an array of number, all number occur twice except one, find that number.
+ *   Given an array of number, all numbers occur twice except one, find that number.
+ * Ideas:
+ *  Apply xor property a ^ a = 0
 *********************************************************************************/
-inline int UnpairNumber(const vector<int> &nums)
+inline int UnpairedNumber(const vector<int> &nums)
 {
 	int ret = 0;
 	for (auto a : nums) ret ^= a;
@@ -463,7 +457,24 @@ inline int UnpairNumber(const vector<int> &nums)
 
 /*********************************************************************************
  * Function:
- *   an array of number, all number occur twice except two, find the pair.
+ *   return lowest bit which is set.
+ * Ideas:
+*********************************************************************************/
+inline int LowestBitSet(unsigned long n)
+{
+    const int bits = sizeof(n) * 8;
+    int i;
+    for (i = 0; i < bits && !(n & (1 << i)); ++i);
+    return i;
+}
+
+/*********************************************************************************
+ * Function:
+ *   Given an array of number, all numbers occur twice except two, find the pair.
+ * Ideas:
+ *  The problem is equal to c = a ^ b; seperate numbers in the array in two groups
+ *  The lowest bit one in c means 0 ^ 1 = 1. It gives a standard to identify.
+ *
 *********************************************************************************/
 inline std::pair<int,int> UnpairNumbers(const vector<int> &nums)
 {
@@ -480,7 +491,13 @@ inline std::pair<int,int> UnpairNumbers(const vector<int> &nums)
 	return std::pair<int, int>{x,y};
 }
 
-//< 2's complement code
+/*********************************************************************************
+ * Function: return  n+1 for unsigned number
+ *
+ * Ideas:
+ *  the representation of a nagtive number in computer is by 2's complement code
+ *   
+*********************************************************************************/
 inline unsigned long IncreaseOne(unsigned long n)
 {
 	return -(~n);
@@ -519,6 +536,12 @@ int binSearch(T a[], int n, T t)
     return idx;
 }
 
+/*********************************************************************************
+ * 
+ * Test code begins 
+ *
+*********************************************************************************/
+
 #include "thirdparty/gtest/gtest.h"
 #include<bitset>
 
@@ -530,7 +553,7 @@ TEST(Misc, BitOperations)
 	EXPECT_EQ(6, LowestBitSet(bits.to_ulong()));
 
 	std::vector<int>nums{1,1,2,2,3,3,9};
-	EXPECT_EQ(9, UnpairNumber(nums));
+	EXPECT_EQ(9, UnpairedNumber(nums));
 
 	nums = {1,1,2,2,3,3,9,13};
 	std::pair<int, int> expected{13,9};
