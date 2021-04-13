@@ -136,21 +136,21 @@ int coinChangeWithMinCoins(int money, const vector<int> &coins)
 {
 }
 
-/*************************************************
- * Function: Given a grid with each cell containing 
- * an integer value. Calculate the max path sum 
- * from (0, 0) --> (m-1, n-1). For each cell, only 
- * two direction is possible: right, down.
+/**************************************************************************************************
+ * Function: Given a grid with each cell containing an integer value. Calculate the max path sum 
+ * from (0, 0) --> (m-1, n-1). For each cell, only two direction is possible: right, down.
  *   
- * Param[in]:  array,  
+ * Param[in]:  array  
  *   
- * Retrun: int, max path sum 
- * Ideas: Dynamic Programming 
- * f(i,j) : max path sum of (0,0) --> (i, j)
- * f(i,j) = max{f(i, j-1), f(i-1, j)} + grid[i][j], i>0, j>0
+ * Retrun:
+ *  int, max path sum 
+ * Ideas:
+ *  Dynamic Programming 
+ *  f(i,j) : max path sum of (0,0) --> (i, j)
+ *  f(i,j) = max{f(i, j-1), f(i-1, j)} + grid[i][j], i>0, j>0
  *
  * Notice:  Handle boundary with caution 
-*************************************************/
+**************************************************************************************************/
 int maxPathSumOfGrid(const vector<vector<int>> &grid)
 {
    int m = grid.size();
@@ -180,7 +180,7 @@ int minInitialValueOfGrid(const vector<int> &grid, int n)
 
 }
 
-/*************************************************
+/**************************************************************************************************
  * Function: Given a grid containing character, 
  * and a start character in the grid,
  * find the length of logest consecutive sequence. 
@@ -198,7 +198,7 @@ int minInitialValueOfGrid(const vector<int> &grid, int n)
  * the logest sequence is a->b->c->d->e.
  * There are multiple start points. use dp to store
  * calculated results can improve effiency.
-*************************************************/
+**************************************************************************************************/
 int  longestConsecutiveSequenceOfGridHelper(const  vector<vector<char>> &grid, vector<vector<int>> &dp, int x, int y, int preChar)
 {
 	int m = grid.size(), n = grid[0].size(); // no need to check m & n here.

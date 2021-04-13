@@ -508,11 +508,11 @@ inline unsigned long IncreaseOne(unsigned long n)
 }
 
 
-/*************************************************
+/****************************************************************************************
  * Binary Search Function
- * search 't' in data array 'a'
- * It is a very excellent algorithm.
-*************************************************/
+ * search 't' in a sorted data array 'a' .
+ * It is a very excellent algorithm. It is much faster than ordernary implementation.
+*****************************************************************************************/
 template <typename T>
 int binSearch(T a[], int n, T t)
 {
@@ -695,5 +695,31 @@ TEST(PathOnGrid, AllPathOn2D)
 
     auto n = AllPathOn2D<int>(a, 2, 2, path, paths);
     EXPECT_EQ(6, n);
+
+}
+
+TEST(Search, binSecSearch)
+{
+    {
+        std::vector<int> sortedArray{1,2,3,4,5};
+        EXPECT_EQ(-1, binSearch(sortedArray.data(), sortedArray.size(), 0));
+        EXPECT_EQ(-1, binSearch(sortedArray.data(), sortedArray.size(), 6));
+        EXPECT_EQ(0, binSearch(sortedArray.data(), sortedArray.size(), 1));
+    }
+
+    {
+        std::vector<int> sortedArray{1};
+        EXPECT_EQ(-1, binSearch(sortedArray.data(), sortedArray.size(), 0));
+        EXPECT_EQ(-1, binSearch(sortedArray.data(), sortedArray.size(), 6));
+        EXPECT_EQ(0, binSearch(sortedArray.data(), sortedArray.size(), 1));
+    }
+
+    {
+        std::vector<int> sortedArray{1,2};
+        EXPECT_EQ(-1, binSearch(sortedArray.data(), sortedArray.size(), 0));
+        EXPECT_EQ(-1, binSearch(sortedArray.data(), sortedArray.size(), 6));
+        EXPECT_EQ(0, binSearch(sortedArray.data(), sortedArray.size(), 1));
+    }
+
 
 }
