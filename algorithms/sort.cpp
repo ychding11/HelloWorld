@@ -645,13 +645,13 @@ SortFunction sort_func_tbl[SORT_TYPE_COUNT] =
 void SortTest(ESortType typeSort, int numElement, int numIteration)
 {
     CHECK(typeSort >= SORT_TYPE_SIMPLE_INSERT && typeSort < SORT_TYPE_COUNT);
-    LOG(INFO) << "type = " << gSortAlgorithmNames[typeSort] << " Iteration = " << numIteration << " Elements = " << numElement << std:: endl;
+    LOG(INFO) << "sort type = " << gSortAlgorithmNames[typeSort] << " Iteration = " << numIteration << " Elements = " << numElement << std:: endl;
 
     if (typeSort == SORT_TYPE_Merge_SORT) //< test algorithm based on linked list
     {
         for (int i = 0; i < numIteration; i++)
         {
-            mergeSortTester(numElement);
+            mergeSortTester(numElement); // implemented by linked list
         }
     }
     else  //test algorithm based on array.

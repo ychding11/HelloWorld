@@ -158,7 +158,7 @@ void postOrderIterativeTraversal(TreeNode * root)
 }
 
 /**************************************************************************
- * Function: Judge whether a binary tree is complete
+ * Function: Judge whether a binary tree is a complete binary tree
  *   
  * Param[in]:  root of binary tree 
  *   
@@ -168,10 +168,10 @@ void postOrderIterativeTraversal(TreeNode * root)
  * child as a full node. In level order traversal,
  * once a non-full node is visited, all following
  * nodes should be leaf nodes for complete bianry
- * tree. we take this property to do the jugement.
+ * tree. we use this property to judge.
  * 
  * Notice:  For a complete binary tree, a node has
- * no left child imply it has no right node.
+ * no left child indicate that it has no right node.
 **************************************************************************/
 bool isCompleteBinaryTree(const TreeNode *root)
 {
