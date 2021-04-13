@@ -59,7 +59,9 @@ file(GLOB  Tree_SRC_FILES
 file(GLOB  Mem_SRC_FILES
 	${CMAKE_SOURCE_DIR}/mem.cpp
 )
-
+file(GLOB  Dp_SRC_FILES
+	${CMAKE_SOURCE_DIR}/dp.cpp
+)
 
 ## Output include directory for debug
 #######################################################################################
@@ -72,10 +74,10 @@ endforeach()
 ## macro definition
 #######################################################################################
 macro(group_src_files src_files target)
+	message(STATUS "check parameters : group name :${target}")
 	foreach(f ${src_files})
-		message(STATUS "check parameters original source file :${f}")
+		message(STATUS "check parameters : source file :${f}")
 	endforeach()
-	message(STATUS "check parameters new group name :${target}")
     
     foreach(f ${src_files})
 		# Get the path of the file relative to ${DIRECTORY},
@@ -89,7 +91,7 @@ macro(group_src_files src_files target)
 		# Source_group expects \\ (double antislash), not / (slash)
 		string(REPLACE / \\ SRCGR ${SRCGR})
 		source_group("${SRCGR}" FILES ${f})
-		message(STATUS "New group name :${SRCGR}")
+		message(STATUS "group name : ${SRCGR}")
 	endforeach()
 endmacro()
 
@@ -101,6 +103,7 @@ group_src_files("${List_SRC_FILES}"  "List-Test")
 group_src_files("${Array_SRC_FILES}" "Array-Test")
 group_src_files("${Tree_SRC_FILES}"  "Tree-Test")
 group_src_files("${Mem_SRC_FILES}"  "Mem-Test")
+group_src_files("${Dp_SRC_FILES}"   "Dp-Test")
 
 ## custom settings
 #######################################################################################
@@ -218,6 +221,13 @@ default_property(${EXE_NAME})
 #######################################################################################
 set(EXE_NAME "Mem-Test")
 add_executable(${EXE_NAME} ${Mem_SRC_FILES} ${GTEST_SOURCE})
+target_link_libraries(${EXE_NAME} glog)
+default_property(${EXE_NAME})
+
+## target: Dp 
+#######################################################################################
+set(EXE_NAME "Dp-Test")
+add_executable(${EXE_NAME} ${Dp_SRC_FILES} ${GTEST_SOURCE})
 target_link_libraries(${EXE_NAME} glog)
 default_property(${EXE_NAME})
 

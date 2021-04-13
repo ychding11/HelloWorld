@@ -28,6 +28,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <cstdlib>
 
 //using namespace std;
@@ -134,6 +135,7 @@ int coinChange(int n, const int *coins, int m)
 *************************************************/
 int coinChangeWithMinCoins(int money, const vector<int> &coins)
 {
+    return 0;
 }
 
 /**************************************************************************************************
@@ -172,12 +174,13 @@ int maxPathSumOfGrid(const vector<vector<int>> &grid)
 
 int allPathsOfGrid(const vector<int> &grid, int n)
 {
-
+    return 0;
 }
 
 int minInitialValueOfGrid(const vector<int> &grid, int n)
 {
 
+    return 0;
 }
 
 /**************************************************************************************************
