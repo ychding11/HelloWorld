@@ -262,7 +262,20 @@ int editDistance(const string &str1, const string &str2)
     }
 }
 
-int main()
+/*********************************************************************************
+ * 
+ * Test code begins 
+ *
+*********************************************************************************/
+
+#include "thirdparty/gtest/gtest.h"
+
+TEST(DynamicPlanning, BitOperations)
 {
-	return 0;
+
 }
+
+//int main()
+//{
+//	return 0;
+//}
