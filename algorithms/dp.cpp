@@ -30,6 +30,7 @@
 #include <string>
 #include <algorithm>
 #include <cstdlib>
+#include <cassert>
 
 //using namespace std;
 using std::vector;  //better 
@@ -263,6 +264,29 @@ int editDistance(const string &str1, const string &str2)
 }
 
 /*********************************************************************************
+ * Function:
+ *  return the max sum of subarray 
+ *  all nagetive values max subarray is 0
+ *  subarray with 0 elements is ok
+ *
+ * Ideas:
+ *  s[i] : max sum of subarray ending with element i
+ *   
+*********************************************************************************/
+int maxSumSubarray(const std::vector<int> &a)
+{
+    int n = a.size();
+    assert(n > 0);
+    std::vector<int> s(n,0);
+    s[0] = a[0] > 0 ? a[0] : 0;
+    for (int i = 1; i < n; ++i)
+    {
+        s[i] = s[i - 1] > 0 ? s[i - 1] + a[i] : a[i];
+    }
+    return *std::max_element(s.begin(), s.end());
+}
+
+/*********************************************************************************
  * 
  * Test code begins 
  *
@@ -270,9 +294,17 @@ int editDistance(const string &str1, const string &str2)
 
 #include "thirdparty/gtest/gtest.h"
 
-TEST(DynamicPlanning, BitOperations)
+TEST(DynamicPlanning, maxSumSubarray)
 {
+    {
+        std::vector<int> a{ -2,1,-3,4,-1,2,1,-5,4 };
+        EXPECT_EQ(6, maxSumSubarray(a));
+    }
 
+    {
+        std::vector<int> a{ -2,-3,-1,-5 };
+        EXPECT_EQ(0, maxSumSubarray(a));
+    }
 }
 
 //int main()
