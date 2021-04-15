@@ -242,7 +242,7 @@ std::unordered_map<std::string, core::ProfilerEntry> core::CPUProfiler::Profiler
 
 //#if !defined(BUILD_LIBRARY)
 /*************************************************
- * list algorithm tester.
+ * reverse list algorithm tester.
 *************************************************/
 int main(int argc, char** argv)
 {
