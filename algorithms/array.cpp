@@ -560,6 +560,26 @@ int removeElement(std::vector<T> &a, T v)
     return i;
 }
 
+/****************************************************************************************
+ * remove element 
+ * remove duplicate elements from sorted array. return the number of elements remains.
+ * ideas:
+ *  not realy remove element from array. 
+*****************************************************************************************/
+template<typename T>
+int removeDuplicateElements(std::vector<T> &a)
+{
+    int i = 0;
+    for (int j = 1; j < a.size(); ++j)
+    {
+        if (a[j] != a[i])
+        {
+            a[++i] = a[j];
+        }
+    }
+    return i+1;
+}
+
 /*********************************************************************************
  * 
  * Test code begins 
@@ -569,6 +589,17 @@ int removeElement(std::vector<T> &a, T v)
 #include "thirdparty/gtest/gtest.h"
 #include<bitset>
 
+TEST(removeElement, removeDuplicateElement)
+{
+    {
+	    std::vector<int> a{ 0,0,1,1,1,2,2,3,3,4 };
+	    EXPECT_EQ(5, removeDuplicateElements(a));
+    }
+    {
+	    std::vector<int> a{ 1,1,2 };
+	    EXPECT_EQ(2, removeDuplicateElements(a));
+    }
+}
 TEST(removeElement, removeSpecifiedElement)
 {
     {
