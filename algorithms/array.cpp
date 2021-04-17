@@ -542,6 +542,48 @@ int binSearch(T a[], int n, T t)
 }
 
 /****************************************************************************************
+ * search rotated sorted array 
+ * return the index of elements .
+ * ideas:
+ *  identify the two parts in array. 
+*****************************************************************************************/
+template<typename T>
+int SearchRotatedSortedArray(const std::vector<T> &a, T target)
+{
+    int n = a.size();
+    int l, r, m;
+    l = 0, r = n - 1, m = (l + r) / 2;
+    if (a[m] == target)
+    {
+        return m;
+    }
+    else if (a[m] > a[l]) // in big part
+    {
+        if (target >= a[l] && target < a[m])
+            r = m - 1;
+        else
+            l = m + 1;
+
+    }
+    else if (a[m] < a[r]) // in small part
+    {
+        if (target <= a[r] && target > a[m])
+            l = m + 1;
+        else
+            r = m - 1;
+    }
+    else
+    {
+        if (a[m] == a[l])
+            l = m + 1;
+        if (a[m] == a[r])
+            r = m - 1;
+    }
+    return -1; // Not found
+
+}
+
+/****************************************************************************************
  * remove element 
  * remove specified value from array. return the number of elements remains.
  * ideas:
