@@ -31,6 +31,7 @@
 #include<vector>
 #include<deque>
 #include<set>
+#include<cassert>
 #include <glog/logging.h>
 
 using namespace std;
@@ -569,6 +570,7 @@ int removeElement(std::vector<T> &a, T v)
 template<typename T>
 int removeDuplicateElements(std::vector<T> &a)
 {
+    assert(a.size() > 0);
     int i = 0;
     for (int j = 1; j < a.size(); ++j)
     {
