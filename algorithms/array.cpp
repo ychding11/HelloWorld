@@ -540,6 +540,26 @@ int binSearch(T a[], int n, T t)
     return idx;
 }
 
+/****************************************************************************************
+ * remove element 
+ * remove specified value from array. return the number of elements remains.
+ * ideas:
+ *  not realy remove element from array. 
+*****************************************************************************************/
+template<typename T>
+int removeElement(std::vector<T> &a, T v)
+{
+    int i = 0;
+    for (int j = 0; j < a.size(); ++j)
+    {
+        if (a[j] != v)
+        {
+            a[i++] = a[j];
+        }
+    }
+    return i;
+}
+
 /*********************************************************************************
  * 
  * Test code begins 
@@ -548,6 +568,22 @@ int binSearch(T a[], int n, T t)
 
 #include "thirdparty/gtest/gtest.h"
 #include<bitset>
+
+TEST(removeElement, removeSpecifiedElement)
+{
+    {
+	    std::vector<int> a{ 3,3,3,3 };
+	    EXPECT_EQ(0, removeElement(a, 3));
+    }
+    {
+	    std::vector<int> a{ 3,2,2,3 };
+	    EXPECT_EQ(2, removeElement(a, 3));
+    }
+    {
+	    std::vector<int> a{ 0,1,2,2,3,0,4,2 };
+	    EXPECT_EQ(5, removeElement(a, 2));
+    }
+}
 
 TEST(Misc, BitOperations)
 {

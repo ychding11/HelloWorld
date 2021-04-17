@@ -104,13 +104,13 @@ ListNode *rotateRight(ListNode *head, int k)
     }
 }
     
-/*************************************************
+/**************************************************************
   *  removeNthFromEnd. 
   *  example:
   *  1->2->3->4->5->NULL and n = 2.
   *  1->2->3->5->NULL.
   *  It applys trick that get Nth node from List End.
-*************************************************/
+**************************************************************/
 ListNode* removeNthFromEnd(ListNode* head, int n) 
 {
     CHECK((head != nullptr) && (n > 0));
