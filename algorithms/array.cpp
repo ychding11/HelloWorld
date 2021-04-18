@@ -542,6 +542,39 @@ int binSearch(T a[], int n, T t)
 }
 
 /****************************************************************************************
+ * Binary Search Function
+ * search first 't' in a sorted data array 'a' .
+*****************************************************************************************/
+template <typename T>
+int SearchFirstElement(T a[], int n, T t)
+{
+    CHECK(a != nullptr && n > 0);
+    
+    int l, r, m;
+    l = 0; r = n - 1;
+    while (l <= r)
+    {
+        m = (l + r) / 2;
+        if (t < a[m])
+        {
+            r = m - 1;
+        }
+        else if (t > a[m])
+        {
+            l = m + 1;
+        }
+        else
+        {
+            if (m == 0 || a[m - 1] != t)
+                return m;
+            r = m - 1;
+        }
+    }
+
+    return -1;
+}
+
+/****************************************************************************************
  * search rotated sorted array 
  * return the index of elements .
  * ideas:
