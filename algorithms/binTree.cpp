@@ -394,7 +394,7 @@ vector<int> postOrderTraversal(const TreeNode *root)
  *   
  * Retrun: bool, indicating whether sub is a subarray of a.
 **************************************************************************/
-bool subArray(const vector<int> &a, const vector<int> &sub)
+static bool subArray(const vector<int> &a, const vector<int> &sub)
 {
 	int m = a.size(), n = sub.size();
 	if (n > m) return false;
@@ -408,21 +408,22 @@ bool subArray(const vector<int> &a, const vector<int> &sub)
 	return false;
 }
 
-/***************************************************************************
- * Function: Determine whether binary tree root2 is a sub tree of binary tree root1.
+/*******************************************************************************************************
+ * Function:
+ *  Determine whether binary tree root2 is a sub tree of binary tree root1.
  *   
  * Param[in]: root1   
  * Param[in]: root2
  *   
- * Retrun: bool, indicating whether root2 is a subtree
- * of root1.
+ * Retrun:
+ *  bool, indicating whether root2 is a subtree of root1.
  *   
  * Idea:
  *   1. binary tree root2 is a subtree of root1 imply the in-order traversal sequence is subarray 
  * of root1's in-order traversal sequence.
  *   2. rule 1 is true for post-order traversal sequence.
  * Notice:   
-***************************************************************************/
+*******************************************************************************************************/
 bool isSubTree(const TreeNode *root1, const TreeNode *root2)
 {
 	vector<int> seq1, seq2;
