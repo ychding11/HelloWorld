@@ -31,6 +31,22 @@ include_directories (
   ${CMAKE_BINARY_DIR}/thirdparty/glog
 )
 
+## custom settings
+#######################################################################################
+set(ENABLE_HIDECONSOLE_BUILD FALSE CACHE BOOL "TRUE to hide console for Windows sys" FORCE)
+if(ENABLE_HIDECONSOLE_BUILD)
+	message(STATUS "Console is hidden")
+else()
+	message(STATUS "Console is visible")
+endif()
+
+## Source file Not need to list
+#######################################################################################
+file ( GLOB GTEST_SOURCE
+    ${CMAKE_SOURCE_DIR}/thirdparty/gtest/*.h
+    ${CMAKE_SOURCE_DIR}/thirdparty/gtest/*.cc
+)
+
 ## source files
 #######################################################################################
 include_directories(
@@ -61,6 +77,9 @@ file(GLOB  Mem_SRC_FILES
 )
 file(GLOB  Dp_SRC_FILES
 	${CMAKE_SOURCE_DIR}/dp.cpp
+)
+file(GLOB  ShortestPath_SRC_FILES
+	${CMAKE_SOURCE_DIR}/shortestpath.cpp
 )
 
 ## Output include directory for debug
@@ -95,74 +114,6 @@ macro(group_src_files src_files target)
 	endforeach()
 endmacro()
 
-## Regroup source code structure
-#######################################################################################
-group_src_files("${Common_SRC_FILES}" "Shared")
-group_src_files("${SORT_SRC_FILES}"  "Sort-Test")
-group_src_files("${List_SRC_FILES}"  "List-Test")
-group_src_files("${Array_SRC_FILES}" "Array-Test")
-group_src_files("${Tree_SRC_FILES}"  "Tree-Test")
-group_src_files("${Mem_SRC_FILES}"  "Mem-Test")
-group_src_files("${Dp_SRC_FILES}"   "Dp-Test")
-
-## custom settings
-#######################################################################################
-set(ENABLE_HIDECONSOLE_BUILD FALSE CACHE BOOL "TRUE to hide console for Windows sys" FORCE)
-if(ENABLE_HIDECONSOLE_BUILD)
-	message(STATUS "Console is hidden")
-else()
-	message(STATUS "Console is visible")
-endif()
-
-## preproc
-#######################################################################################
-add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-add_definitions(-D__STDC_FORMAT_MACROS)
-add_definitions(-DBX_CONFIG_ENABLE_MSVC_LEVEL4_WARNINGS=1)
-add_definitions(-D__STDC_LIMIT_MACROS)
-add_definitions(-D__STDC_CONSTANT_MACROS)
-add_definitions(-DUSE_DL_PREFIX)
-if(${ENABLE_HIDECONSOLE_BUILD})
-	if(MSVC)
-		add_definitions(-DWIN32)
-		add_definitions(-D_WIN32)
-		add_definitions(-DNOMINMAX)
-	endif()
-endif()
-
-if(WINDOWS)
-  set(GUI_TYPE WIN32)
-elseif(MACOSX)
-  set(GUI_TYPE MACOSX_BUNDLE)
-endif()
-
-## external libraries
-#######################################################################################
-find_package(OpenMP)
-if(OPENMP_FOUND)
-	message(STATUS "OpenMP found")
-	if(MSVC)
-		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /openmp")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp")
-		#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-	endif()
-endif()
-
-## link options
-#######################################################################################
-if(MSVC)
-    if(ENABLE_HIDECONSOLE_BUILD)
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
-        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
-    else()
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE ")
-        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE")
-    endif()
-endif(MSVC)
-
-SET(LINK_OPTIONS " ")
-
-
 ## macro definition
 #######################################################################################
 macro(default_property EXE_NAME)
@@ -181,13 +132,55 @@ macro(default_property EXE_NAME)
 	endif()
 endmacro()
 
-
-## Source file Not need to list
+## Regroup source code structure
 #######################################################################################
-file ( GLOB GTEST_SOURCE
-    ${CMAKE_SOURCE_DIR}/thirdparty/gtest/*.h
-    ${CMAKE_SOURCE_DIR}/thirdparty/gtest/*.cc
-)
+group_src_files("${GTEST_SOURCE}" "Gtest")
+group_src_files("${Common_SRC_FILES}" "Shared")
+group_src_files("${SORT_SRC_FILES}"  "Sort-Test")
+group_src_files("${List_SRC_FILES}"  "List-Test")
+group_src_files("${Array_SRC_FILES}" "Array-Test")
+group_src_files("${Tree_SRC_FILES}"  "Tree-Test")
+group_src_files("${Mem_SRC_FILES}"  "Mem-Test")
+group_src_files("${Dp_SRC_FILES}"   "Dp-Test")
+group_src_files("${ShortestPath_SRC_FILES}"   "Shortestpath-Test")
+
+## preproc
+#######################################################################################
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+add_definitions(-D__STDC_FORMAT_MACROS)
+add_definitions(-DBX_CONFIG_ENABLE_MSVC_LEVEL4_WARNINGS=1)
+add_definitions(-D__STDC_LIMIT_MACROS)
+add_definitions(-D__STDC_CONSTANT_MACROS)
+add_definitions(-DUSE_DL_PREFIX)
+if(${ENABLE_HIDECONSOLE_BUILD})
+	if(MSVC)
+		add_definitions(-DWIN32)
+		add_definitions(-D_WIN32)
+		add_definitions(-DNOMINMAX)
+	endif()
+endif()
+
+## external libraries
+#######################################################################################
+find_package(OpenMP)
+if(OPENMP_FOUND)
+	message(STATUS "OpenMP found")
+	if(MSVC)
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /openmp")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp")
+		#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+	endif()
+endif()
+
+## link options
+#######################################################################################
+if(MSVC)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE ")
+        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE")
+endif(MSVC)
+
+SET(LINK_OPTIONS " ")
+
 
 ## target: Sort
 #######################################################################################
@@ -228,6 +221,13 @@ default_property(${EXE_NAME})
 #######################################################################################
 set(EXE_NAME "Dp-Test")
 add_executable(${EXE_NAME} ${Dp_SRC_FILES} ${GTEST_SOURCE})
+target_link_libraries(${EXE_NAME} glog)
+default_property(${EXE_NAME})
+
+## target: shortestpath 
+#######################################################################################
+set(EXE_NAME "ShortestPath-Test")
+add_executable(${EXE_NAME} ${ShortestPath_SRC_FILES} ${GTEST_SOURCE})
 target_link_libraries(${EXE_NAME} glog)
 default_property(${EXE_NAME})
 
