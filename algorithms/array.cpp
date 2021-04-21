@@ -416,41 +416,6 @@ int BitOnes(unsigned long n)
 
 /*********************************************************************************
  * Function:
- *   get majority element of array. majority element occurs more than [n / 2] 
- *
- * Ideas:
- *  vote
-*********************************************************************************/
-template <typename T>
-T MajorityElement(std::vector<T> &a)
-{
-    T e;
-    int c = 0;
-    int n = a.size();
-    for (int i = 0; i < n; ++i)
-    {
-        if (c == 0)
-        {
-            e = a[i];
-            c = 1;
-        }
-        else
-        {
-            if (e == a[i])
-            {
-                c++;
-            }
-            else
-            {
-                c--;
-            }
-        }
-    }
-    return e;
-}
-
-/*********************************************************************************
- * Function:
  *   get all permutation string of string str, duplicates should be removed. 
  *
  * It is a recursion solution
@@ -696,6 +661,42 @@ int removeDuplicateElements(std::vector<T> &a)
 }
 
 /*********************************************************************************
+ * Function:
+ *   get majority element of array. majority element occurs more than [n / 2] 
+ *
+ * Ideas:
+ *  vote
+*********************************************************************************/
+template <typename T>
+T MajorityElement(std::vector<T> &a)
+{
+    T e;
+    int c = 0;
+    int n = a.size();
+    assert(n > 0);
+    for (int i = 0; i < n; ++i)
+    {
+        if (c == 0)
+        {
+            e = a[i];
+            c = 1;
+        }
+        else
+        {
+            if (e == a[i])
+            {
+                c++;
+            }
+            else
+            {
+                c--;
+            }
+        }
+    }
+    return e;
+}
+
+/*********************************************************************************
  * 
  * Test code begins 
  *
@@ -703,6 +704,18 @@ int removeDuplicateElements(std::vector<T> &a)
 
 #include "thirdparty/gtest/gtest.h"
 #include<bitset>
+
+TEST(majorityElement, MajorityElement)
+{
+    {
+	    std::vector<int> a{ 0,0,0,0,0,0,0,3,3,4 };
+	    EXPECT_EQ(0, MajorityElement(a));
+    }
+    {
+	    std::vector<int> a{ 1,1,2 };
+	    EXPECT_EQ(1, MajorityElement(a));
+    }
+}
 
 TEST(removeElement, removeDuplicateElement)
 {
