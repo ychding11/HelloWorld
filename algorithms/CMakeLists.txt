@@ -81,6 +81,9 @@ file(GLOB  Dp_SRC_FILES
 file(GLOB  ShortestPath_SRC_FILES
 	${CMAKE_SOURCE_DIR}/shortestpath.cpp
 )
+file(GLOB  Recursion_SRC_FILES
+	${CMAKE_SOURCE_DIR}/recursion.cpp
+)
 
 ## Output include directory for debug
 #######################################################################################
@@ -143,6 +146,7 @@ group_src_files("${Tree_SRC_FILES}"  "Tree-Test")
 group_src_files("${Mem_SRC_FILES}"  "Mem-Test")
 group_src_files("${Dp_SRC_FILES}"   "Dp-Test")
 group_src_files("${ShortestPath_SRC_FILES}"   "Shortestpath-Test")
+group_src_files("${Recursion_SRC_FILES}"   "Recursion-Test")
 
 ## preproc
 #######################################################################################
@@ -230,6 +234,14 @@ set(EXE_NAME "ShortestPath-Test")
 add_executable(${EXE_NAME} ${ShortestPath_SRC_FILES} ${GTEST_SOURCE})
 target_link_libraries(${EXE_NAME} glog)
 default_property(${EXE_NAME})
+
+## target: recursion 
+#######################################################################################
+set(EXE_NAME "Recursion-Test")
+add_executable(${EXE_NAME} ${Recursion_SRC_FILES} ${GTEST_SOURCE})
+target_link_libraries(${EXE_NAME} glog)
+default_property(${EXE_NAME})
+
 
 #######################################################################################
 ##For reference
