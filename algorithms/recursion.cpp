@@ -41,19 +41,23 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include "Logger.h"
+#include<cassert>
+#include <glog/logging.h>
 
 using namespace std;
 
 #define PERFORMANCE_METER
 
-/*************************************************
- *  The class is to generate subsets of a certain
- *  set.
-*************************************************/
+/**************************************************************************
+ *  The class is to generate subsets of a certain set
+ *  
+**************************************************************************/
 class SubsetsGen 
 {
 public:
+    //
+    // {}, empty set is valid
+    // 
     vector<vector<int> > subsets(vector<int>& nums) 
     {
         vector<vector<int> > ret;
@@ -65,9 +69,13 @@ public:
     }
  
  private:   
-    void subsetsHelper(vector<vector<int> > &ret, vector<int> temp, vector<int>& nums, int i, int n)
+    void subsetsHelper(vector<vector<int> > &ret, vector<int> temp, const vector<int>& nums, int i, int n)
     {
-        if (i >= n) { ret.push_back(temp); return; } // termination condition.
+        if (i >= n) // termination condition.
+        {
+            ret.push_back(temp);
+            return;
+        } 
         
         subsetsHelper(ret, temp, nums, i + 1, n); //no elements selected and search.
         temp.push_back(nums[i]);  //select current elements and search.
@@ -75,7 +83,7 @@ public:
     }
 };
 
-void printResult(const vector<vector<int> > &ret)
+static inline void printResult(const vector<vector<int> > &ret)
 {
     int m = ret.size();
     for (int i = 0; i < m; i++)
@@ -89,15 +97,49 @@ void printResult(const vector<vector<int> > &ret)
         cout << "]" << std::endl;
     }
 }
-/*************************************************
- * just call the demo string.
-*************************************************/
+
+/*********************************************************************************
+ * 
+ * Test code begins 
+ *
+*********************************************************************************/
+
+#include "thirdparty/gtest/gtest.h"
+#include<bitset>
+
+TEST(Subset, allSubsets)
+{
+    int n;
+    SubsetsGen generator;
+    while (true)
+    {
+        cout << "Enter set size:";
+        cin >> n;
+        if (-1 == n)
+        {
+            cout << "Game Over." << std::endl;
+        }
+
+        vector<int> nums(n, 0);
+        srand(time(NULL));
+
+        cout << "Original vector: [ ";
+        for (int i = 0; i < n; i++)
+        {
+            nums[i] = rand() % 100;
+            cout << nums[i] << " ";
+        }
+        cout << "]" << std::endl;
+
+        vector<vector<int> > ret = generator.subsets(nums);
+        cout << "All possible subsets:" << std::endl;
+        printResult(ret);
+    }
+}
+
+#if 0
 int main(int argc, char** argv)
 {
-  logger.setLevel(DEBUG);
-  logger.setLineLevel(DEBUG);
-  ENTER_FUNCTION;
-  
   int n;
   SubsetsGen generator;
   while (true)
@@ -109,8 +151,10 @@ int main(int argc, char** argv)
         cout << "Game Over." << std::endl;
         return 0;
     }
+
     vector<int> nums(n, 0);
     srand(time(NULL));
+
     cout << "Original vector: [ " ;
     for (int i = 0; i < n; i++)
     {
@@ -124,7 +168,7 @@ int main(int argc, char** argv)
     printResult(ret);
   }
   
-  EXIT_FUNCTION;
   return 0;
 }
+#endif
 
