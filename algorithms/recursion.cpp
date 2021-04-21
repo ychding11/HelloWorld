@@ -64,7 +64,9 @@ public:
         vector<int> temp;
         int n = nums.size();
         sort(nums.begin(), nums.end()); //assure subset is sorted.
+        printVector(nums);
         subsetsHelper(ret, temp, nums, 0, n);
+        printResult(ret);
         return ret;
     }
  
@@ -81,22 +83,34 @@ public:
         temp.push_back(nums[i]);  //select current elements and search.
         subsetsHelper(ret, temp, nums, i + 1, n);
     }
-};
 
-static inline void printResult(const vector<vector<int> > &ret)
-{
-    int m = ret.size();
-    for (int i = 0; i < m; i++)
+    void printVector(const vector<int> &a)
     {
-        int n = ret[i].size();
+        int m = a.size();
         cout << "[ ";
-        for (int j = 0; j < n; j++)
+        for (int i = 0; i < m; i++)
         {
-            cout << ret[i][j] << " ";
+            cout << a[i] << " ";
         }
         cout << "]" << std::endl;
     }
-}
+    void printResult(const vector<vector<int> > &ret)
+    {
+        int m = ret.size();
+        cout << "All possible subsets:" << std::endl;
+        for (int i = 0; i < m; i++)
+        {
+            int n = ret[i].size();
+            cout << "[ ";
+            for (int j = 0; j < n; j++)
+            {
+                cout << ret[i][j] << " ";
+            }
+            cout << "]" << std::endl;
+        }
+    }
+};
+
 
 /*********************************************************************************
  * 
@@ -109,6 +123,9 @@ static inline void printResult(const vector<vector<int> > &ret)
 
 TEST(Subset, allSubsets)
 {
+    //
+    // the result is much depends on human observer
+    //
     int n;
     SubsetsGen generator;
     while (true)
@@ -118,22 +135,16 @@ TEST(Subset, allSubsets)
         if (-1 == n)
         {
             cout << "Game Over." << std::endl;
+            exit(1);
         }
 
-        vector<int> nums(n, 0);
         srand(time(NULL));
-
-        cout << "Original vector: [ ";
+        vector<int> nums(n, 0);
         for (int i = 0; i < n; i++)
         {
             nums[i] = rand() % 100;
-            cout << nums[i] << " ";
         }
-        cout << "]" << std::endl;
-
         vector<vector<int> > ret = generator.subsets(nums);
-        cout << "All possible subsets:" << std::endl;
-        printResult(ret);
     }
 }
 
