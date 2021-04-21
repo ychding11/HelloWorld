@@ -382,7 +382,7 @@ bool SubsetSumEqualK(const vector<int> &nums, int K)
  * Function:
  *   Caculate the suqare root of a perfect squre. if NOT a perfect square return -1. 
  *
- * This is a recursion solution
+ * This is a variant of binary search 
 *********************************************************************************/
 int SqrtOfPerfectSquare(int n)
 {
@@ -409,14 +409,49 @@ int BitOnes(unsigned long n)
 	while (n)
 	{
 		++c;
-		n = n & (n - 1);
+		n = n & (n - 1); // remove '1' at lowest bit
 	}
 	return c;
 }
 
 /*********************************************************************************
  * Function:
- *   get all permutation string of string str. duplidates should be removed. 
+ *   get majority element of array. majority element occurs more than [n / 2] 
+ *
+ * Ideas:
+ *  vote
+*********************************************************************************/
+template <typename T>
+T MajorityElement(std::vector<T> &a)
+{
+    T e;
+    int c = 0;
+    int n = a.size();
+    for (int i = 0; i < n; ++i)
+    {
+        if (c == 0)
+        {
+            e = a[i];
+            c = 1;
+        }
+        else
+        {
+            if (e == a[i])
+            {
+                c++;
+            }
+            else
+            {
+                c--;
+            }
+        }
+    }
+    return e;
+}
+
+/*********************************************************************************
+ * Function:
+ *   get all permutation string of string str, duplicates should be removed. 
  *
  * It is a recursion solution
 *********************************************************************************/
