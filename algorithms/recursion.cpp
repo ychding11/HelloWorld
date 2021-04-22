@@ -44,6 +44,9 @@
 #include<cassert>
 #include <glog/logging.h>
 
+#include "thirdparty/gtest/gtest.h"
+#include<bitset>
+
 using namespace std;
 
 #define PERFORMANCE_METER
@@ -56,6 +59,7 @@ class SubsetsGen
 {
 public:
     //
+    // generate all subsets of a set. such as {1, 2, 3}
     // {}, empty set is valid
     // 
     vector<vector<int> > subsets(vector<int>& nums) 
@@ -69,7 +73,35 @@ public:
         printResult(ret);
         return ret;
     }
- 
+
+   /*
+    * Given a set of n elements [1, n],
+    * generate all possible combinations of k elements from the set.
+    *
+    */
+    vector<vector<int> > combine(int n, int k)
+    {
+        vector<vector<int> > result;
+        vector<int> tmp;
+        combineHelper(1, n, k, tmp, result);
+        return result;  //call copy constrctor here.
+    }
+
+    void combineHelper(int begin, int end, int k, vector<int> &tmp, vector<vector<int> > &result)
+    {
+        if (k == 0) // termination
+        {
+            result.push_back(tmp);
+            return;
+        }
+        for (int i = begin; i <= end; i++)
+        {
+            tmp.push_back(i);
+            combineHelper(i + 1, end, k - 1, tmp, result);
+            tmp.pop_back();
+        }
+    }
+
  private:   
     void subsetsHelper(vector<vector<int> > &ret, vector<int> temp, const vector<int>& nums, int i, int n)
     {
@@ -117,9 +149,6 @@ public:
  * Test code begins 
  *
 *********************************************************************************/
-
-#include "thirdparty/gtest/gtest.h"
-#include<bitset>
 
 TEST(Subset, allSubsets)
 {
