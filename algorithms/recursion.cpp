@@ -79,7 +79,7 @@ public:
     * generate all possible combinations of k elements from the set.
     *
     */
-    vector<vector<int> > combine(int n, int k)
+    vector<vector<int> > combination(int n, int k)
     {
         vector<vector<int> > result;
         vector<int> tmp;
@@ -149,6 +149,41 @@ public:
  * Test code begins 
  *
 *********************************************************************************/
+
+TEST(Subset, combination)
+{
+    //
+    // the result is much depends on human observer
+    //
+    int n, k;
+    SubsetsGen generator;
+    while (true)
+    {
+        cout << "Enter n and k:";
+        cin >> n >> k;
+        if (n < k || n < 0 || k < 0)
+        {
+            cout << "Game Over." << std::endl;
+            exit(1);
+        }
+        vector<vector<int> > ret = generator.combination(n, k);
+
+        {
+            int m = ret.size();
+            cout << "all combinations: " << std::endl;
+            for (int i = 0; i < m; i++)
+            {
+                int n = ret[i].size();
+                cout << "[ ";
+                for (int j = 0; j < n; j++)
+                {
+                    cout << ret[i][j] << " ";
+                }
+                cout << "]" << std::endl;
+            }
+        }
+    }
+}
 
 TEST(Subset, allSubsets)
 {
