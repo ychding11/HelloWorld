@@ -34,6 +34,9 @@
 #include<cassert>
 #include <glog/logging.h>
 
+#include "thirdparty/gtest/gtest.h"
+#include<bitset>
+
 using namespace std;
 
 /************************************************************************************
@@ -119,7 +122,7 @@ void reorderIndex(vector<int> &nums, vector<int> &index)
 	}
 }
 
-/***********************************************************************
+/************************************************************************************
  * Function:
  *   Given an integer array, find the number of strictly increased subarrays
  *   in that array.
@@ -128,17 +131,21 @@ void reorderIndex(vector<int> &nums, vector<int> &index)
  * Retrun:     int, subarray number  
  *   
  * Notice:   
-***********************************************************************/
+ * Ideas:
+ *  [1, 2, 3], it has 6 strictly increased sub array
+************************************************************************************/
 int NumberOfStrictlyIncreasedSubarrays(const vector<int> &array)
 {
 	int n = array.size();
 	if (n <= 0) return 0;
-	int ret = 0, len = 1, i;
-	
-	for (i = 0; i < n - 1; i++)
+
+	int ret = 0, len = 1;
+	for (int i = 0; i < n - 1; i++)
 	{
-		if (array[i + 1] > array[i])
+        if (array[i + 1] > array[i])
+        {
 			++len; 
+        }
 		else
 		{
 			ret += len * (len + 1) / 2; len = 1;
@@ -702,8 +709,14 @@ T MajorityElement(std::vector<T> &a)
  *
 *********************************************************************************/
 
-#include "thirdparty/gtest/gtest.h"
-#include<bitset>
+
+TEST(subarray, NumberOfStrictlyIncreasedSubarrays)
+{
+    {
+	    std::vector<int> a{ 1,2,3 };
+	    EXPECT_EQ(6, NumberOfStrictlyIncreasedSubarrays(a));
+    }
+}
 
 TEST(majorityElement, MajorityElement)
 {
