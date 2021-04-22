@@ -163,8 +163,10 @@ int NumberOfStrictlyIncreasedSubarrays(const vector<int> &array)
  *   
  * Retrun: int, the length of longest increasing subsequence
  * Ideas:  
- * Notice:   
- * How to test it?
+ *  one element is also a valid sequence
+ *  subsequence is different from subarray
+ *
+ * How to test ?
 *********************************************************************/
 int longestIncreasingSubsequence(const vector<int> &nums)
 {
@@ -187,9 +189,9 @@ int longestIncreasingSubsequence(const vector<int> &nums)
     return ret;
 }
 
-/**************************************************************
+/****************************************************************************************
  * Function:
- *   Given two sorted integer array, find all elements appears in both arrays.
+ *   Given two sorted integer array, find all elements which appears in both arrays.
  *   
  * Param[in]: array
  * Param[in]: array
@@ -197,7 +199,7 @@ int longestIncreasingSubsequence(const vector<int> &nums)
  * Retrun: array, intersecting elements 
  * Ideas:  
  * Notice:  Two array must be sorted. 
-**************************************************************/
+****************************************************************************************/
 vector<int> intersectOfSortedArray(const vector<int> &a, const vector<int> &b)
 {
 	vector<int> ret;
