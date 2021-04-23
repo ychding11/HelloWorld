@@ -41,6 +41,23 @@ using namespace std;
 
 /************************************************************************************
  * Function:
+ *   
+ * Param[in]:  nums array  
+ *   
+ * Retrun:
+ *   min subarray len.
+ *   
+ * Notice:   
+ * Ideas:  sliding window.
+************************************************************************************/
+int minSubarrayWithSum(const std::vector<std::vector<int>> &a)
+{
+
+    return 0;
+}
+
+/************************************************************************************
+ * Function:
  *   Given an array containing only 1 and 0, an integer m. Flip m 0s at most so that 
  *   number of consecutive 1s is maximized.
  *   
