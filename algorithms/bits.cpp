@@ -152,6 +152,7 @@ TEST(misc, arrayOperate)
 
 
     {
+        // reinterpret_cast<> is Not good idea
         Rectangle *sp = reinterpret_cast<Rectangle*>(new Square);
         sp->Render(); // should output Square 
     }
