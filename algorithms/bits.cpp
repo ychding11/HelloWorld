@@ -86,6 +86,33 @@ inline bool minByBit(int a, int b)
     return b ^ ((a ^ b) & -(a < b));
 }
 
+    class Poly
+    {
+    public:
+        virtual void Render() = 0;
+    };
+    void Poly::Render()
+    {
+        std::cout << "Poly" << std::endl;
+    }
+
+    class Rectangle : public Poly
+    {
+    public:
+        virtual void Render() override
+        {
+            std::cout << "Rectangle" << std::endl;
+        }
+    };
+    class Square : public Rectangle
+    {
+    public:
+        virtual void Render() override
+        {
+            std::cout << "Square" << std::endl;
+        }
+    };
+
 TEST(misc, arrayOperate)
 {
     class A { int a;  };
@@ -97,6 +124,36 @@ TEST(misc, arrayOperate)
         printf("%u \n", arrayptr);
         printf("%u \n", (arrayptr+5));
 	    //EXPECT_EQ(6, NumberOfStrictlyIncreasedSubarrays(a));
+    }
+
+    class Shape
+    {
+    public:
+        void Render()
+        {
+            std::cout << "Shape" << std::endl;
+        }
+    };
+
+    class Circle 
+    {
+    public:
+        void Render()
+        {
+            std::cout << "Circle" << std::endl;
+        }
+    };
+
+    {
+
+        Shape *sp = reinterpret_cast<Shape*>(new Circle);
+        sp->Render(); // should output Shape
+    }
+
+
+    {
+        Rectangle *sp = reinterpret_cast<Rectangle*>(new Square);
+        sp->Render(); // should output Square 
     }
 }
 
