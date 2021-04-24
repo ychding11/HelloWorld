@@ -85,13 +85,16 @@ file(GLOB  Recursion_SRC_FILES
 	${CMAKE_SOURCE_DIR}/recursion.cpp
 )
 
+file(GLOB  Bits_SRC_FILES
+	${CMAKE_SOURCE_DIR}/bits.cpp
+)
+
 ## Output include directory for debug
 #######################################################################################
 get_property(includes DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 foreach(dir ${includes})
     message(STATUS "include dir='${dir}'")
 endforeach()
-
 
 ## macro definition
 #######################################################################################
@@ -147,6 +150,7 @@ group_src_files("${Mem_SRC_FILES}"  "Mem-Test")
 group_src_files("${Dp_SRC_FILES}"   "Dp-Test")
 group_src_files("${ShortestPath_SRC_FILES}"   "Shortestpath-Test")
 group_src_files("${Recursion_SRC_FILES}"   "Recursion-Test")
+group_src_files("${Bits_SRC_FILES}"   "Bits-Test")
 
 ## preproc
 #######################################################################################
@@ -241,6 +245,14 @@ set(EXE_NAME "Recursion-Test")
 add_executable(${EXE_NAME} ${Recursion_SRC_FILES} ${GTEST_SOURCE})
 target_link_libraries(${EXE_NAME} glog)
 default_property(${EXE_NAME})
+
+## target: bits 
+#######################################################################################
+set(EXE_NAME "Bits-Test")
+add_executable(${EXE_NAME} ${Bits_SRC_FILES} ${GTEST_SOURCE})
+target_link_libraries(${EXE_NAME} glog)
+default_property(${EXE_NAME})
+
 
 
 #######################################################################################
