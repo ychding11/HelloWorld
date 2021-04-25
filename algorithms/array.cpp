@@ -50,10 +50,26 @@ using namespace std;
  * Notice:   
  * Ideas:  sliding window.
 ************************************************************************************/
-int minSubarrayWithSum(const std::vector<std::vector<int>> &a)
+int minSubarrayWithSum(const std::vector<int> &a, int s)
 {
-
-    return 0;
+    int L = 0;
+    int R = -1;
+    int n = a.size();
+    int minLen = n + 1;
+    int sum = 0;
+    while (R < n)
+    {
+        while (sum < s && ++R < n)
+            sum += s;
+        if (sum >= s)
+        {
+            int len = R - L + 1;
+            if (len < minLen) minLen = len;
+            sum -= a[L];
+            ++L;
+        }
+    }
+    return minLen == n + 1 ? 0 : minLen;
 }
 
 /************************************************************************************
@@ -65,12 +81,12 @@ int minSubarrayWithSum(const std::vector<std::vector<int>> &a)
  * Param[in]:  max number of flipping 0 to 1 
  *   
  * Retrun:
- *   "index vector* indicating which elements to flip.
+ *   index vector,  indicating which elements to flip.
  *   
  * Notice:   
  * Ideas:  sliding window.
 ************************************************************************************/
-vector<int> flips(vector<int> &nums, int m)
+std::vector<int> flips(std::vector<int> &nums, int m)
 {
 	vector<int> ret;
 	deque<int> que;

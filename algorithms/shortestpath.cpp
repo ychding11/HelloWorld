@@ -18,19 +18,20 @@ using namespace std;
 
 #define MAXDIST  1000000  //define as infinit 
 
-/*************************************************
+/********************************************************************
  *  Find the max one in shortest paths from a single
  *  source to all other nodes in a connected Graph.
  *  
- *  Precondition: no negative edges in Graph.
+ *  Precondition:
+ *   no negative edges in Graph.
  * 
  *  done[i] : record whether shortest time from capitol
  *            to ctiy i is caculated ok.
  *  dist[i] : recoard the calculated shortest time
  *            for city i.
- *  apply Dijkstra algorithms.
- *  time complexity is O(n*n)
-*************************************************/
+ *  Ideas:
+ *   apply Dijkstra algorithms. Time complexity is O(n*n)
+********************************************************************/
 int minTime(vector<vector<int> > &a, int n)
 {
     int ret = 0;
