@@ -72,6 +72,14 @@ int minSubarrayWithSum(const std::vector<int> &a, int s)
     return minLen == n + 1 ? 0 : minLen;
 }
 
+TEST(slidingWindow, minSubarrayWithSum)
+{
+    {
+	    std::vector<int> a{ 2,3,1,2,4,3 };
+	    EXPECT_EQ(2, minSubarrayWithSum(a, 7));
+    }
+}
+
 /************************************************************************************
  * Function:
  *   Given an array containing only 1 and 0, an integer m. Flip m 0s at most so that 
