@@ -60,7 +60,7 @@ int minSubarrayWithSum(const std::vector<int> &a, int s)
     while (R < n)
     {
         while (sum < s && ++R < n)
-            sum += s;
+            sum += a[R];
         if (sum >= s)
         {
             int len = R - L + 1;
