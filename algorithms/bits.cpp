@@ -156,5 +156,14 @@ TEST(misc, arrayOperate)
         Rectangle *sp = reinterpret_cast<Rectangle*>(new Square);
         sp->Render(); // should output Square 
     }
+    {
+        int x = 0; 
+        int y = 0;
+        if (x++ || y++)
+        {
+            y += 2;
+        }
+        std::cout << x + y << std::endl;
+    }
 }
 
