@@ -167,3 +167,74 @@ TEST(misc, arrayOperate)
     }
 }
 
+struct Node
+{
+    int dat;
+    Node *next;
+};
+
+Node* reverseList(Node* head)
+{
+    if (!head || !head->next) 
+    {
+        return head;
+    }
+    Node *newHead = nullptr;
+    while (head)
+    {
+        Node *cur = head;
+        head = head->next;
+        cur->next = newHead;
+        newHead = cur;
+    }
+    return newHead;
+}
+
+#include <vector>
+#include <cassert>
+void printMatrix(int n)
+{
+    assert(n > 0);
+    n = sqrt(n + 1);
+    std::vector<std::vector<int> > a(n, std::vector<int>(n, 0));
+    int top = 0, down = n - 1, left = 0, right = n - 1, v = 0;
+
+    //build the matrix, then output the matrix
+    while (true)
+    {
+        //top 
+        for (int col = left; col <= right; ++col) a[top][col] = v++;
+        if (++top > down) break;
+        //right
+        for (int row = top; row <= down; ++row) a[row][right] = v++;
+        if (--right < left) break;
+        //down
+        for (int col = right; col >= left; --col) a[down][col] = v++;
+        if (--down < top) break;
+        //left
+        for (int row = down; row >= top; --row) a[row][left] = v++;
+        if (++left > right) break;
+    }
+    assert(v == n * n);
+    // print matrix.
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+            printf("%3i ", a[i][j]);
+        printf("\n");
+    }
+}
+
+TEST(misc, printMatirx)
+{
+    printMatrix(24);
+}
+
+TEST(misc, castOperator)
+{
+    char *pb = new char[100];
+    //unsigned int pp = (unsigned int) pb;
+    unsigned int pp = reinterpret_cast<unsigned int>(pb);
+    //unsigned int pp = static_cast<unsigned int>(pb); // cannot compile
+
+}
