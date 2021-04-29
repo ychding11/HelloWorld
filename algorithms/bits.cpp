@@ -227,7 +227,7 @@ void printMatrix(int n)
 
 TEST(misc, printMatirx)
 {
-    printMatrix(24);
+   // printMatrix(24);
 }
 
 TEST(misc, castOperator)
@@ -237,4 +237,51 @@ TEST(misc, castOperator)
     unsigned int pp = reinterpret_cast<unsigned int>(pb);
     //unsigned int pp = static_cast<unsigned int>(pb); // cannot compile
 
+}
+
+//
+//< 
+#include <algorithm>
+void printMatrix_2(int n)
+{
+    assert(n > 0);
+    n = sqrt(n + 1);
+
+    int nCircles = n / 2 + n % 2;
+    std::vector<int> a(nCircles, 0);
+    for (int i = 1; i < a.size(); ++i)
+    {
+        a[i] = a[i-1] + 4 * (n -1 - 2 * (i-1));
+    }
+    a.push_back(n * n); 
+
+    // print matrix.
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            // circle index
+            int c = std::min(std::min(i, j), std::min(n-i-1, n - j - 1));
+            int v = 0;
+
+            
+            if (i <= j) // up triagle: increase
+            {
+                v = a[c] + (i - c) + (j - c);
+            }
+            else // down triagle: decrease
+            {
+                v = a[c + 1] - (i - c) - (j - c);
+            }
+            printf("%4i ", v);
+        }
+        printf("\n");
+    }
+}
+
+TEST(misc, printMatirx_2)
+{
+    printMatrix_2(24);
+
+    printMatrix_2(15);
 }
