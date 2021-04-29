@@ -240,7 +240,19 @@ TEST(misc, castOperator)
 }
 
 //
-//< 
+//< There are circles in matrix.
+//< 1. precompute the first value of the circle and store it
+//< 1. split matrix into two parts:
+//<     up triangle(value increase from first value of current cirlce)
+//<     down triangle(value decrease from first value of next cirlce)
+//<     for elements in last circle, it needs a dummy next circle 
+//< 1. identify the circle index of current element by formula. 
+//<    then caculate the corresponding value.
+//<
+//< Complexity Analysis
+//< Time Complexity is O(n)
+//< Memory Complexity is O(sqrt(n))
+//<
 #include <algorithm>
 void printMatrix_2(int n)
 {
@@ -248,12 +260,12 @@ void printMatrix_2(int n)
     n = sqrt(n + 1);
 
     int nCircles = n / 2 + n % 2;
-    std::vector<int> a(nCircles, 0);
+    std::vector<int> a(nCircles, 0); // extra memory required
     for (int i = 1; i < a.size(); ++i)
     {
         a[i] = a[i-1] + 4 * (n -1 - 2 * (i-1));
     }
-    a.push_back(n * n); 
+    a.push_back(n * n); // dummy value for latst circle
 
     // print matrix.
     for (int i = 0; i < n; ++i)
@@ -261,9 +273,8 @@ void printMatrix_2(int n)
         for (int j = 0; j < n; ++j)
         {
             // circle index
-            int c = std::min(std::min(i, j), std::min(n-i-1, n - j - 1));
+            int c = std::min(std::min(i, j), std::min(n - i - 1, n - j - 1));
             int v = 0;
-
             
             if (i <= j) // up triagle: increase
             {
@@ -281,7 +292,76 @@ void printMatrix_2(int n)
 
 TEST(misc, printMatirx_2)
 {
-    printMatrix_2(24);
+    //printMatrix_2(24);
 
-    printMatrix_2(15);
+    //printf("\n");
+    //
+    //printMatrix_2(15);
+
+    //printf("\n");
+    //
+    //printMatrix_2(35);
 }
+
+//
+//< There are circles in matrix.
+//< 1. derive the formula { 4c(n-c) } to caculate first value of the circle 
+//< 1. split matrix into two parts:
+//<     up triangle(value increase from first value of current cirlce)
+//<     down triangle(value decrease from first value of next cirlce)
+//< 1. identify the circle index of current element by formula. 
+//<    then caculate the corresponding value.
+//<
+//< Complexity Analysis
+//< Time Complexity is O(n)
+//< Memory Complexity is O(1)
+//<
+#include <algorithm>
+void printMatrix_3(int n)
+{
+    assert(n > 0);
+    n = sqrt(n + 1);
+
+    int nCircles = n / 2 + n % 2;
+    std::vector<int> a(nCircles, 0); // extra memory required
+    for (int i = 1; i < a.size(); ++i)
+    {
+        a[i] = a[i-1] + 4 * (n -1 - 2 * (i-1));
+    }
+    a.push_back(n * n); // dummy value for latst circle
+
+    // print matrix.
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            // circle index
+            int c = std::min(std::min(i, j), std::min(n - i - 1, n - j - 1));
+            int v = 0;
+            
+            if (i <= j) // up triagle: increase
+            {
+                v = 4 * c * (n - c) + (i - c) + (j - c);
+            }
+            else // down triagle: decrease
+            {
+                v = 4 * (c+1) * (n - c - 1) - (i - c) - (j - c);
+            }
+            printf("%4i ", v);
+        }
+        printf("\n");
+    }
+}
+
+TEST(misc, printMatirx_3)
+{
+    printf("\n");
+    printMatrix_3(15);
+
+    printf("\n");
+    printMatrix_3(24);
+
+    printf("\n");
+    printMatrix_3(35);
+}
+
