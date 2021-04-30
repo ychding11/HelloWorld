@@ -242,11 +242,11 @@ TEST(misc, castOperator)
 //
 //< There are circles in matrix.
 //< 1. precompute the first value of the circle and store it
-//< 1. split matrix into two parts:
+//< 2. split matrix into two parts:
 //<     up triangle(value increase from first value of current cirlce)
 //<     down triangle(value decrease from first value of next cirlce)
 //<     for elements in last circle, it needs a dummy next circle 
-//< 1. identify the circle index of current element by formula. 
+//< 3. identify the circle index of current element by formula. 
 //<    then caculate the corresponding value.
 //<
 //< Complexity Analysis
@@ -306,10 +306,10 @@ TEST(misc, printMatirx_2)
 //
 //< There are circles in matrix.
 //< 1. derive the formula { 4c(n-c) } to caculate first value of the circle 
-//< 1. split matrix into two parts:
+//< 2. split matrix into two parts:
 //<     up triangle(value increase from first value of current cirlce)
 //<     down triangle(value decrease from first value of next cirlce)
-//< 1. identify the circle index of current element by formula. 
+//< 3. identify the circle index of current element by formula. 
 //<    then caculate the corresponding value.
 //<
 //< Complexity Analysis
@@ -321,14 +321,6 @@ void printMatrix_3(int n)
 {
     assert(n > 0);
     n = sqrt(n + 1);
-
-    int nCircles = n / 2 + n % 2;
-    std::vector<int> a(nCircles, 0); // extra memory required
-    for (int i = 1; i < a.size(); ++i)
-    {
-        a[i] = a[i-1] + 4 * (n -1 - 2 * (i-1));
-    }
-    a.push_back(n * n); // dummy value for latst circle
 
     // print matrix.
     for (int i = 0; i < n; ++i)
