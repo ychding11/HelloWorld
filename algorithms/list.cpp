@@ -75,6 +75,23 @@ ListNode* reverseList(ListNode* head)
     return tempHead.next;
 }
     
+ListNode* reverseList_2(ListNode* head)
+{
+    if (!head || !head->next) 
+    {
+        return head;
+    }
+    ListNode *newHead = nullptr;
+    while (head)
+    {
+        ListNode *cur = head;
+        head = head->next;
+        cur->next = newHead;
+        newHead = cur;
+    }
+    return newHead;
+}
+
 /**************************************************************
     *  rotateRight. 
     *  example:
