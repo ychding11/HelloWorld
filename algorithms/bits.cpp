@@ -173,6 +173,9 @@ struct Node
     Node *next;
 };
 
+//
+// a simple demo
+//
 Node* reverseList(Node* head)
 {
     if (!head || !head->next) 
